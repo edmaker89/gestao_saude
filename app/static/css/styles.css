@@ -1,0 +1,99 @@
+html, body, main {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+    font-family: 'Arial', sans-serif; /* Escolha uma fonte agradável */
+    background-color: #cdf5fd; /* Cor de fundo da página */
+    margin: 0; /* Remover margens padrão do corpo da página */
+    display: flex; /* Usar flexbox para ocupar a altura total */
+    min-height: 100vh; /* Altura mínima da viewport */
+}
+
+main {
+    flex: 1; /* Ocupar o espaço restante disponível */
+    background-color: #f5fcff; /* Cor de fundo do conteúdo principal */
+}
+
+.bg-light-blue {
+    background-color: #f5fcff;
+}
+.bg-white {
+    background-color: white;
+}
+
+.bg-form {
+    border-radius: 15px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+	background-color: #89cff3; /* Cor de fundo da navbar */
+	color: #2c3e50; /* Cor do texto da navbar */
+}
+.navbarmenu {
+	background-color: #cdf5fd; /* Cor de fundo da navbar */
+	color: #2c3e50; /* Cor do texto da navbar */
+}
+
+.button.is-primary {
+    background-color: #00a9ff; /* Cor de fundo do botão primário */
+    color: white; /* Cor do texto do botão primário */
+    transition: background-color 0.3s; /* Transição suave de cor */
+}
+
+.button.is-primary:hover {
+    background-color: #0077cc; /* Cor de fundo do botão primário no hover */
+}
+
+.button.is-light {
+    background-color: #a0e9ff; /* Cor de fundo do botão light */
+    color: #2c3e50; /* Cor do texto do botão light */
+    transition: background-color 0.3s; /* Transição suave de cor */
+}
+
+.button.is-light:hover {
+    background-color: #87c2eb; /* Cor de fundo do botão light no hover */
+}
+
+main {
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* styles.css */
+
+
+aside.menu {
+    flex: 0 0 250px; /* Largura fixa de 250px, não flexível */
+    background-color: #cdf5fd; /* Tom diferente */
+    color: #2c3e50;
+    transition: background-color 0.3s; /* Transição suave de cor */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-right: 20px; /* Espaço à direita para separar do conteúdo principal */
+}
+
+aside.menu a {
+    color: #2c3e50;
+    transition: color 0.3s; /* Transição suave de cor */
+}
+
+aside.menu a.is-active {
+    color: #ffffff;
+    background-color: #00a9ff;
+}
+
+aside.menu a:hover {
+    background-color: #87c2eb; /* Cor de fundo no hover */
+    color: #ffffff; /* Cor do texto no hover */
+}
+
+footer {
+    background-color: #89cff3; /* Cor de fundo do rodapé */
+    color: white; /* Cor do texto do rodapé */
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #2c3e50; /* Linha superior para separação do conteúdo */
+}
+

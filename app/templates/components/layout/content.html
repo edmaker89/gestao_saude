@@ -1,0 +1,10 @@
+<section class="section">
+  {% if title == '25' %}
+    <h1 class="title">{{title}}</h1>
+    <h2 class="subtitle">
+      {{subtitle}}
+    </h2>
+      <hr/>
+  {% endif %}
+    {% block content %}{% endblock content %}
+  </section>

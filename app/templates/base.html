@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, max-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href='{{ url_for("static", filename="css/styles.css") }}'>
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+    <main class='bg-light-blue'>
+        {% include 'components/layout/navbar.html' %}
+        {% include 'components/layout/topmenu.html' %}
+        <div class="container is-flex">
+            <div style="flex: 1;">
+                <section class="mt-5 bg-form">
+                    <section class="section bg-white">
+                        {% if title %}
+                            <h1 class="title">{{title}}</h1>
+                            <h2 class="subtitle">
+                                {{subtitle}}
+                            </h2>
+                            <hr/>
+                        {% endif %}
+                        {% block content %}{% endblock content %}
+                      </section>
+                </section>
+            </div>
+        </div>
+    </main>
+    <div></div>
+</body>
+</html>

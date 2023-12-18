@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{{url_for('mail.new')}}" method="post">
+
+    <div class="field">
+        <label class="label">{{ form.assunto.label() }}</label>
+        <div class="control">
+            {{ form.assunto(class="input", placeholder="Informe o assunto") }}
+        </div>
+    </div>
+
+    <div class="field mt-5">
+        <label class="label">{{ form.tipo.label() }}</label>
+        <div class="control">
+            {{ form.tipo( placeholder="Selecione o tipo") }}
+        </div>
+    </div>
+    <hr/>
+    <div class="field is-flex">
+        <div class="control mr-4">
+            <a href="" class="button is-light">Cancelar</a>
+        </div>
+        <div class="control">
+                {{ form.submit(class="button is-primary") }}
+        </div>
+    </div>
+</form>
+{% endblock %}

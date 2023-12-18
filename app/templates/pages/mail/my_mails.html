@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+{% from 'components/macros/card_mail.html' import card_mail %}
+
+    <div class="container">
+      <p class="mb-5">Mostrando as 20 ultimas correspondencias - sem filtros</p>
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-start">
+          {% for mail in mails %}
+            {{card_mail(mail.Correspondencias.numero_ano,
+            mail.Correspondencias.assunto,
+            mail.TipoCorrespondencias.tipo,
+            mail.Correspondencias.data|format_data,
+            mail.Correspondencias.id
+            )}}
+           {% endfor %}
+      </div>
+      <!-- Adicione mais cartões conforme necessário -->
+    </div>
+    {% include "components/modals/edit_assunto.html" %}
+{% endblock %}

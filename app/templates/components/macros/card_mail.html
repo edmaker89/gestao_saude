@@ -1,0 +1,14 @@
+{% macro card_mail(numero, assunto, tipo, data, correspondencia_id)%}
+  <div class="card custom-card mb-4 mr-4">
+    <div class="card-content">
+        <p class="title is-5">
+            {{tipo}}: {{numero}}
+            <a href="#" class="icon has-text-info ml-2" onclick="openEditModal('{{correspondencia_id}}', '{{assunto}}')">
+              <i class="fas fa-edit"></i>
+          </a>
+        </p>
+        <p><strong>Assunto:</strong> {{assunto}}</p>
+        <p class="mt-4"><strong>Data:</strong> {{data}}</p>
+    </div>
+  </div>
+{%endmacro %}

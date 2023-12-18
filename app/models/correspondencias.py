@@ -11,7 +11,7 @@ class Correspondencias(db.Model):
     usuario = db.Column(db.Integer, db.ForeignKey('users.id'))
     data = db.Column(db.Date)
 
-    # tipo_name = db.relationship('TipoCorrespondencia', backref='correspondencias')
+    # tipo_name = db.relationship('tipo_correspondencias', backref='correspondencias')
     # usuario = db.relationship('Usuario', backref='correspondencias')
 
     def __repr__(self):

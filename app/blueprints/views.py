@@ -30,7 +30,6 @@ def init_app(app):
     @app.route('/lista_usuarios')
     def lista_usuarios():
        lista = UsuarioController.lista_usuarios()
-       print(lista)
        lista_serializada = [serialize_usuario(usuario) for usuario in lista]
     
        return jsonify(lista_serializada)
@@ -38,7 +37,6 @@ def init_app(app):
     @app.route('/departamento')
     def departamento():
       depart = Departamento.query.all()
-      print(depart)
       return "departamento"
   
     @app.route('/base')

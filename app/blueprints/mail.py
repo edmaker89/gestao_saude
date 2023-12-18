@@ -1,8 +1,9 @@
 from datetime import date
 import re
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from app.forms.mail_form import MailForm
 from app.controllers.correspondencia_controller import CorrespondenciaController
+from app.models import correspondencias
 from app.models.tipo_correspondencias import TipoCorrespondencias
 
 bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
@@ -20,15 +21,15 @@ def new():
         usuario_id = 1
         
         try:
-            CorrespondenciaController.nova_correspondencia(
+            mail = CorrespondenciaController.nova_correspondencia(
             tipo_id, assunto, usuario_id
             )
         except Exception as e:
-            print('erro', e)
+            # flash('[ERRO]: Algo inesperado aconteceu, tente novamente', 'danger')
             return redirect(url_for('mail.new'))
         
-        print('deu certo')
-        return redirect(url_for('mail.new'))
+
+        return redirect(url_for('mail.create_success', id_mail=mail.id))
         
     
     #if get
@@ -44,9 +45,43 @@ def new():
 @bp_mail.route('/create_success/<id_mail>')
 def create_success(id_mail):
     
-    numero = '2/2023'
-    assunto = 'Solicitação de Pagamento'
-    tipo = 'Memorando'
-    data = '17/12/2023'
+    mail = CorrespondenciaController.get_correspondencia_by_id(id_mail)
     
-    return render_template('/pages/mail/number_mail.html', numero=numero, assunto=assunto, tipo=tipo, data=data)
+    return render_template('/pages/mail/number_mail.html', mail=mail)
+
+@bp_mail.route('/my_mails')
+def my_mails():
+
+    user_id = 1
+    # minhas correspondencias
+    mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id)
+
+    #cabecalho
+    title = 'Minhas Correspondências'
+    subtitle = "Lista de todos os numeros de envios gerados"
+
+    return render_template('/pages/mail/my_mails.html',
+                           mails=mails,
+                           title=title,
+                           subtitle=subtitle                           
+                           )
+
+@bp_mail.route('/edit_assunto', methods=['POST'])
+def edit_assunto():
+
+    if request.method == 'POST':
+        form = request.form
+        assunto = form.get('assunto')
+        mail_id = form.get('mail_id')
+
+        try:
+            CorrespondenciaController.mail_edit_assunto(mail_id, assunto)
+        except Exception as e:
+            print('deu erro')
+            return redirect(url_for('mail.my_mails'))
+
+        print('deu certo') 
+        return redirect(url_for('mail.my_mails'))
+
+    
+    return abort(404)

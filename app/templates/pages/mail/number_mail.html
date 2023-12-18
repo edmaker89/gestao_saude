@@ -2,29 +2,29 @@
 {% block content %}
     <div class="notification is-success">
         <p class="title is-4">Parabéns! Seu número de correspondência é: 
-            {{ numero }}
+            {{ mail.Correspondencias.numero_ano }}
         </p>
     </div>
 
     <div class="mb-5">
         <p class="subtitle is-5 mt-5">Detalhes da Correspondência</p>
         <ul>
-            <li><strong>Numero:</strong> {{ numero }}</li>
-            <li><strong>Assunto:</strong> {{ assunto }}</li>
-            <li><strong>Tipo:</strong> {{ tipo }}</li>
-            <li><strong>Data:</strong> {{ data }}</li>
+            <li><strong>Numero:</strong> {{ mail.Correspondencias.numero_ano }}</li>
+            <li><strong>Assunto:</strong> {{ mail.Correspondencias.assunto }}</li>
+            <li><strong>Tipo:</strong> {{ mail.TipoCorrespondencias.tipo }}</li>
+            <li><strong>Data:</strong> {{ mail.Correspondencias.data|format_data }}</li>
             <!-- Adicione mais detalhes conforme necessário -->
         </ul>
     </div>
 
     <div class="field is-grouped mt-5 pt-5 has-text-right">
         <div class="control mr-4">
-            <a href="" class="button is-primary">Nova Correspondência</a>
+            <a href="{{url_for('mail.new')}}" class="button is-primary">Nova Correspondência</a>
         </div>
         <div class="control">
-            <a href="" class="button is-link">Voltar ao Início</a>
+            <a href="{{url_for('index')}}" class="button is-link">Voltar ao Início</a>
         </div>
     </div>
 
-    <p class="has-text-grey">Todos os números de correspondências geradas podem ser acessados em <a href="">Minhas Correspondências</a></p>
+    <p class="has-text-grey">Todos os números de correspondências geradas podem ser acessados em <a href="{{url_for('mail.my_mails')}}">Minhas Correspondências</a></p>
 {% endblock %}

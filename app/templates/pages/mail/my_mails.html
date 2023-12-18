@@ -14,7 +14,22 @@
             )}}
            {% endfor %}
       </div>
-      <!-- Adicione mais cartões conforme necessário -->
+      <hr/>
+      <div class="pagination is-centered" role="navigation" aria-label="pagination">
+        {% if mails.prev_num != None %}
+        <a class="pagination-previous" href="{{ url_for('mail.my_mails', page=mails.prev_num) }}">Anterior</a>
+        {% endif %}
+        {% if mails.next_num != None %}
+        <a class="pagination-next" href="{{ url_for('mail.my_mails', page=mails.next_num) }}" >Próximo</a>
+        {% endif %}
+        <ul class="pagination-list">
+            {% for num in mails.iter_pages() %}
+                <li>
+                    <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.my_mails', page=num) }}">{{ num }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
     </div>
     {% include "components/modals/edit_assunto.html" %}
 {% endblock %}

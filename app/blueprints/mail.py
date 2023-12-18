@@ -51,10 +51,10 @@ def create_success(id_mail):
 
 @bp_mail.route('/my_mails')
 def my_mails():
-
+    page = request.args.get('page', 1, type=int)
     user_id = 1
     # minhas correspondencias
-    mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id)
+    mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id, page=page)
 
     #cabecalho
     title = 'Minhas Correspondências'

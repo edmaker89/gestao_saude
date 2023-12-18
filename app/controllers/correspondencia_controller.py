@@ -102,7 +102,7 @@ class CorrespondenciaController:
         return mails
     
     @staticmethod
-    def get_last_correspondencias_by_user(user_id):
+    def get_last_correspondencias_by_user(user_id, page=1, per_page=10):
         mails = db.session.query(
             Usuario,
             Correspondencias,
@@ -117,7 +117,7 @@ class CorrespondenciaController:
             Usuario.id == user_id
         ).order_by(
             Correspondencias.id.desc()  # Substitua por seu campo de data, se necessário
-        ).limit(20).all()
+        ).paginate(page=page, per_page=per_page)
     
         return mails
     

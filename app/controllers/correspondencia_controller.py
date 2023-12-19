@@ -1,3 +1,4 @@
+from pickle import FALSE
 from time import strftime
 
 from flask import jsonify
@@ -131,4 +132,32 @@ class CorrespondenciaController:
 
         return mail
 
+    @staticmethod
+    def get_correspondencias_by_user_with_filters(user_id, numero=None, data=None, assunto=None, page=1, per_page=10):
+        query = db.session.query(
+            Usuario,
+            Correspondencias,
+            TipoCorrespondencias,
+        ).join(
+            Correspondencias,
+            Usuario.id == Correspondencias.usuario
+        ).join(
+            TipoCorrespondencias,
+            Correspondencias.tipo == TipoCorrespondencias.id
+        ).filter(
+            Usuario.id == user_id
+        )
 
+        if numero:
+            query = query.filter(Correspondencias.numero_ano.like(f"%{numero}%"))
+        if data:
+            query = query.filter(Correspondencias.data == data)
+        if assunto:
+            query = query.filter(Correspondencias.assunto.like(f"%{assunto}%"))
+
+        # Adicione a ordenação pela data ou outro campo apropriado
+        query = query.order_by(Correspondencias.id.desc())
+
+        mails = query.paginate(page=page, per_page=per_page) # type: ignore
+
+        return mails

@@ -3,7 +3,26 @@
 {% from 'components/macros/card_mail.html' import card_mail %}
 
     <div class="container">
-      <p class="mb-5">Mostrando as 20 ultimas correspondencias - sem filtros</p>
+        <div class="mb-5">
+            <form action="{{ url_for('mail.my_mails') }}" method="get">
+                <p><strong>Pesquisar Correspondências: </strong></p>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input" type="text" name="numero" placeholder="Número">
+                    </div>
+                    <div class="control">
+                        <input class="input" type="date" name="data" placeholder="Data">
+                    </div>
+                    <div class="control">
+                        <input class="input" type="text" name="assunto" placeholder="Assunto">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-info">Buscar</button>
+                    </div>
+                </div>
+            </form>
+            <hr/>
+        </div>
       <div class="is-flex is-flex-wrap-wrap is-justify-content-start">
           {% for mail in mails %}
             {{card_mail(mail.Correspondencias.numero_ano,

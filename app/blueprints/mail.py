@@ -1,9 +1,6 @@
-from datetime import date
-import re
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, redirect, render_template, request, url_for
 from app.forms.mail_form import MailForm
 from app.controllers.correspondencia_controller import CorrespondenciaController
-from app.models import correspondencias
 from app.models.tipo_correspondencias import TipoCorrespondencias
 
 bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
@@ -52,9 +49,15 @@ def create_success(id_mail):
 @bp_mail.route('/my_mails')
 def my_mails():
     page = request.args.get('page', 1, type=int)
+    per_page = 12
     user_id = 1
+
     # minhas correspondencias
-    mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id, page=page)
+    if !assunto:
+        mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id, page=page, per_page=per_page)
+
+    if assunto:
+        mails = CorrespondenciaController.search_my_mails()
 
     #cabecalho
     title = 'Minhas Correspondências'

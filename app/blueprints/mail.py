@@ -51,13 +51,21 @@ def my_mails():
     page = request.args.get('page', 1, type=int)
     per_page = 12
     user_id = 1
+    data = request.args.get('data', '', type=str)
+    assunto = request.args.get('assunto', '', type=str)
+    numero = request.args.get('numero', '', type=str)
+    ordem = request.args.get('ordem', '', type=str)
+    tipo = request.args.get('tipo', '', type=int)
 
-    # minhas correspondencias
-    if !assunto:
-        mails = CorrespondenciaController.get_last_correspondencias_by_user(user_id, page=page, per_page=per_page)
+    # falta implementar a busca por tipo e a ordem ASC
 
-    if assunto:
-        mails = CorrespondenciaController.search_my_mails()
+    listaTipo = TipoCorrespondencias.query.all()
+    tipos = []
+    for l in listaTipo:
+        tipos.append((l.id, l.tipo))
+
+    mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
+        user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero)
 
     #cabecalho
     title = 'Minhas Correspondências'
@@ -66,7 +74,13 @@ def my_mails():
     return render_template('/pages/mail/my_mails.html',
                            mails=mails,
                            title=title,
-                           subtitle=subtitle                           
+                           subtitle=subtitle,
+                           data=data,
+                           assunto=assunto,
+                           numero=numero,
+                           ordem=ordem,
+                           tipo=tipo,
+                           tipos=tipos                     
                            )
 
 @bp_mail.route('/edit_assunto', methods=['POST'])

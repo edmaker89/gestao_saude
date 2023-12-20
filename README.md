@@ -1,4 +1,4 @@
-# Gestão Saúde - Correspondencias
+# Gestão Saúde
 
 # Sistema de Controle de Correspondências para a Secretaria Municipal de Saúde de Itaberaí
 

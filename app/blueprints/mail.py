@@ -123,7 +123,7 @@ def all_mails():
     title = 'Todas as correspondências'
     subtitle = "Lista de todos os numeros de envios gerados"
 
-    return render_template('/pages/mail/my_mails.html',
+    return render_template('/pages/mail/all_mails.html',
                            mails=mails,
                            title=title,
                            subtitle=subtitle,

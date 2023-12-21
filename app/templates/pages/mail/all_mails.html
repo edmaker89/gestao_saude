@@ -66,15 +66,17 @@
       </div>
       
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
-          {% for mail in mails %}
-            {{card_mail(mail.Correspondencias.numero_ano,
-            mail.Correspondencias.assunto,
-            mail.TipoCorrespondencias.tipo,
-            mail.Correspondencias.data|format_data,
-            mail.Correspondencias.id,
-            mail.Usuarios.nome_completo
-            )}}
-           {% endfor %}
+        {% for mail in mails %}
+            {% set numero = mail.Correspondencias.numero_ano %}
+            {% set assunto = mail.Correspondencias.assunto %}
+            {% set tipo = mail.TipoCorrespondencias.tipo %}
+            {% set data = mail.Correspondencias.data|format_data %}
+            {% set correspondencia_id = mail.Correspondencias.id %}
+            {% set nome_usuario = mail.Usuario.nome_completo %}
+            {% set departamento = mail.Usuario.departamento.nome %}
+            {{card_mail(numero, assunto, tipo, data, correspondencia_id, nome_usuario, departamento)}}
+        {% endfor %}
+    
       </div>
       <hr/>
       <div class="pagination is-centered" role="navigation" aria-label="pagination">

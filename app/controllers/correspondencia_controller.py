@@ -3,6 +3,7 @@ from datetime import date
 from app.ext.database import db
 from app.models.tipo_correspondencias import TipoCorrespondencias
 from app.models.users import Usuario
+from app.models.departamento import Departamento
 
 
 class CorrespondenciaController:

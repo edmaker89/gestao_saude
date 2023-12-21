@@ -65,7 +65,7 @@ def my_mails():
         tipos.append((l.id, l.tipo))
 
     mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
-        user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero)
+        user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
     #cabecalho
     title = 'Minhas Correspondências'

@@ -58,13 +58,8 @@
             <div class="column">
                 <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
                     <span class="has-text-dark">Ordem:</span>
-                    
-                    <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
-                    <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto)}}" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>
-                    
-                    
-                    
-                    
+                    <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                    <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo)}}" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
                 </div>
             </div>
         </div>
@@ -82,15 +77,15 @@
       <hr/>
       <div class="pagination is-centered" role="navigation" aria-label="pagination">
         {% if mails.prev_num != None %}
-        <a class="pagination-previous" href="{{ url_for('mail.my_mails', page=mails.prev_num, numero=numero, data=data, assunto=assunto) }}">Anterior</a>
+        <a class="pagination-previous" href="{{ url_for('mail.my_mails', page=mails.prev_num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">Anterior</a>
         {% endif %}
         {% if mails.next_num != None %}
-        <a class="pagination-next" href="{{ url_for('mail.my_mails', page=mails.next_num, numero=numero, data=data, assunto=assunto) }}" >Próximo</a>
+        <a class="pagination-next" href="{{ url_for('mail.my_mails', page=mails.next_num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}" >Próximo</a>
         {% endif %}
         <ul class="pagination-list">
             {% for num in mails.iter_pages() %}
                 <li>
-                    <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.my_mails', page=num, numero=numero, data=data, assunto=assunto) }}">{{ num }}</a>
+                    <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.my_mails', page=num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">{{ num }}</a>
                 </li>
             {% endfor %}
         </ul>

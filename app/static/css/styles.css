@@ -16,6 +16,28 @@ main {
     background-color: #f5fcff; /* Cor de fundo do conteúdo principal */
 }
 
+.div-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    
+}
+
+.form-login {
+    max-width: 500px;
+    min-width: 350px;
+    margin: auto;
+    padding: 20px;
+}
+
+.img-login {
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+}
+
 .bg-light-blue {
     background-color: #f5fcff;
 }

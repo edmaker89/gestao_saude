@@ -2,6 +2,7 @@ from flask import jsonify, render_template
 from app.controllers.usuario_controller import UsuarioController
 from app.models.departamento import Departamento
 from app.blueprints.mail import bp_mail
+from app.blueprints.auth import bp_auth
 
 def serialize_usuario(usuario):
     return {
@@ -22,23 +23,8 @@ def serialize_usuario(usuario):
 def init_app(app):
    # registre seus blueprints ex.: app.register_blueprint(modulo)
     app.register_blueprint(bp_mail)
+    app.register_blueprint(bp_auth)
 
     @app.route("/")
     def index():
        return {"Hello":"World"}, 200
-
-    @app.route('/lista_usuarios')
-    def lista_usuarios():
-       lista = UsuarioController.lista_usuarios()
-       lista_serializada = [serialize_usuario(usuario) for usuario in lista]
-    
-       return jsonify(lista_serializada)
-
-    @app.route('/departamento')
-    def departamento():
-      depart = Departamento.query.all()
-      return "departamento"
-  
-    @app.route('/base')
-    def base():
-        return render_template('base.html')

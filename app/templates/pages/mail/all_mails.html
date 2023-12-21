@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+{% from 'components/macros/card_mail.html' import card_mail %}
+
+    <div class="container">
+        <div class="mb-5">
+            <form action="{{ url_for('mail.all_mails') }}" method="get">
+                <p><strong>Pesquisar Correspondências: </strong></p>
+                <div class="field mt-4">
+                    <div class="control">
+                        <label for="Assunto">Assunto: </label>
+                        <input class="input" type="text" name="assunto" placeholder="Assunto" value={{assunto}}>
+                    </div>
+                </div>
+                <div class="is-flex columns">
+                    <div class="is-flex column">
+                        <div class="tam-field-1-5 mr-5">
+                            <label for="numero">Número: </label>
+                            <input class="input" type="text" name="numero" placeholder="Número" value={{numero}}>
+                        </div>
+                        <div class="tam-field-1-75 mr-5">
+                            <label for="data">Data: </label>
+                            <input class="input" type="date" name="data" placeholder="Data" value={{data}}>
+                        </div>
+                        <div class="is-flex is-flex-direction-column">
+                            <label for="tipo">Tipo: </label>
+                            <div class="select">
+                                <select name="tipo" id="tipo">
+                                    <option value=''></option>
+                                    {% for tipo_option in tipos %}
+                                    <option value="{{ tipo_option[0] }}" {% if tipo_option[0] == tipo %}selected{% endif %}>{{ tipo_option[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="is-flex is-justify-content-flex-end column">
+                        <div class="control is-flex is-justify-content-flex-end mt-5">
+                            <a href="{{url_for('mail.all_mails', page=1)}}" class="button is-danger mr-4">Limpar</a>
+                            <button type="submit" class="button is-info">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+            <hr/>
+        </div>
+      <div class="notification p-3 bg-blue-plus">
+        <div class="columns">
+            <div class="column is-flex is-align-items-center">
+                <p>
+                    <strong class="has-text-dark">
+                        Correspondências encontradas: 
+                    </strong>
+                </p>
+            </div>
+            <div class="column">
+                <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                    <span class="has-text-dark">Ordem:</span>
+                    <a href="{{url_for('mail.all_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                    <a href="{{url_for('mail.all_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo)}}" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+                </div>
+            </div>
+        </div>
+      </div>
+      
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
+          {% for mail in mails %}
+            {{card_mail(mail.Correspondencias.numero_ano,
+            mail.Correspondencias.assunto,
+            mail.TipoCorrespondencias.tipo,
+            mail.Correspondencias.data|format_data,
+            mail.Correspondencias.id,
+            mail.Usuarios.nome_completo
+            )}}
+           {% endfor %}
+      </div>
+      <hr/>
+      <div class="pagination is-centered" role="navigation" aria-label="pagination">
+        {% if mails.prev_num != None %}
+        <a class="pagination-previous" href="{{ url_for('mail.all_mails', page=mails.prev_num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">Anterior</a>
+        {% endif %}
+        {% if mails.next_num != None %}
+        <a class="pagination-next" href="{{ url_for('mail.all_mails', page=mails.next_num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}" >Próximo</a>
+        {% endif %}
+        <ul class="pagination-list">
+            {% for num in mails.iter_pages() %}
+                <li>
+                    <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.all_mails', page=num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">{{ num }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
+    {% include "components/modals/edit_assunto.html" %}
+{% endblock %}

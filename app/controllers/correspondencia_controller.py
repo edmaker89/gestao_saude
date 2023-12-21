@@ -129,7 +129,7 @@ class CorrespondenciaController:
         return mail
 
     @staticmethod
-    def get_correspondencias_by_user_with_filters(user_id, numero=None, data=None, assunto=None, page=1, per_page=10, tipo=None, ordem='desc'):
+    def get_correspondencias_by_user_with_filters(user_id=None, numero=None, data=None, assunto=None, page=1, per_page=10, tipo=None, ordem='desc'):
         query = db.session.query(
             Usuario,
             Correspondencias,
@@ -140,10 +140,10 @@ class CorrespondenciaController:
         ).join(
             TipoCorrespondencias,
             Correspondencias.tipo == TipoCorrespondencias.id
-        ).filter(
-            Usuario.id == user_id
         )
 
+        if user_id:
+            query = query.filter(Correspondencias.usuario == user_id)
         if numero:
             query = query.filter(Correspondencias.numero_ano.like(f"%{numero}%"))
         if data:

@@ -49,15 +49,13 @@ def create_success(id_mail):
 @bp_mail.route('/my_mails')
 def my_mails():
     page = request.args.get('page', 1, type=int)
-    per_page = 12
+    per_page = 20
     user_id = 1
     data = request.args.get('data', '', type=str)
     assunto = request.args.get('assunto', '', type=str)
     numero = request.args.get('numero', '', type=str)
     ordem = request.args.get('ordem', '', type=str)
     tipo = request.args.get('tipo', '', type=int)
-
-    # falta implementar a busca por tipo e a ordem ASC
 
     listaTipo = TipoCorrespondencias.query.all()
     tipos = []
@@ -68,8 +66,8 @@ def my_mails():
         user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
     #cabecalho
-    title = 'Minhas Correspondências'
-    subtitle = "Lista de todos os numeros de envios gerados"
+    title = 'Minhas correspondências'
+    subtitle = "Lista de todos os números de envios gerados"
 
     return render_template('/pages/mail/my_mails.html',
                            mails=mails,
@@ -102,3 +100,37 @@ def edit_assunto():
 
     
     return abort(404)
+
+@bp_mail.route('/all_mails')
+def all_mails():
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    data = request.args.get('data', '', type=str)
+    assunto = request.args.get('assunto', '', type=str)
+    numero = request.args.get('numero', '', type=str)
+    ordem = request.args.get('ordem', '', type=str)
+    tipo = request.args.get('tipo', '', type=int)
+
+    listaTipo = TipoCorrespondencias.query.all()
+    tipos = []
+    for l in listaTipo:
+        tipos.append((l.id, l.tipo))
+
+    mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
+        page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
+
+    #cabecalho
+    title = 'Todas as correspondências'
+    subtitle = "Lista de todos os numeros de envios gerados"
+
+    return render_template('/pages/mail/my_mails.html',
+                           mails=mails,
+                           title=title,
+                           subtitle=subtitle,
+                           data=data,
+                           assunto=assunto,
+                           numero=numero,
+                           ordem=ordem,
+                           tipo=tipo,
+                           tipos=tipos                     
+                           )

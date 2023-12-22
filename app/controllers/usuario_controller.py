@@ -1,4 +1,3 @@
-from math import exp
 from app.models.users import Usuario
 from app.ext.database import db
 
@@ -17,6 +16,7 @@ class UsuarioController:
         except Exception as e:
             print(e)
             return False
+    
     
     @staticmethod
     def detalhes_usuario():

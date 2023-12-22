@@ -77,3 +77,11 @@ def edit_perfil():
                            form=form, 
                            user=current_user)
 
+@bp_user.route('/create-user', methods=["GET", "POST"])
+@login_required
+def create_user():
+
+    title = "Cadastrar novo usuário"
+    subtitle = ''
+
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle)

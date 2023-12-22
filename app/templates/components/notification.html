@@ -1,0 +1,35 @@
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}
+    <div id="messages messages-container" class="list-unstyled m-4 mb-5 fixed-top right-0">
+      {% for category, message in messages %}
+        <div class="alerts notification is-{{ category }} is-light">
+          <button type="button" class="delete" onclick="hideMessage(this)"></button>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<script>
+  function hideMessage(button) {
+    var notification = button.parentElement
+    notification.style.display = 'none'
+  }
+  
+  // Função para fechar a notificação após 5 segundos
+  function closeNotificationAfterDelay() {
+    var notifications = document.getElementsByClassName('alerts');
+    for (var i = 0; i < notifications.length; i++) {
+      var notification = notifications[i];
+      setTimeout(function (notification) {
+        notification.style.display = 'none';
+      }, 7000, notification);
+    }
+  }
+
+  // Chama a função para fechar a notificação após o carregamento da página
+  window.onload = function () {
+    closeNotificationAfterDelay();
+  };
+</script>

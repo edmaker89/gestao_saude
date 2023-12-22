@@ -19,7 +19,6 @@ class Usuario(db.Model, UserMixin):
     role = db.Column(db.String(255))
     criado_em = db.Column(db.TIMESTAMP)
     
-   
     departamento = db.relationship('Departamento', backref='users', lazy=True)
     
     def get_id(self):

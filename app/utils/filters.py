@@ -15,6 +15,14 @@ def format_data(data):
         return Markup(data_formatada)
     except ValueError:
         return data
+
+def format_datatime(data):
+    try:
+        # data_obj = datetime.strptime(data, "%Y-%m-%d")
+        data_formatada = data.strftime("%d/%m/%Y")
+        return Markup(data_formatada)
+    except ValueError:
+        return data
     
 def data_padrao(data):
     try:

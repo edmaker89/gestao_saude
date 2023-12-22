@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <form action="{{ url_for('user.edit_perfil') }}" method="post">
+            <div class="container">
+              <div class="field">
+                <strong>Usuário: </strong>{{user.username}} | usuario desde: <strong>{{user.criado_em|format_data}}</strong>
+              </div>
+              <div class="field">
+                <label class="label">{{ form.nome_completo.label() }}</label>
+                <div class="control">{{ form.nome_completo(class = 'input tam-field-2', placeholder = '') }}</div>
+              </div>
+              <div class="field">
+                <label class="label">{{ form.departamento.label() }}</label>
+                <div class="control">{{ form.departamento(class = 'input tam-field-2', placeholder = '') }}</div>
+              </div>
+              <div class="field">
+                <label class="label">{{ form.email.label() }}</label>
+                <div class="control">{{ form.email(class = 'input tam-field-2', placeholder = '') }}</div>
+              </div>
+              <div class="field">
+                <a class="button is-danger" href="{{url_for('index')}}">Cancelar</a>
+                {{ form.submit(class = 'button is-primary') }}
+              </div>
+            </div>
+          </form>
+    </div>
+{% endblock content %}

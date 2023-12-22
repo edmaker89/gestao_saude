@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.controllers.usuario_controller import UsuarioController
+from app.forms.edit_perfil_form import EditPerfilForm
 
 from app.forms.reset_senha_form import ResetSenhaForm
 from app.models.users import Usuario
@@ -43,3 +44,36 @@ def reset_password():
                            subtitle=subtitle,
                            form=form
                            )
+
+@bp_user.route('/edit-perfil', methods=["GET", "POST"])
+@login_required
+def edit_perfil():
+
+    if request.method == 'POST':
+        form = EditPerfilForm(request.form)
+        nome_completo = form.nome_completo.data
+        departamento = form.departamento.data
+        email = form.email.data
+
+        update_user = UsuarioController.update_user(current_user.id, nome_completo, departamento, email)
+        if update_user:
+            flash("Perfil alterado com sucesso", 'success')
+            return redirect(url_for('index'))
+        else:
+            flash("Aconteceu um erro inesperado, tente nomente mais tarde!", "danger")
+            return redirect(url_for('/user.edit_perfil'))
+
+    title = "Editar perfil"
+    subtitle = "Complete as informações sobre você"
+    form = EditPerfilForm()
+
+    form.nome_completo.data = current_user.nome_completo
+    form.departamento.data = current_user.departamento_id
+    form.email.data = current_user.email
+
+    return render_template('/pages/user/edit_perfil.html',
+                           title=title, 
+                           subtitle=subtitle, 
+                           form=form, 
+                           user=current_user)
+

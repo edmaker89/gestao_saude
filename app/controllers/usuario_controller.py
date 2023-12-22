@@ -5,9 +5,18 @@ from app.ext.database import db
 class UsuarioController:
     
     @staticmethod
-    def lista_usuarios():
-        usuarios = Usuario.query.all()
-        return usuarios
+    def update_user(id_user, nome_completo, departamento_id, email):
+        try:
+            user = Usuario.query.filter(Usuario.id == id_user).first()
+            user.nome_completo = nome_completo
+            user.departamento_id = departamento_id
+            user.email = email
+
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
     
     @staticmethod
     def detalhes_usuario():

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="mb-5">
+        <p><strong>Pesquisar usuarios: </strong></p>
+        <form action="{{ url_for('user.manager_user') }}" method="get">
+            <div class="field mt-4">
+                <div class="control">
+                    <label for="nome">Nome ou Usuario: </label>
+                    <input class="input" type="text" name="nome" placeholder="Procure digitando o nome ou usuario" value={{nome}}>
+                </div>
+            </div>
+            <div class="is-flex columns">
+                <div class="is-flex column">
+                    <div class="is-flex is-flex-direction-column">
+                        <label for="departamento">Departamento: </label>
+                        <div class="select">
+                            <select name="departamento" id="departamento">
+                                <option value=''></option>
+                                {% for departamento_option in departamentos %}
+                                <option value="{{ departamento_option[0] }}" {% if departamento_option[0] == departamento %}selected{% endif %}>{{ departamento_option[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="is-flex is-justify-content-flex-end column">
+                    <div class="control is-flex is-justify-content-flex-end mt-5">
+                        <a href="{{url_for('user.manager_user', page=1)}}" class="button is-danger mr-4">Limpar</a>
+                        <button type="submit" class="button is-info">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        <hr/>
+    </div>
+  <div class="notification p-3 bg-blue-plus">
+    <div class="columns">
+        <div class="column is-flex is-align-items-center">
+            <p>
+                <strong class="has-text-dark">
+                    Usuarios encontrados:
+                </strong>
+            </p>
+        </div>
+        <div class="column">
+            <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                <span class="has-text-dark">Ordem:</span>
+                <a href="" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                <a href="" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+            </div>
+        </div>
+    </div>
+  </div>
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+        <th>Nome</th>
+        <th>Usuario</th>
+        <th>Departamento</th>
+        <th>email</th>
+        <th>role</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+            <tr>
+                <th>{{usuario.nome_completo}}</th>
+                <td>{{usuario.username}}</td>
+                <td>{{usuario.departamento.nome}}</td>
+                <td>{{usuario.email}}</td>
+                <td>{{usuario.role}}</td>
+                <td>
+                    <a href="" class="tooltip" data-tooltip="editar">
+                      <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
+                    </a>
+                      <a href="" class="tooltip" data-tooltip="Perfil"><span><i class="fa-solid fa-key icon-hover has-text-success"></i></span></a>
+                      <a class="">
+                      <span><i class=""></i></span>
+                      </a>
+                      <a href="" class="tooltip" data-tooltip="senha">
+                          <span><i class="fa-solid fa-unlock icon-hover has-text-danger"></i></span>
+                      </a></td>
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

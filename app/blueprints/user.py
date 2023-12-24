@@ -7,7 +7,9 @@ from app.forms.new_user_form import NewUserForm
 from app.ext.database import db
 
 from app.forms.reset_senha_form import ResetSenhaForm
+from app.models.departamento import Departamento
 from app.models.users import Usuario
+from app.utils.dict_layout import button_layout
 
 bp_user = Blueprint('user', __name__, url_prefix='/user' )
 
@@ -131,3 +133,19 @@ def create_user():
     form = NewUserForm()
 
     return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form)
+
+@bp_user.route('/manager-user', methods=["GET", "POST"])
+@login_required
+def manager_user():
+    ordem = 'asc'
+
+    button = button_layout(url='user.create_user', label='Novo Usuario', icon='fa-solid fa-user-plus', classname='button is-primary')
+
+    listaDepartamentos = Departamento.query.all()
+    departamentos = []
+    for l in listaDepartamentos:
+        departamentos.append((l.id, l.nome))
+
+    listaUsuarios = Usuario.query.all()
+    title = 'Gestão de Usuarios'
+    return render_template('/pages/user/manager_user.html', title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button)

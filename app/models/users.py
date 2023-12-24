@@ -14,7 +14,7 @@ class Usuario(db.Model, UserMixin):
     departamento_id = db.Column(db.Integer, db.ForeignKey('departamento.id'), nullable=False)
     username = db.Column(db.String(255), nullable=False, unique=True)
     senha = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), nullable=True)
+    email = db.Column(db.String(255), nullable=True, unique=True)
     tentativas_login = db.Column(db.Integer)
     bloqueado = db.Column(db.Boolean)
     role = db.Column(db.String(255))
@@ -33,12 +33,6 @@ class Usuario(db.Model, UserMixin):
     @classmethod
     def create_user(cls, nome_completo, departamento_id, username, senha, email):
 
-        username_exist = cls.query.filter(cls.username == username).first()
-        
-        if username_exist:
-
-            return None
-
         new_user = cls(
             nome_completo=nome_completo,
             username=username,
@@ -50,10 +44,30 @@ class Usuario(db.Model, UserMixin):
             role = 'user',
             criado_em = datetime.utcnow()
         )
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            return new_user
+        except Exception as e:
+            return f"[ERRO]: {e}"
+    
+    @classmethod
+    def exist_user(cls, username):
+        username_exist = cls.query.filter(cls.username == username).first()
+        
+        if username_exist:
 
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user
+            return True
+        return False
+    
+    @classmethod
+    def exist_email(cls, email):
+        email_exist = cls.query.filter(cls.email == email).first()
+        
+        if email_exist:
+
+            return True
+        return False
     
     def __repr__(self):
         return f"<Usuario {self.nome_completo}>"

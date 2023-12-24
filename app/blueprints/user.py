@@ -1,7 +1,10 @@
+from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.controllers.usuario_controller import UsuarioController
 from app.forms.edit_perfil_form import EditPerfilForm
+from app.forms.new_user_form import NewUserForm
+from app.ext.database import db
 
 from app.forms.reset_senha_form import ResetSenhaForm
 from app.models.users import Usuario
@@ -81,7 +84,50 @@ def edit_perfil():
 @login_required
 def create_user():
 
+    if request.method == "POST":
+        form = NewUserForm(request.form)
+        username = form.username.data
+        nome_completo = form.nome_completo.data
+        departamento_id = form.departamento.data
+        email = form.email.data
+        senha = form.senha.data
+        confirmar_senha = form.confirmar_senha.data
+
+        if senha != confirmar_senha:
+            flash('Os campos senha e confirmar senha não estão iguais', 'danger')
+            return redirect(url_for('user.create_user'))
+        
+        exist_user = Usuario.exist_user(username)
+        if exist_user:
+            flash('O nome de usuário já existe, tente outro!')
+            return redirect(url_for('user.create_user'))
+        exist_email = Usuario.exist_email(email)
+        if exist_email:
+            flash('O esse email ja esta cadastrado no banco de dados, tente outro email!', 'danger')
+            return redirect(url_for('user.create_user'))
+        try:
+            new_user = Usuario()
+            new_user.nome_completo=nome_completo
+            new_user.username=username
+            new_user.senha=senha
+            new_user.departamento_id=departamento_id
+            new_user.email=email
+            new_user.tentativas_login = 0
+            new_user.bloqueado = 0
+            new_user.role = 'user'
+            new_user.criado_em = datetime.utcnow()
+            db.session.add(new_user)
+            db.session.commit()
+
+            flash(f'Usuario criado com sucesso: login {new_user.username}', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            print(e)
+            flash(f'Algo inesperado aconteceu, tente novamente mais tarde!', 'danger')
+            return redirect(url_for('user.create_user'))
+
     title = "Cadastrar novo usuário"
     subtitle = ''
+    form = NewUserForm()
 
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle)
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form)

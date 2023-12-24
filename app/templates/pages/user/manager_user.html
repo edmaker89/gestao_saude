@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+{% from 'components/layout/tag.html' import tag %}
+
 <div class="container">
     <div class="mb-5">
         <p><strong>Pesquisar usuarios: </strong></p>
@@ -69,7 +71,10 @@
         {% for usuario in usuarios %}
             <tr>
                 <th>{{usuario.nome_completo}}</th>
-                <td>{{usuario.username}}</td>
+                <td>{{usuario.username}}{% if usuario.bloqueado %}
+                        {{tag('danger', 'bloqueado')}}
+                {% endif %}
+                </td>
                 <td>{{usuario.departamento.nome}}</td>
                 <td>{{usuario.email}}</td>
                 <td>{{usuario.role}}</td>

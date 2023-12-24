@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
+from app.controllers.usuario_controller import UsuarioController
 from app.forms.login_form import FormLogin
 from werkzeug.security import check_password_hash
 
@@ -22,7 +23,12 @@ def login():
 def autenticar():
     form = FormLogin(request.form)
     usuario = Usuario.query.filter_by(username=form.username.data).first()
-    print(usuario)
+    if usuario == None:
+        flash('Usuario ou senha Invalida, tente novamente!', 'danger')
+        return redirect(url_for('auth.login'))
+    if usuario.bloqueado == 1:
+        flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')
+        return redirect(url_for('auth.login'))
     # if usuario and bcrypt.check_password_hash(usuario.no_senha, form.no_senha.data):
     senha = form.password.data
 
@@ -33,8 +39,14 @@ def autenticar():
             # session['usuario_logado'] = usuario.id_usuario
             proxima_pagina = request.form['proxima']
             return redirect(proxima_pagina)
+        
+    # usuario valido porém a senha não coincide
+    tentativa_login = UsuarioController.tentativa_login_falhou(usuario.id)
+    if tentativa_login['bloqueado'] == 1:
+        flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')
+        return redirect(url_for('auth.login'))
     
-    flash('Usuario ou senha Invalida, tente novamente!', 'danger')
+    flash(f'Usuario ou senha Invalida, {3 - tentativa_login['tentativa']} tentativas para bloquear', 'danger')
     return redirect(url_for('auth.login'))
 
 @bp_auth.route('/logout')

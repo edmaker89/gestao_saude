@@ -38,4 +38,19 @@ class UsuarioController:
         except Exception as e:
             print(e)
             return False
-    
+
+    @staticmethod
+    def tentativa_login_falhou(id_user):
+        usuario = Usuario.query.filter(Usuario.id == id_user).first()
+        tentativa_passada = usuario.tentativas_login
+        
+        tentativa_atual = tentativa_passada + 1
+        usuario.tentativas_login = tentativa_atual
+        bloqueado = 0
+        if tentativa_atual >= 3:
+            bloqueado = 1 
+            usuario.bloqueado = bloqueado
+
+        db.session.commit()
+
+        return {'tentativa': tentativa_atual, 'bloqueado': bloqueado}

@@ -184,3 +184,27 @@ def edit_user(id_user):
     form.email.data = user.email
 
     return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, id_user=id_user)
+
+@bp_user.route('/lock/<id_user>')
+@login_required
+def lock(id_user):
+
+    lock = Usuario.lock_user(id_user)
+    if lock:
+        flash(f'O usuário {lock.nome_completo} foi bloqueado', 'success')
+        return redirect(url_for('user.manager_user'))
+    else:
+        flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
+        return redirect(url_for('user.manager_user'))
+    
+@bp_user.route('/unlock/<id_user>')
+@login_required
+def unlock(id_user):
+
+    lock = Usuario.unlock_user(id_user)
+    if lock:
+        flash(f'O usuário {lock.nome_completo} foi desbloqueado', 'success')
+        return redirect(url_for('user.manager_user'))
+    else:
+        flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
+        return redirect(url_for('user.manager_user'))

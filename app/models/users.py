@@ -69,5 +69,31 @@ class Usuario(db.Model, UserMixin):
             return True
         return False
     
+    @classmethod
+    def lock_user(cls, id_user):
+        try:
+            user = cls.get_user(id_user)
+            user.bloqueado = 1
+            db.session.commit()
+
+            return user
+        except Exception as e:
+            print(e)
+            return False
+
+    @classmethod
+    def unlock_user(cls, id_user):
+        try:
+            user = cls.get_user(id_user)
+            user.bloqueado = 0
+            user.tentativas_login = 0
+            db.session.commit()
+
+            return user
+        except Exception as e:
+            print(e)
+            return False
+    
+    
     def __repr__(self):
         return f"<Usuario {self.nome_completo}>"

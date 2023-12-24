@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% from 'components/layout/button.html' import button %}
+
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -18,10 +20,20 @@
                     <section class="section bg-white mb-3">
                         {% include "components/notification.html" %}
                         {% if title %}
-                            <h1 class="title">{{title}}</h1>
-                            <h2 class="subtitle">
-                                {{subtitle}}
-                            </h2>
+                            <div class="columns mb-0 pb-0">
+                                <div class="column mb-0 pb-0">
+                                    <h1 class="title">{{title}}</h1>
+                                    <h2 class="subtitle">
+                                        {{subtitle}}
+                                    </h2>
+                                </div>
+                                <div class="column has-text-right mb-0 pb-0">
+                                    {% if button_layout %}
+                                        {{ button(button_layout.label, button_layout.classname, button_layout.url, button_layout.icon) }}
+                                    {% endif %}
+                                </div>
+                                
+                            </div>
                             <hr/>
                         {% endif %}
                         {% block content %}{% endblock content %}

@@ -3,10 +3,12 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.controllers.usuario_controller import UsuarioController
 from app.forms.edit_perfil_form import EditPerfilForm
+from app.forms.edit_user_form import EditUserForm
 from app.forms.new_user_form import NewUserForm
 from app.ext.database import db
 
 from app.forms.reset_senha_form import ResetSenhaForm
+from app.models import departamento
 from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.utils.dict_layout import button_layout
@@ -149,3 +151,36 @@ def manager_user():
     listaUsuarios = Usuario.query.all()
     title = 'Gestão de Usuarios'
     return render_template('/pages/user/manager_user.html', title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button)
+
+@bp_user.route('/edit-user/<id_user>', methods=['GET', 'POST'])
+@login_required
+def edit_user(id_user):
+    user = Usuario.get_user(id_user)
+    
+    if request.method == 'POST':
+        form = EditUserForm(request.form)
+        id = id_user
+        username = form.username.data
+        nome_completo = form.nome_completo.data
+        departamento_id = form.departamento.data
+        email = form.email.data
+        
+        update_user = UsuarioController.update_user(id, nome_completo, departamento_id, email, username=username)
+
+        if update_user:
+            flash('Usuario editado com sucesso!', 'success')
+            return redirect(url_for('user.manager_user'))
+        else:
+            flash('Um erro inesperado aconteceu, tente novamente mais tarde', 'danger')
+            return redirect(url_for('user.edit_user', id_user=id_user))
+    
+    title='Editar Usuário'
+    subtitle = ''
+    
+    form = EditUserForm()
+    form.username.data = user.username
+    form.nome_completo.data = user.nome_completo
+    form.departamento.data = str(user.departamento_id)
+    form.email.data = user.email
+
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, id_user=id_user)

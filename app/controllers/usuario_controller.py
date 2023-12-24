@@ -4,12 +4,15 @@ from app.ext.database import db
 class UsuarioController:
     
     @staticmethod
-    def update_user(id_user, nome_completo, departamento_id, email):
+    def update_user(id_user, nome_completo, departamento_id, email, username=''):
         try:
             user = Usuario.query.filter(Usuario.id == id_user).first()
             user.nome_completo = nome_completo
             user.departamento_id = departamento_id
             user.email = email
+
+            if username != '':
+                user.username = username
 
             db.session.commit()
             return True

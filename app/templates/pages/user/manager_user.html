@@ -74,7 +74,7 @@
                 <td>{{usuario.email}}</td>
                 <td>{{usuario.role}}</td>
                 <td>
-                    <a href="" class="tooltip" data-tooltip="editar">
+                    <a href="{{url_for('user.edit_user', id_user=usuario.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>
                       <a href="" class="tooltip" data-tooltip="Perfil"><span><i class="fa-solid fa-key icon-hover has-text-success"></i></span></a>

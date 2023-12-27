@@ -29,18 +29,14 @@ def autenticar():
     if usuario.bloqueado == 1:
         flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')
         return redirect(url_for('auth.login'))
-    # if usuario and bcrypt.check_password_hash(usuario.no_senha, form.no_senha.data):
     senha = form.password.data
 
     if usuario and senha:
-        if usuario.senha == senha:
-        # if check_password_hash(usuario.no_senha, senha):
+        if check_password_hash(usuario.senha, senha):
             login_user(usuario)
-            # session['usuario_logado'] = usuario.id_usuario
             proxima_pagina = request.form['proxima']
             return redirect(proxima_pagina)
-        
-    # usuario valido porém a senha não coincide
+
     tentativa_login = UsuarioController.tentativa_login_falhou(usuario.id)
     if tentativa_login['bloqueado'] == 1:
         flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')

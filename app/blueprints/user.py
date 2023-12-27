@@ -6,9 +6,9 @@ from app.forms.edit_perfil_form import EditPerfilForm
 from app.forms.edit_user_form import EditUserForm
 from app.forms.new_user_form import NewUserForm
 from app.ext.database import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.forms.reset_senha_form import ResetSenhaForm
-from app.models import departamento
 from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.utils.dict_layout import button_layout
@@ -19,7 +19,7 @@ bp_user = Blueprint('user', __name__, url_prefix='/user' )
 @bp_user.route('/reset-password', methods=["GET", "POST"])
 @login_required
 def reset_password():
-# implementar hash
+
     if request.method == 'POST':
         form = ResetSenhaForm(request.form)
         senha_atual = form.senha_atual.data
@@ -28,8 +28,8 @@ def reset_password():
 
         if nova_senha == confirmar_senha:
             user = Usuario.get_user(current_user.id)
-
-            if user.senha != senha_atual:
+            
+            if check_password_hash(pwhash=user.senha, password=nova_senha):
                 flash('A senha atual não confere com a senha salva', 'danger')
                 return redirect(url_for('user.reset_password'))
 
@@ -38,8 +38,7 @@ def reset_password():
                 flash('Senha alterada com sucesso', 'success')
                 return redirect(url_for('index'))
         else: 
-            flash('A nova senha e o confirmar senha precisam ser iguais!', 'danger')
-        print('não trocou a senha')       
+            flash('A nova senha e o confirmar senha precisam ser iguais!', 'danger')     
         return redirect(url_for('user.reset_password'))
 
     title = "Alterar senha"
@@ -126,7 +125,6 @@ def create_user():
             flash(f'Usuario criado com sucesso: login {new_user.username}', 'success')
             return redirect(url_for('index'))
         except Exception as e:
-            print(e)
             flash(f'Algo inesperado aconteceu, tente novamente mais tarde!', 'danger')
             return redirect(url_for('user.create_user'))
 

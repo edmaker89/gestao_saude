@@ -78,7 +78,6 @@ class Usuario(db.Model, UserMixin):
 
             return user
         except Exception as e:
-            print(e)
             return False
 
     @classmethod
@@ -91,7 +90,6 @@ class Usuario(db.Model, UserMixin):
 
             return user
         except Exception as e:
-            print(e)
             return False
     
     

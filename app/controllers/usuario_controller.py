@@ -2,6 +2,7 @@ from sqlalchemy import or_
 from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.ext.database import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UsuarioController:
     
@@ -19,7 +20,6 @@ class UsuarioController:
             db.session.commit()
             return True
         except Exception as e:
-            print(e)
             return False
     
     
@@ -32,13 +32,12 @@ class UsuarioController:
     def change_password(id_user, nova_senha):
         try:
             user = Usuario.get_user(id_user)
-            user.senha = nova_senha
+            hash_nova_senha = generate_password_hash(nova_senha)
+            user.senha = hash_nova_senha
         
             db.session.commit()
-            print('retornou true')
             return True
         except Exception as e:
-            print(e)
             return False
 
     @staticmethod

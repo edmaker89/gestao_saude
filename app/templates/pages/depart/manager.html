@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+{% from 'components/layout/tag.html' import tag %}
+
+<div class="container">
+    <div class="mb-5">
+        <p><strong>Pesquisar departamentos: </strong></p>
+        <form action="{{ url_for('depart.manager') }}" method="get">
+                    <div class="is-flex is-flex-direction-column mt-5">
+                        <label for="departamento">Departamento: </label>
+                        <input class="input" type="text" name="departamento" id="departamento" value="{{departamento}}">
+                    </div>
+                <div class="is-flex is-justify-content-flex-end">
+                    <div class="control is-flex is-justify-content-flex-end mt-5">
+                        <a href="{{url_for('depart.manager', page=1)}}" class="button is-danger mr-4">Limpar</a>
+                        <button type="submit" class="button is-info">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        <hr/>
+    </div>
+  <div class="notification p-3 bg-blue-plus">
+    <div class="columns">
+        <div class="column is-flex is-align-items-center">
+            <p>
+                <strong class="has-text-dark">
+                    Departamentos encontrados:
+                </strong>
+            </p>
+        </div>
+        <div class="column">
+            <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                <span class="has-text-dark">Ordem:</span>
+                <a href="{{url_for('depart.manager', departamento=departamento, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                <a href="{{url_for('depart.manager', departamento=departamento, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+            </div>
+        </div>
+    </div>
+  </div>
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+        <th>Cod </th>    
+        <th>Departamento</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for depart in departamentos %}
+            <tr>
+                <td>{{depart.id}}</td>
+                <td>{{depart.nome}}</td>
+                <td class="has-text-right">
+                    <a href="{{url_for('depart.edit_depart', depart_id=depart.id)}}" class="tooltip" data-tooltip="editar">
+                      <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
+                    </a>
+                    <!--                   
+                    <div class="dropdown is-hoverable is-right">
+                        <div class="dropdown-trigger">
+                            <a href="">
+                                <span class=""><i class="fa-solid fa-ellipsis-vertical has-text-dark px-2"></i></span>
+                            </a>
+                        </div>
+                        <div class="dropdown-menu is-left" id="dropdown-menu4" role="menu">
+                            <div class="dropdown-content is-left">
+                                <a href="#" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
+                                    Inativar
+                                </a>
+                                <a href="" class="dropdown-item">
+                                    <span class=""><i class="fa-solid fa-user-tie has-text-dark"></i> Excluir</span>
+                                </a>
+                            </td>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                      
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

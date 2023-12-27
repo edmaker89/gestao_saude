@@ -6,7 +6,7 @@ from app.forms.edit_perfil_form import EditPerfilForm
 from app.forms.edit_user_form import EditUserForm
 from app.forms.new_user_form import NewUserForm
 from app.ext.database import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 from app.forms.reset_senha_form import ResetSenhaForm
 from app.models.departamento import Departamento

@@ -10,7 +10,6 @@ def format_cpf(cpf):
     
 def format_data(data):
     try:
-        # data_obj = datetime.strptime(data, "%Y-%m-%d")
         data_formatada = data.strftime("%d/%m/%Y")
         return Markup(data_formatada)
     except ValueError:
@@ -18,7 +17,6 @@ def format_data(data):
 
 def format_datatime(data):
     try:
-        # data_obj = datetime.strptime(data, "%Y-%m-%d")
         data_formatada = data.strftime("%d/%m/%Y")
         return Markup(data_formatada)
     except ValueError:
@@ -27,8 +25,6 @@ def format_datatime(data):
 def data_padrao(data):
     try:
         data_obj = datetime.strptime(data, "%d/%m/%Y")
-        # data_obj = data_obj.strftime("%Y-%m-%d")
         return data_obj
     except Exception as e:
-        print(e)
         return data

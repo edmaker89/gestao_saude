@@ -95,13 +95,8 @@ def edit_assunto():
         try:
             CorrespondenciaController.mail_edit_assunto(mail_id, assunto)
         except Exception as e:
-            print('deu erro')
             return redirect(url_for('mail.my_mails'))
-
-        print('deu certo') 
         return redirect(url_for('mail.my_mails'))
-
-    
     return abort(404)
 
 @bp_mail.route('/all_mails')

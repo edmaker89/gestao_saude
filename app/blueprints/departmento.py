@@ -84,6 +84,6 @@ def edit_depart(depart_id):
     title = 'Editar Departamento'
     form = DepartForm()
     departamento = Departamento.query.filter(Departamento.id == depart_id).first()
-    form.departamento.data = departamento.nome
+    form.departamento.data = departamento.nome #type: ignore
     
     return render_template('/pages/depart/form.html', form=form, title=title, id_depart=depart_id)

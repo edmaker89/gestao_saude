@@ -25,7 +25,7 @@ class Departamento(db.Model):
 
         try:
             departamento = cls.query.filter(cls.id == departamento_id).first()
-            departamento.nome = departamento_nome
+            departamento.nome = departamento_nome #type: ignore
             db.session.commit()
 
             return departamento

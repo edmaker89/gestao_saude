@@ -46,7 +46,7 @@ def autenticar():
         flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')
         return redirect(url_for('auth.login'))
     
-    flash(f'Usuario ou senha Invalida, {3 - tentativa_login['tentativa']} tentativas para bloquear', 'danger')
+    flash(f'Usuario ou senha Invalida, {10 - tentativa_login['tentativa']} tentativas para bloquear', 'danger')
     return redirect(url_for('auth.login'))
 
 @bp_auth.route('/logout')

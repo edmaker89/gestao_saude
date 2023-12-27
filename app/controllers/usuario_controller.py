@@ -47,7 +47,7 @@ class UsuarioController:
         tentativa_atual = tentativa_passada + 1
         usuario.tentativas_login = tentativa_atual
         bloqueado = 0
-        if tentativa_atual >= 3:
+        if tentativa_atual >= 10:
             bloqueado = 1 
             usuario.bloqueado = bloqueado
 

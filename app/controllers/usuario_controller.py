@@ -1,3 +1,5 @@
+from sqlalchemy import or_
+from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.ext.database import db
 
@@ -54,3 +56,27 @@ class UsuarioController:
         db.session.commit()
 
         return {'tentativa': tentativa_atual, 'bloqueado': bloqueado}
+    
+    @staticmethod
+    def get_users_with_filters(nome=None, departamento_id=None, ordem='desc', page=1, per_page=20):
+        query = db.session.query(
+            Usuario,
+            Departamento,
+        ).join(
+            Departamento,
+            Usuario.departamento_id == Departamento.id
+        )
+
+        if nome:
+            query = query.filter(or_(Usuario.nome_completo.like(f"%{nome}%"), Usuario.username.like(f'%{nome}%')))
+        if departamento_id:
+            query = query.filter(Usuario.departamento_id == departamento_id)
+
+        # Adicione a ordenação pela data ou outro campo apropriado
+        if ordem == 'asc':
+            query = query.order_by(Usuario.nome_completo.asc())
+        else:
+            query = query.order_by(Usuario.nome_completo.desc())
+        
+        mails = query.paginate(page=page, per_page=per_page) # type: ignore
+        return mails

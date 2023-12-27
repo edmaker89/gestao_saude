@@ -1,0 +1,34 @@
+<div class="modal" id="resetSenhaModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head bg-blue">
+            <p class="modal-card-title">Redefinir senha</p>
+            <button class="delete" aria-label="close" onclick="closeResetSenhaModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="{{url_for('user.reset_pass')}}" method="post">
+                <label for="nova_senha"><strong>Nova senha:</strong></label>
+                <input class="input" type="password" name="nova_senha" id="nova_senha" required minlength="6">
+                <label for="confirmar_senha"><strong>Confirmar senha:</strong></label>
+                <input class="input" type="password" name="confirmar_senha" id="confirmar_senha" required minlength="6">
+                <input type="hidden" name="user_id" id="user_id">
+            </section>
+            <footer class="modal-card-foot">
+                <button type="submit" class="button is-primary">Salvar</button>
+            </form>
+            <button class="button" onclick="closeResetSenhaModal()">Cancelar</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+function openResetSenhaModal(user_id) {
+    document.getElementById('resetSenhaModal').classList.add('is-active');
+    document.getElementById('user_id').value = user_id
+}
+
+function closeResetSenhaModal() {
+    document.getElementById('resetSenhaModal').classList.remove('is-active');
+}
+
+</script>

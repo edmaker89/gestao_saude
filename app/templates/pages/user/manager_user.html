@@ -50,8 +50,8 @@
         <div class="column">
             <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
                 <span class="has-text-dark">Ordem:</span>
-                <a href="" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
-                <a href="" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
             </div>
         </div>
     </div>
@@ -70,16 +70,18 @@
     <tbody>
         {% for usuario in usuarios %}
             <tr>
-                <th>{{usuario.nome_completo}}</th>
-                <td>{{usuario.username}}{% if usuario.bloqueado %}
+                <th>{{usuario.Usuario.nome_completo}}</th>
+                <td>{{usuario.Usuario.username}}{% if usuario.Usuario.bloqueado %}
                         {{tag('danger', 'bloqueado')}}
                 {% endif %}
                 </td>
-                <td>{{usuario.departamento.nome}}</td>
-                <td>{{usuario.email}}</td>
-                <td>{{usuario.role}}</td>
                 <td>
-                    <a href="{{url_for('user.edit_user', id_user=usuario.id)}}" class="tooltip" data-tooltip="editar">
+                   {{usuario.Usuario.departamento.nome}}
+                </td>
+                <td>{{usuario.Usuario.email}}</td>
+                <td>{{usuario.Usuario.role}}</td>
+                <td>
+                    <a href="{{url_for('user.edit_user', id_user=usuario.Usuario.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>                    
                     <div class="dropdown is-hoverable">
@@ -90,18 +92,18 @@
                         </div>
                         <div class="dropdown-menu" id="dropdown-menu4" role="menu">
                             <div class="dropdown-content">
-                                <a href="" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
+                                <a href="#" onclick="openResetSenhaModal('{{usuario.Usuario.id}}')" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
                                     Redefinir Senha
                                 </a>
                                 <a href="" class="dropdown-item">
                                     <span class=""><i class="fa-solid fa-user-tie has-text-dark"></i> Definir permissão</span>
                                 </a>
-                                {% if usuario.bloqueado %}
-                                  <a href="{{url_for('user.unlock', id_user=usuario.id)}}" class="dropdown-item">
+                                {% if usuario.Usuario.bloqueado %}
+                                  <a href="{{url_for('user.unlock', id_user=usuario.Usuario.id)}}" class="dropdown-item">
                                     <span class="has-text-danger"><i class="fa-solid fa-unlock icon-hover has-text-danger"></i> <strong>Desbloquear</strong></span>
                                 </a>
                                 {% else %}
-                                    <a href="{{url_for('user.lock', id_user=usuario.id)}}" class="dropdown-item">
+                                    <a href="{{url_for('user.lock', id_user=usuario.Usuario.id)}}" class="dropdown-item">
                                         <span class=""><i class="fa-solid fa-lock icon-hover has-text-danger"></i> Bloquear</span>
                                     </a>
                                 {% endif %}
@@ -116,4 +118,5 @@
     </tbody>
   </table>
 </div>
+{% include "components/modals/reset_senha.html" %}
 {% endblock content %}

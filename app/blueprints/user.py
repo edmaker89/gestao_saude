@@ -139,7 +139,10 @@ def create_user():
 @bp_user.route('/manager-user', methods=["GET", "POST"])
 @login_required
 def manager_user():
-    ordem = 'asc'
+    page = request.args.get('page', 1, type=int)
+    ordem = request.args.get('ordem', '', type=str)
+    nome = request.args.get('nome', '', type=str)
+    departamento = request.args.get('departamento', '', type=int)
 
     button = button_layout(url='user.create_user', label='Novo Usuario', icon='fa-solid fa-user-plus', classname='button is-primary')
 
@@ -148,9 +151,9 @@ def manager_user():
     for l in listaDepartamentos:
         departamentos.append((l.id, l.nome))
 
-    listaUsuarios = Usuario.query.all()
+    listaUsuarios = UsuarioController.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
     title = 'Gestão de Usuarios'
-    return render_template('/pages/user/manager_user.html', title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button)
+    return render_template('/pages/user/manager_user.html', title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button, page=page, nome=nome, departamento=departamento)
 
 @bp_user.route('/edit-user/<id_user>', methods=['GET', 'POST'])
 @login_required
@@ -208,3 +211,29 @@ def unlock(id_user):
     else:
         flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
         return redirect(url_for('user.manager_user'))
+    
+
+@bp_user.route('reset_pass', methods=['GET', 'POST'])
+@login_required
+def reset_pass():
+
+    if request.method == 'POST':
+        form = request.form
+        nova_senha = form.get('nova_senha')
+        confirmar_senha = form.get('confirmar_senha')
+        user_id = form.get('user_id')
+
+        if nova_senha == confirmar_senha:
+            reset_senha = UsuarioController.change_password(user_id, nova_senha)
+
+            if reset_senha:
+                flash('Senha Alterada com sucesso', 'success')
+            else:
+                flash('Houve um erro inesperado, tente novamente mais tarde!', 'danger')
+        else:
+            flash('A nova senha e a confirmar senha não coicidem, tente novamente', 'danger')
+
+        return redirect(url_for('user.manager_user'))
+    
+    flash('O metodo de requisição da rota não pode ser aceito', 'info')
+    return redirect(url_for('user.manager_user'))

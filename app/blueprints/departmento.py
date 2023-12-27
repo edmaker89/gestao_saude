@@ -27,7 +27,7 @@ def manager():
     ordem = request.args.get('ordem', 'asc', type=str)
     per_page = 20
 
-    novo_departamento = button_layout(url='depart.new_depart', classname='button is-primary', label="Novo departamento", icon='fa-solid fa-user-plus')
+    novo_departamento = button_layout(url='depart.new_depart', classname='button is-primary', label="Novo departamento", icon='fa-solid fa-folder-plus')
 
     lista_departamentos = DepartController.get_departs_by_filters(page=page, per_page=per_page, departamento=departamento, ordem=ordem)
 

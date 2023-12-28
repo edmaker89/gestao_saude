@@ -48,7 +48,7 @@
                             </div>
                             <div class="dropdown-menu" id="dropdown-menu4" role="menu">
                                 <div class="dropdown-content">
-                                    <a href="#" onclick="openResetSenhaModal()" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
+                                    <a href="{{url_for('admin.role_permission', id_role=r.id)}}" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
                                         Gerenciar permissões
                                     </a>
                                     <a href="{{url_for('admin.delete_role', id_role=r.id)}}" class="dropdown-item">

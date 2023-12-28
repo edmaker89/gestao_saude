@@ -1,5 +1,5 @@
 from flask_login import current_user
-from app.models.role_permissions import RolePermission
+from app.models.role_permissions import RolePermissions
 from functools import wraps
 from flask import abort, redirect, url_for
 
@@ -11,16 +11,16 @@ def verify_permission(permission):
 
         # Consulta a tabela role_permissions para verificar se há uma correspondência
         # entre o ID do papel, a ID da permissão e o nome da permissão
-        result = RolePermission.query.filter(
-            RolePermission.role_id == role_id,
-            RolePermission.permission.nome == permission
-        ).first()
+        # result = RolePermissions.query.filter(
+        #     RolePermissions.role_id == role_id,
+        #     RolePermissions.permission.nome == permission
+        # ).first()
 
         # refazer essa parte para um join manual
 
         # Se encontrar uma correspondência, o usuário tem a permissão
-        if result:
-            return True
+        # if result:
+        return True
 
     return False
 

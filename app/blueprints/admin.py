@@ -1,15 +1,7 @@
-from socket import BTPROTO_RFCOMM
 from flask import Blueprint, jsonify, render_template, request, redirect, flash, url_for
-from flask_login import login_user, login_required, logout_user, current_user
-from sqlalchemy import func
-from app.controllers.usuario_controller import UsuarioController
+from app.forms.permission_form import PermissionForm
 from app.forms.role_form import RoleForm
-from app.forms.login_form import FormLogin
-from werkzeug.security import check_password_hash
-from app.models.role_permissions import Role
-
-from app.models.users import Usuario
-from app.utils.dict_layout import button_layout
+from app.models.role_permissions import Permission, Role, RolePermissions
 
 bp_admin = Blueprint("admin", __name__, url_prefix='/master')
 
@@ -64,3 +56,34 @@ def delete_role(id_role):
         flash(f'[ERRO]: Não foi possivel apagar o perfil! {e}', 'danger')
         return redirect(url_for('admin.roles'))
     
+@bp_admin.route('/role_permission/<id_role>', methods=["GET", "POST"])
+def role_permission(id_role):
+    page = request.args.get('page', 1, type=int)
+    ordem = request.args.get('ordem', '', type=str)
+    if ordem == '':
+        ordem = 'asc'
+    title='Gerenciar permissões'
+    subtitle='Atribua e remova permissões dos perfis'
+
+    role = Role.get_perfil(id_role)
+    form = PermissionForm()
+
+    role_permissions = RolePermissions.query.filter_by(role_id=id_role).all()
+    permission_ids = [rp.permission_id for rp in role_permissions]
+    print(role)
+    print(role_permissions)
+    all_permissions = Permission.query.all()
+    unlinked_permissions = [p for p in all_permissions if p.permission_id not in permission_ids]
+    permission_linked = [rp.permission_id for rp in role_permissions]
+    categorias = []
+
+    
+    return render_template('/pages/roles/role_permission.html', 
+                           title=title, 
+                           subtitle=subtitle, 
+                           role=role, 
+                           page=page, 
+                           ordem=ordem, 
+                           form=form,
+                           unlinked_permissions=unlinked_permissions,
+                           permission_linked=permission_linked)

@@ -54,6 +54,7 @@ class Role(db.Model):
 
 
 class Permission(db.Model):
+    __tablename__ = 'permissions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(255), unique=True, nullable=False)
     descricao = db.Column(db.String(255))
@@ -92,7 +93,8 @@ class Permission(db.Model):
     def __repr__(self):
         return f"<Permission {self.nome}>"
     
-class RolePermission(db.Model):
+class RolePermissions(db.Model):
+    __tablename__ = 'role_permissions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     permission_id = db.Column(db.Integer, db.ForeignKey('permission.id'), nullable=False)

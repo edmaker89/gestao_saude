@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <p><strong>Perfil: </strong>{{role.nome}}</p>
+        <p><strong>Descrição: </strong>{{role.descricao}}</p>
+        <div class="has-text-right mb-4">
+            <a class="button is-link" onclick="openNewPermission()">+ novo perfil</a>
+        </div>
+        <div class="notification p-3 bg-blue-plus">
+            <div class="columns">
+                <div class="column is-flex is-align-items-center">
+                    <p>
+                        <strong class="has-text-dark">
+                            Lista de permissões:
+                        </strong>
+                    </p>
+                </div>
+                <div class="column">
+                    <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                        <span class="has-text-dark">Ordem:</span>
+                        <a href="{{url_for('admin.role_permission', id_role=role.id, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                        <a href="{{url_for('admin.role_permission', id_role=role.id, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+                <span class=""><strong>Atribuidos</strong></span>
+                {% include "components/card_permission.html" %}
+            </div>
+            <div class="column">
+                <span><strong>Não atribuidas</strong></span>
+                {% include "components/card_permission.html" %}
+            </div>
+          </div>
+    </div>
+{% include "components/modals/permission.html" %}
+{% endblock content %}
+

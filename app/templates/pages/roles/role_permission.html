@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
+{% from 'components/card_permission.html' import card_permission %}
+
     <div class="container">
         <p><strong>Perfil: </strong>{{role.nome}}</p>
         <p><strong>Descrição: </strong>{{role.descricao}}</p>
         <div class="has-text-right mb-4">
-            <a class="button is-link" onclick="openNewPermission()">+ novo perfil</a>
+            <a class="button is-link" onclick="openNewPermission({{role.id}})">+ nova permissão</a>
         </div>
         <div class="notification p-3 bg-blue-plus">
             <div class="columns">
@@ -26,12 +28,31 @@
           </div>
           <div class="columns">
             <div class="column">
-                <span class=""><strong>Atribuidos</strong></span>
-                {% include "components/card_permission.html" %}
+                <div class="is-flex is-justify-content-space-between">
+                    <div>
+                        <span class=""><strong>Atribuidos</strong></span>
+                    </div>
+                    <div class="has-text-right">
+                        <a href=""> - remover todos</a>
+                    </div>
+                </div>
+                {% for linked in permission_linked %}
+                        {{ card_permission(linked.nome, 'remover', role.id, linked.id)}}
+                {% endfor %}
             </div>
             <div class="column">
-                <span><strong>Não atribuidas</strong></span>
-                {% include "components/card_permission.html" %}
+                <div class="is-flex is-justify-content-space-between">
+                    <div>
+                        <span class=""><strong>Não atribuidos</strong></span>
+                    </div>
+                    <div class="has-text-right">
+                        <a href=""> + adicionar todos</a>
+                    </div>
+                </div>
+                {% for unliked in unlinked_permissions %}
+                        {{ card_permission(unliked.nome, 'adicionar', role.id, unliked.id)}}
+                {% endfor %}
+                
             </div>
           </div>
     </div>

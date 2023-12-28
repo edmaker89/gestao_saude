@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, flash, url_for
+from flask_login import login_required
 from app.forms.permission_form import PermissionForm
 from app.forms.role_form import RoleForm
 from app.models.role_permissions import Permission, Role, RolePermissions
@@ -6,6 +7,7 @@ from app.models.role_permissions import Permission, Role, RolePermissions
 bp_admin = Blueprint("admin", __name__, url_prefix='/master')
 
 @bp_admin.route('/roles', methods=['GET', 'POST'])
+@login_required
 def roles():
     if request.method == 'POST':
         form = RoleForm(request.form)
@@ -46,6 +48,7 @@ def api_obter_perfil(id_perfil):
     return jsonify({'id':id_perfil, 'nome': perfil.nome, 'descricao': perfil.descricao}) #type: ignore
 
 @bp_admin.route('/role/delete/<id_role>')
+@login_required
 def delete_role(id_role):
     try:
         role = Role.get_perfil(id_role)
@@ -57,6 +60,7 @@ def delete_role(id_role):
         return redirect(url_for('admin.roles'))
     
 @bp_admin.route('/role_permission/<id_role>', methods=["GET", "POST"])
+@login_required
 def role_permission(id_role):
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', '', type=str)
@@ -73,9 +77,11 @@ def role_permission(id_role):
     print(role)
     print(role_permissions)
     all_permissions = Permission.query.all()
-    unlinked_permissions = [p for p in all_permissions if p.permission_id not in permission_ids]
-    permission_linked = [rp.permission_id for rp in role_permissions]
+    unlinked_permissions = [p for p in all_permissions if p.id not in permission_ids]
+    permission_linked = [p for p in all_permissions if p.id in permission_ids]
     categorias = []
+
+    print(permission_linked)
 
     
     return render_template('/pages/roles/role_permission.html', 
@@ -87,3 +93,47 @@ def role_permission(id_role):
                            form=form,
                            unlinked_permissions=unlinked_permissions,
                            permission_linked=permission_linked)
+
+
+@bp_admin.route('/permission/new', methods=['GET', 'POST'])
+@login_required
+def new_permission():
+
+    if request.method == 'POST':
+        form = PermissionForm(request.form)
+        descricao = form.descricao.data
+        nome = form.nome.data
+        id_role = request.form.get('id_role')
+
+        try:
+            Permission.new_permission(nome, descricao)
+            flash(f'Permissão criada com sucesso', 'success')
+            return redirect(url_for('admin.role_permission', id_role=id_role))
+        except Exception as e:
+            flash(f'[ERRO]: Não foi possivel cadastrar nova permissão! {e}', 'danger')
+            return redirect(url_for('admin.role_permission', id_role=id_role))
+
+    return redirect(url_for('admin.roles'))
+
+@bp_admin.route('/add_permission/<role_id>/<permission_id>')
+@login_required
+def add_permission(role_id, permission_id):
+
+    try:
+        RolePermissions.add_permission(role_id, permission_id)
+        flash(f'Permissão adicionada ao perfil', 'success')
+        return redirect(url_for('admin.role_permission', id_role=role_id))
+    except Exception as e:
+        flash(f'[ERRO]: Não foi possivel adicionar a permissão do perfil {e}', 'danger')
+        return redirect(url_for('admin.role_permission', id_role=role_id))
+
+@bp_admin.route('/remove_permission/<role_id>/<permission_id>')
+@login_required
+def remove_permission(role_id, permission_id):
+    try:
+        RolePermissions.remove_permission(role_id, permission_id)
+        flash(f'Permissão removida do perfil', 'success')
+        return redirect(url_for('admin.role_permission', id_role=role_id))
+    except Exception as e:
+        flash(f'[ERRO]: Não foi possivel remover a permissão do perfil {e}', 'danger')
+        return redirect(url_for('admin.role_permission', id_role=role_id))

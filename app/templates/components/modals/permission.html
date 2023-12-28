@@ -6,7 +6,7 @@
             <button class="delete" aria-label="close" onclick="closeNewPermission()"></button>
         </header>
         <section class="modal-card-body" id="loading">
-            <form action="" method="post">
+            <form action="{{url_for('admin.new_permission')}}" method="post">
                 <div id="loadingIndicator" class="modal-loading">
                     <!-- Coloque aqui o seu indicador de loading (por exemplo, um spinner) -->
                     Carregando...

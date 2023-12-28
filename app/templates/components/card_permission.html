@@ -1,18 +1,27 @@
+{% macro card_permission(permissao, acao, role_id, permission_id)%}
 <div class="card">
     <div class="card-content">
       <div class="content is-flex is-align-items-center">
         <div class="is-flex is-align-items-center is-flex-grow-1">
-            <span class="">Nome da Permissão</span>
-            <a class="icon has-text-info" onclick="editarPermissao()">
+            <span class="">{{permissao}}</span>
+            <a class="icon has-text-info">
               <i class="fas fa-edit"></i>
             </a>
-            <a class="icon has-text-danger" onclick="excluirPermissao()">
+            <a class="icon has-text-danger">
               <i class="fas fa-trash-alt"></i>
             </a>
         </div>
-        <div class="has-text-right">
-            <a class="is-info" onclick="adicionarOuRemover()">Adicionar/Remover</a>
-        </div>
+        {% if acao == 'adicionar' %}
+          <div class="has-text-right">
+              <a href="{{url_for('admin.add_permission', role_id=role_id, permission_id=permission_id)}}" class="is-primary button">Adicionar</a>
+          </div>
+        {% elif acao == 'remover' %}
+          <div class="has-text-right">
+            <a href="{{url_for('admin.remove_permission', role_id=role_id, permission_id=permission_id)}}" class="is-danger button">Remover</a>
+          </div>
+        {% endif %}
+        
       </div>
     </div>
-  </div>
+  </div>   
+{% endmacro %}

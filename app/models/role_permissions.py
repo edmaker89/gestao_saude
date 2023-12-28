@@ -1,4 +1,4 @@
-from sqlalchemy import asc, desc
+from sqlalchemy import and_, asc, desc, and_
 from app.ext.database import db
 
 class Role(db.Model):
@@ -65,7 +65,7 @@ class Permission(db.Model):
         return permission_existente
 
     @classmethod
-    def novo_permission(cls, nome, descricao=None):
+    def new_permission(cls, nome, descricao=None):
         permission = cls(nome=nome, descricao=descricao)
         db.session.add(permission)
         db.session.commit()
@@ -97,10 +97,31 @@ class RolePermissions(db.Model):
     __tablename__ = 'role_permissions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
-    permission_id = db.Column(db.Integer, db.ForeignKey('permission.id'), nullable=False)
+    permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id'), nullable=False)
 
     # role = db.relationship('Role', backref='role_permissions', lazy=True)
     # permission = db.relationship('Permission', backref='role_permissions', lazy=True)
+
+    @classmethod
+    def add_permission(cls, role_id, permission_id):
+
+        add = cls(
+            role_id=role_id,
+            permission_id=permission_id
+        )
+
+        db.session.add(add)
+        db.session.commit()
+
+        return add
+    
+    @classmethod
+    def remove_permission(cls, role_id, permission_id):
+
+        remove = cls.query.filter(and_(cls.role_id==role_id, cls.permission_id==permission_id)).first()
+
+        db.session.delete(remove)
+        db.session.commit()
 
     def __repr__(self):
         return f"<RolePermission {self.id}>"

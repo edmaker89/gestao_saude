@@ -20,7 +20,10 @@
             </div>
             <div class="field">
               <label class="label">{{ form.departamento.label() }}</label>
-              <div class="control">{{ form.departamento(class = 'input tam-field-2', placeholder = '') }}</div>
+              <div class="is-flex is-align-items-center">
+                <div class="control">{{ form.departamento(class = 'input tam-field-2', placeholder = '') }}</div>
+                <a class="ml-5" href="#" onclick="openNewDepart()">+ novo departamento</a>
+              </div>
             </div>
             <div class="field">
               <label class="label">{{ form.email.label() }}</label>
@@ -44,5 +47,6 @@
           </div>
     </form>
 </div>
+{% include "components/modals/new_department.html" %}
 {% endblock content %}
 

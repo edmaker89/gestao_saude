@@ -1,0 +1,30 @@
+<div class="modal" id="newDepart">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head bg-blue">
+            <p class="modal-card-title">Novo departamento</p>
+            <button class="delete" aria-label="close" onclick="closeNewDepart()"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="{{url_for('depart.new_depart')}}" method="post">
+                {{form_depart.departamento.label()}}
+                {{form_depart.departamento(class='input')}}
+            </section>
+            <footer class="modal-card-foot">
+                {{form_depart.submit(class='button is-primary')}}
+            </form>
+            <button class="button" onclick="closeNewDepart()">Cancelar</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+function openNewDepart() {
+    document.getElementById('newDepart').classList.add('is-active');
+}
+
+function closeNewDepart() {
+    document.getElementById('newDepart').classList.remove('is-active');
+}
+
+</script>

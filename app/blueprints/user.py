@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.controllers.usuario_controller import UsuarioController
+from app.forms.depart_form import DepartForm
 from app.forms.edit_perfil_form import EditPerfilForm
 from app.forms.edit_user_form import EditUserForm
 from app.forms.new_user_form import NewUserForm
@@ -29,7 +30,7 @@ def reset_password():
         if nova_senha == confirmar_senha:
             user = Usuario.get_user(current_user.id)
             
-            if check_password_hash(pwhash=user.senha, password=nova_senha):
+            if check_password_hash(pwhash=user.senha, password=nova_senha): #type: ignore
                 flash('A senha atual não confere com a senha salva', 'danger')
                 return redirect(url_for('user.reset_password'))
 
@@ -131,8 +132,9 @@ def create_user():
     title = "Cadastrar novo usuário"
     subtitle = ''
     form = NewUserForm()
+    form_depart = DepartForm()
 
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form)
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, form_depart=form_depart)
 
 @bp_user.route('/manager-user', methods=["GET", "POST"])
 @login_required
@@ -166,7 +168,7 @@ def edit_user(id_user):
         departamento_id = form.departamento.data
         email = form.email.data
         
-        update_user = UsuarioController.update_user(id, nome_completo, departamento_id, email, username=username)
+        update_user = UsuarioController.update_user(id, nome_completo, departamento_id, email, username=username) #type: ignore
 
         if update_user:
             flash('Usuario editado com sucesso!', 'success')
@@ -179,12 +181,14 @@ def edit_user(id_user):
     subtitle = ''
     
     form = EditUserForm()
-    form.username.data = user.username
-    form.nome_completo.data = user.nome_completo
-    form.departamento.data = str(user.departamento_id)
-    form.email.data = user.email
+    form.username.data = user.username #type: ignore
+    form.nome_completo.data = user.nome_completo #type: ignore
+    form.departamento.data = str(user.departamento_id) #type: ignore
+    form.email.data = user.email #type: ignore
 
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, id_user=id_user)
+    form_depart = DepartForm()
+
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
 
 @bp_user.route('/lock/<id_user>')
 @login_required

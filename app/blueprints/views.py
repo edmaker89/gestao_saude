@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, jsonify
 from flask_login import login_required
 from app.blueprints.mail import bp_mail
 from app.blueprints.auth import bp_auth
@@ -26,3 +26,4 @@ def init_app(app):
        subtitle = 'Leia com regularidade esses avisos'
 
        return render_template('/pages/index.html', title=title, subtitle=subtitle)
+      

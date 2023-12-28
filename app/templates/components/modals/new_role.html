@@ -2,15 +2,20 @@
     <div class="modal-background"></div>
     <div class="modal-card">
         <header class="modal-card-head bg-blue">
-            <p class="modal-card-title">Novo perfil</p>
+            <p class="modal-card-title" id='title-modal'>Novo perfil</p>
             <button class="delete" aria-label="close" onclick="closeNewRole()"></button>
         </header>
-        <section class="modal-card-body">
+        <section class="modal-card-body" id="loading">
             <form action="" method="post">
+                <div id="loadingIndicator" class="modal-loading">
+                    <!-- Coloque aqui o seu indicador de loading (por exemplo, um spinner) -->
+                    Carregando...
+                </div>
                 {{form.role.label()}}
-                {{form.role(class="input ")}}
+                {{form.role(class="input", id="role")}}
                 {{form.description.label()}}
-                {{form.description(class="input")}}
+                {{form.description(class="input", id="description")}}
+                <input type="hidden" name="id_role" id="id_role" value={{id_role}}>
             </section>
             <footer class="modal-card-foot">
                 {{form.submit(class="button is-primary")}}
@@ -21,13 +26,33 @@
 </div>
 
 <script>
-function openNewRole() {
+function openNewRole(id_role) {
     document.getElementById('newRole').classList.add('is-active');
-    document.getElementById('user_id').value = user_id
+    document.getElementById('loadingIndicator').style.display = 'none';
+    document.getElementById('id_role').value = id_role
+}
+
+function openEditRole(id_role) {
+    document.getElementById('newRole').classList.add('is-active');
+    document.getElementById('title-modal').innerText = "Editar nome do Perfil";
+    document.getElementById('id_role').value = id_role
+    document.getElementById('loadingIndicator').style.display = 'block';
+    // Fazer uma solicitação AJAX para obter informações do perfil
+    fetch(`/master/api/perfil/${id_role}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('role').value = data.nome;
+            document.getElementById('description').value = data.descricao;
+        })
+        .catch(error => console.error('Erro ao obter informações do perfil:', error));
+        document.getElementById('loadingIndicator').style.display = 'none';
 }
 
 function closeNewRole() {
     document.getElementById('newRole').classList.remove('is-active');
+    document.getElementById('role').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('title-modal').innerText = "Novo Perfil";
 }
 
 </script>

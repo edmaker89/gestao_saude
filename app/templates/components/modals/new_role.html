@@ -1,0 +1,33 @@
+<div class="modal" id="newRole">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head bg-blue">
+            <p class="modal-card-title">Novo perfil</p>
+            <button class="delete" aria-label="close" onclick="closeNewRole()"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="" method="post">
+                {{form.role.label()}}
+                {{form.role(class="input ")}}
+                {{form.description.label()}}
+                {{form.description(class="input")}}
+            </section>
+            <footer class="modal-card-foot">
+                {{form.submit(class="button is-primary")}}
+            </form>
+            <button class="button" onclick="closeNewRole()">Cancelar</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+function openNewRole() {
+    document.getElementById('newRole').classList.add('is-active');
+    document.getElementById('user_id').value = user_id
+}
+
+function closeNewRole() {
+    document.getElementById('newRole').classList.remove('is-active');
+}
+
+</script>

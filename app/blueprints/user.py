@@ -14,6 +14,7 @@ from app.forms.role_user_form import RoleUserForm
 from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.utils.dict_layout import button_layout
+from app.utils.verify_permission import permission_required
 
 bp_user = Blueprint('user', __name__, url_prefix='/user' )
 
@@ -87,6 +88,7 @@ def edit_perfil():
 
 @bp_user.route('/create-user', methods=["GET", "POST"])
 @login_required
+@permission_required('acesso restrito')
 def create_user():
 
     if request.method == "POST":
@@ -139,6 +141,7 @@ def create_user():
 
 @bp_user.route('/manager-user', methods=["GET", "POST"])
 @login_required
+@permission_required('acesso restrito')
 def manager_user():
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', '', type=str)
@@ -160,6 +163,7 @@ def manager_user():
 
 @bp_user.route('/edit-user/<id_user>', methods=['GET', 'POST'])
 @login_required
+@permission_required('acesso restrito')
 def edit_user(id_user):
     user = Usuario.get_user(id_user)
     
@@ -195,6 +199,7 @@ def edit_user(id_user):
 
 @bp_user.route('/lock/<id_user>')
 @login_required
+@permission_required('acesso restrito')
 def lock(id_user):
 
     lock = Usuario.lock_user(id_user)
@@ -207,6 +212,7 @@ def lock(id_user):
     
 @bp_user.route('/unlock/<id_user>')
 @login_required
+@permission_required('acesso restrito')
 def unlock(id_user):
 
     lock = Usuario.unlock_user(id_user)
@@ -220,6 +226,7 @@ def unlock(id_user):
 
 @bp_user.route('reset_pass', methods=['GET', 'POST'])
 @login_required
+@permission_required('acesso restrito')
 def reset_pass():
 
     if request.method == 'POST':

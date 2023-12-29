@@ -5,11 +5,13 @@ from app.forms.role_form import RoleForm
 from app.forms.role_user_form import RoleUserForm
 from app.models.role_permissions import Permission, Role, RolePermissions
 from app.models.users import Usuario
+from app.utils.verify_permission import permission_required
 
 bp_admin = Blueprint("admin", __name__, url_prefix='/master')
 
 @bp_admin.route('/roles', methods=['GET', 'POST'])
 @login_required
+@permission_required('acesso restrito')
 def roles():
     if request.method == 'POST':
         form = RoleForm(request.form)
@@ -45,12 +47,14 @@ def roles():
     return render_template('/pages/roles/index.html', title=title, page=page, ordem=ordem, form=form, roles=roles)
 
 @bp_admin.route('/api/perfil/<int:id_perfil>', methods=['GET'])
+@login_required
 def api_obter_perfil(id_perfil):
     perfil = Role.get_perfil(id_perfil)
     return jsonify({'id':id_perfil, 'nome': perfil.nome, 'descricao': perfil.descricao}) #type: ignore
 
 @bp_admin.route('/role/delete/<id_role>')
 @login_required
+@permission_required('gerenciar permissão')
 def delete_role(id_role):
     try:
         role = Role.get_perfil(id_role)
@@ -63,6 +67,7 @@ def delete_role(id_role):
     
 @bp_admin.route('/role_permission/<id_role>', methods=["GET", "POST"])
 @login_required
+@permission_required('gerenciar permissão')
 def role_permission(id_role):
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', '', type=str)
@@ -99,6 +104,7 @@ def role_permission(id_role):
 
 @bp_admin.route('/permission/new', methods=['GET', 'POST'])
 @login_required
+@permission_required('acesso restrito')
 def new_permission():
 
     if request.method == 'POST':
@@ -128,6 +134,7 @@ def new_permission():
 
 @bp_admin.route('/add_permission/<role_id>/<permission_id>')
 @login_required
+@permission_required('gerenciar permissão')
 def add_permission(role_id, permission_id):
 
     try:
@@ -140,6 +147,7 @@ def add_permission(role_id, permission_id):
 
 @bp_admin.route('/remove_permission/<role_id>/<permission_id>')
 @login_required
+@permission_required('gerenciar permissão')
 def remove_permission(role_id, permission_id):
     try:
         RolePermissions.remove_permission(role_id, permission_id)
@@ -157,6 +165,7 @@ def api_obter_permission(id_permission):
 
 @bp_admin.route('permission/delete/<int:id_permission>/<int:id_role>')  # type: ignore
 @login_required
+@permission_required('gerenciar permissão')
 def permission_delete(id_permission: int, id_role):
     try:
         permission: Permission = Permission.get_permission(int(id_permission)) # type: ignore
@@ -170,6 +179,7 @@ def permission_delete(id_permission: int, id_role):
 
 @bp_admin.route('/role_user/', methods=['POST'])
 @login_required
+@permission_required('acesso restrito')
 def role_user():
 
     form = RoleUserForm(request.form)

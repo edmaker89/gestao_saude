@@ -84,3 +84,11 @@ class UsuarioController:
         
         mails = query.paginate(page=page, per_page=per_page) # type: ignore
         return mails
+    
+    @staticmethod
+    def departamento_vazio(id_depart):
+
+        pessoas = Usuario.query.filter(Usuario.departamento_id==id_depart).all()
+        if pessoas:
+            return True
+        return False

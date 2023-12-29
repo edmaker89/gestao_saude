@@ -8,7 +8,7 @@ def minimal_app():
     app = Flask(__name__)
     app.jinja_env.filters['format_cpf'] = format_cpf
     app.jinja_env.filters['format_data'] = format_data
-    # app.context_processor(inject_permissions)
+    app.context_processor(inject_permissions)
     configuration.init_app(app)
 
     return app

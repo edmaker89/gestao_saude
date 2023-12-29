@@ -99,8 +99,8 @@ class RolePermissions(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id'), nullable=False)
 
-    # role = db.relationship('Role', backref='role_permissions', lazy=True)
-    # permission = db.relationship('Permission', backref='role_permissions', lazy=True)
+    role = db.relationship('Role', backref='role_permissions', lazy=True)
+    permission = db.relationship('Permission', backref='role_permissions', lazy=True)
 
     @classmethod
     def add_permission(cls, role_id, permission_id):

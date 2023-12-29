@@ -5,7 +5,8 @@
         <p><strong>Perfil: </strong>{{role.nome}}</p>
         <p><strong>Descrição: </strong>{{role.descricao}}</p>
         <div class="has-text-right mb-4">
-            <a class="button is-link" onclick="openNewPermission({{role.id}})">+ nova permissão</a>
+            <a class="button is-info mr-2" href="{{url_for('admin.roles')}}"><i class="fa-solid fa-arrow-left mr-2"></i>Voltar</a>
+            <a class="button is-link" onclick="openNewPermission({{role.id}})"><i class="fa-solid fa-plus mr-2"></i>nova permissão</a>
         </div>
         <div class="notification p-3 bg-blue-plus">
             <div class="columns">

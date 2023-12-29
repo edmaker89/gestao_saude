@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
 from app.controllers.correspondencia_controller import CorrespondenciaController
 from app.models.tipo_correspondencias import TipoCorrespondencias
+from app.utils.verify_permission import permission_required
 
 bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
 
@@ -104,6 +105,7 @@ def edit_assunto():
 
 @bp_mail.route('/all_mails')
 @login_required
+@permission_required('todas correspondencias')
 def all_mails():
     page = request.args.get('page', 1, type=int)
     per_page = 20

@@ -1,4 +1,6 @@
+from sqlalchemy import delete
 from app.ext.database import db
+from app.models.users import Usuario
 
 class Departamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +33,15 @@ class Departamento(db.Model):
             return departamento
         except Exception as e:
             return False
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def get_departamento(cls, id_depart):
+        departamento = cls.query.filter(cls.id==id_depart).first()
+        return departamento
         
     def __repr__(self):
         return f"<Departamento {self.nome}>"

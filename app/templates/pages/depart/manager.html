@@ -56,6 +56,9 @@
                     <a href="{{url_for('depart.edit_depart', depart_id=depart.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>
+                    <a href="{{url_for('depart.delete_depart', depart_id=depart.id)}}" class="tooltip" data-tooltip="excluir">
+                      <span><i class="fas fa-trash icon-hover has-text-danger ml-2"></i></span>
+                    </a>
                     <!--                   
                     <div class="dropdown is-hoverable is-right">
                         <div class="dropdown-trigger">

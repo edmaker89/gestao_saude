@@ -7,21 +7,26 @@
             <a class="icon has-text-link ml-2">
               <i class="fa-solid fa-eye"></i>
             </a>
-            <a onclick="openEditPermission({{role_id}}, {{permission_id}})" class="icon has-text-info">
-              <i class="fas fa-edit"></i>
-            </a>
-            <a href="{{url_for('admin.permission_delete', id_role=role_id, id_permission=permission_id)}}" class="icon has-text-danger">
-              <i class="fas fa-trash-alt"></i>
-            </a>
+            {% if 'gerenciar permissao' in user_permissions %}
+              <a onclick="openEditPermission({{role_id}}, {{permission_id}})" class="icon has-text-info">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a href="{{url_for('admin.permission_delete', id_role=role_id, id_permission=permission_id)}}" class="icon has-text-danger">
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            {% endif %}
+            
         </div>
+        {% if 'gerenciar permissao' in user_permissions %}
         {% if acao == 'adicionar' %}
-          <div class="has-text-right">
-              <a href="{{url_for('admin.add_permission', role_id=role_id, permission_id=permission_id)}}" class="is-primary button">Adicionar</a>
-          </div>
+        <div class="has-text-right">
+          <a href="{{url_for('admin.add_permission', role_id=role_id, permission_id=permission_id)}}" class="is-primary button">Adicionar</a>
+        </div>
         {% elif acao == 'remover' %}
-          <div class="has-text-right">
-            <a href="{{url_for('admin.remove_permission', role_id=role_id, permission_id=permission_id)}}" class="is-danger button">Remover</a>
-          </div>
+        <div class="has-text-right">
+          <a href="{{url_for('admin.remove_permission', role_id=role_id, permission_id=permission_id)}}" class="is-danger button">Remover</a>
+        </div>
+        {% endif %}
         {% endif %}
         
       </div>

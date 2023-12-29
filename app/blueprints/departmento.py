@@ -87,3 +87,21 @@ def edit_depart(depart_id):
     form.departamento.data = departamento.nome #type: ignore
     
     return render_template('/pages/depart/form.html', form=form, title=title, id_depart=depart_id)
+
+
+@bp_depart.route('/delete_depart/<depart_id>')
+def delete_depart(depart_id):
+
+    pessoas = UsuarioController.departamento_vazio(depart_id)
+    if not pessoas:
+        try:
+            departamento: Departamento = Departamento.get_departamento(depart_id)
+            departamento.delete()
+            flash('Departamento Excluido com sucesso!', 'success')
+        except:
+            flash('Não foi possivel excluir o departamento, tente novamente mais tarde!', 'danger')
+        finally:
+            return redirect(url_for('depart.manager'))
+        
+    flash('Existem colaboradores vinculados ao departamento! Só é possivel apagar um departamento vazio', 'info')   
+    return redirect(url_for('depart.manager'))

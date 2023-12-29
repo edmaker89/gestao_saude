@@ -1,5 +1,5 @@
 from flask_login import current_user
-from app.models.role_permissions import RolePermissions
+from app.models.role_permissions import Permission, RolePermissions
 from functools import wraps
 from flask import abort, redirect, url_for
 
@@ -8,19 +8,15 @@ def verify_permission(permission):
     if current_user.is_authenticated:
         # Obtém o ID do papel (role) do usuário
         role_id = current_user.role
-
         # Consulta a tabela role_permissions para verificar se há uma correspondência
         # entre o ID do papel, a ID da permissão e o nome da permissão
-        # result = RolePermissions.query.filter(
-        #     RolePermissions.role_id == role_id,
-        #     RolePermissions.permission.nome == permission
-        # ).first()
+        result = RolePermissions.query.join(Permission).filter(
+            RolePermissions.role_id == role_id,
+            Permission.nome == permission
+        ).first()
 
-        # refazer essa parte para um join manual
-
-        # Se encontrar uma correspondência, o usuário tem a permissão
-        # if result:
-        return True
+        if result:
+            return True
 
     return False
 
@@ -33,7 +29,7 @@ def permission_required(permission):
             if not verify_permission(permission):
                 # Se não tiver, redireciona para uma página de acesso negado
                 # ou realiza outra ação apropriada (por exemplo, abort(403))
-                return redirect(url_for('acesso_negado'))  # Substitua 'acesso_negado' pela rota apropriada
+                return redirect(abort(403))  # Substitua 'acesso_negado' pela rota apropriada
 
             # Se tiver a permissão, continua com a execução da função
             return func(*args, **kwargs)

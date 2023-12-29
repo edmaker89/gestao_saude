@@ -16,6 +16,7 @@
                 {{form.descricao.label()}}
                 {{form.descricao(class="input")}}
                 <input type="hidden" name="id_role" id="id_role">
+                <input type="hidden" name="id_permission" id="id_permission">
             </section>
             <footer class="modal-card-foot">
                 {{form.submit(class="button is-primary")}}
@@ -28,21 +29,23 @@
 <script>
 function openNewPermission(id_role) {
     document.getElementById('newPermission').classList.add('is-active');
+    document.getElementById('title-modal').innerText = "Nova Permissão";
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('id_role').value = id_role
 }
 
-function openEditRole(id_role) {
+function openEditPermission(id_role, id_permission) {
     document.getElementById('newPermission').classList.add('is-active');
-    document.getElementById('title-modal').innerText = "Editar nome da Permissão";
+    document.getElementById('title-modal').innerText = "Editar Permissão";
     document.getElementById('id_role').value = id_role
+    document.getElementById('id_permission').value = id_permission
     document.getElementById('loadingIndicator').style.display = 'block';
     // Fazer uma solicitação AJAX para obter informações do perfil
-    fetch(`/master/api/perfil/${id_role}`)
+    fetch(`/master/api/permission/${id_permission}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('role').value = data.nome;
-            document.getElementById('description').value = data.descricao;
+            document.getElementById('nome').value = data.nome;
+            document.getElementById('descricao').value = data.descricao;
         })
         .catch(error => console.error('Erro ao obter informações do perfil:', error));
         document.getElementById('loadingIndicator').style.display = 'none';
@@ -50,8 +53,10 @@ function openEditRole(id_role) {
 
 function closeNewPermission() {
     document.getElementById('newPermission').classList.remove('is-active');
-    document.getElementById('role').value = '';
-    document.getElementById('description').value = '';
+    document.getElementById('id_role').value = '';
+    document.getElementById('id_permission').value = '';
+    document.getElementById('nome').value = '';
+    document.getElementById('descricao').value = "";
     document.getElementById('title-modal').innerText = "Nova Permissão";
 }
 

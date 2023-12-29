@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 {% from 'components/card_permission.html' import card_permission %}
-
     <div class="container">
         <p><strong>Perfil: </strong>{{role.nome}}</p>
         <p><strong>Descrição: </strong>{{role.descricao}}</p>
@@ -18,11 +17,7 @@
                     </p>
                 </div>
                 <div class="column">
-                    <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
-                        <span class="has-text-dark">Ordem:</span>
-                        <a href="{{url_for('admin.role_permission', id_role=role.id, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
-                        <a href="{{url_for('admin.role_permission', id_role=role.id, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
-                    </div>
+                    
                 </div>
             </div>
           </div>

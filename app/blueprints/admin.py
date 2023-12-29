@@ -104,7 +104,16 @@ def new_permission():
         descricao = form.descricao.data
         nome = form.nome.data
         id_role = request.form.get('id_role')
-
+        id_permission = request.form.get('id_permission')
+        if id_permission and id_permission != 'undefined':
+            try:
+                permission = Permission.get_permission(id_permission)
+                permission.update_permission(nome, descricao) #type: ignore
+                flash('O parametro da permissão foi editado com sucesso', 'success')
+            except:
+                flash('Um erro inesperado aconteceu, verifique e tente novamente', 'danger')
+            finally:
+                return redirect(url_for('admin.role_permission', id_role=id_role))
         try:
             Permission.new_permission(nome, descricao)
             flash(f'Permissão criada com sucesso', 'success')
@@ -137,3 +146,22 @@ def remove_permission(role_id, permission_id):
     except Exception as e:
         flash(f'[ERRO]: Não foi possivel remover a permissão do perfil {e}', 'danger')
         return redirect(url_for('admin.role_permission', id_role=role_id))
+
+@bp_admin.route('/api/permission/<int:id_permission>', methods=['GET'])
+@login_required
+def api_obter_permission(id_permission):
+    permission = Permission.get_permission(id_permission)
+    return jsonify({'id':id_permission, 'nome': permission.nome, 'descricao': permission.descricao}) #type: ignore
+
+@bp_admin.route('permission/delete/<int:id_permission>/<int:id_role>')  # type: ignore
+@login_required
+def permission_delete(id_permission: int, id_role):
+    try:
+        permission: Permission = Permission.get_permission(int(id_permission)) # type: ignore
+        if permission is not None:
+            permission.delete_permission()
+    except:
+        flash('Não foi possivel apagar a permissão')
+    finally:
+        return redirect(url_for('admin.role_permission', id_role=id_role))
+    

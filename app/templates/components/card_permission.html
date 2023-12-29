@@ -1,13 +1,16 @@
 {% macro card_permission(permissao, acao, role_id, permission_id)%}
-<div class="card">
+<div class="card mt-2">
     <div class="card-content">
       <div class="content is-flex is-align-items-center">
         <div class="is-flex is-align-items-center is-flex-grow-1">
             <span class="">{{permissao}}</span>
-            <a class="icon has-text-info">
+            <a class="icon has-text-link ml-2">
+              <i class="fa-solid fa-eye"></i>
+            </a>
+            <a onclick="openEditPermission({{role_id}}, {{permission_id}})" class="icon has-text-info">
               <i class="fas fa-edit"></i>
             </a>
-            <a class="icon has-text-danger">
+            <a href="{{url_for('admin.permission_delete', id_role=role_id, id_permission=permission_id)}}" class="icon has-text-danger">
               <i class="fas fa-trash-alt"></i>
             </a>
         </div>

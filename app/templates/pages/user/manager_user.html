@@ -79,23 +79,23 @@
                    {{usuario.Usuario.departamento.nome}}
                 </td>
                 <td>{{usuario.Usuario.email}}</td>
-                <td>{{usuario.Usuario.role}}</td>
+                <td>{{usuario.Role.nome}}</td>
                 <td>
                     <a href="{{url_for('user.edit_user', id_user=usuario.Usuario.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>                    
                     <div class="dropdown is-hoverable">
                         <div class="dropdown-trigger">
-                            <a href="">
+                            <a >
                                 <span class=""><i class="fa-solid fa-ellipsis-vertical has-text-dark px-2"></i></span>
                             </a>
                         </div>
                         <div class="dropdown-menu" id="dropdown-menu4" role="menu">
                             <div class="dropdown-content">
-                                <a href="#" onclick="openResetSenhaModal('{{usuario.Usuario.id}}')" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
+                                <a onclick="openResetSenhaModal('{{usuario.Usuario.id}}')" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
                                     Redefinir Senha
                                 </a>
-                                <a href="" class="dropdown-item">
+                                <a onclick="openRoleUser({{usuario.Usuario.id}}, {{usuario.Usuario.role}})" class="dropdown-item">
                                     <span class=""><i class="fa-solid fa-user-tie has-text-dark"></i> Definir permissão</span>
                                 </a>
                                 {% if usuario.Usuario.bloqueado %}
@@ -118,5 +118,6 @@
     </tbody>
   </table>
 </div>
+{% include "components/modals/role_user.html" %}
 {% include "components/modals/reset_senha.html" %}
 {% endblock content %}

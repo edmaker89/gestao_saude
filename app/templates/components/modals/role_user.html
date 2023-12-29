@@ -1,0 +1,42 @@
+<div class="modal" id="roleUser">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head bg-blue">
+            <p class="modal-card-title" id='title-modal'>Definir perfil de usuário</p>
+            <button class="delete" aria-label="close" onclick="closeRoleUser()"></button>
+        </header>
+        <section class="modal-card-body" id="loading">
+            <form action="{{url_for('admin.role_user')}}" method="post">
+                <div id="loadingIndicator" class="modal-loading">
+                    <!-- Coloque aqui o seu indicador de loading (por exemplo, um spinner) -->
+                    Carregando...
+                </div>
+                {{form.role.label()}}
+                {{form.role(class="input", id="role")}}
+                <input type="hidden" name="id_user" id="id_user" value={{id_user}}>
+            </section>
+            <footer class="modal-card-foot">
+                {{form.submit(class="button is-primary")}}
+            </form>
+            <button class="button" onclick="closeRoleUser()">Cancelar</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+function openRoleUser(id_user, id_role) {
+    document.getElementById('roleUser').classList.add('is-active');
+    document.getElementById('loadingIndicator').style.display = 'none';
+    console.log(id_user, id_role)
+    document.getElementById('id_user').value = id_user
+    document.getElementById('role').value = id_role
+}
+
+function closeRoleUser() {
+    document.getElementById('roleUser').classList.remove('is-active');
+    document.getElementById('role').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('title-modal').innerText = "Novo Perfil";
+}
+
+</script>

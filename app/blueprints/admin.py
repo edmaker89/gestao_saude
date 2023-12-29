@@ -2,7 +2,9 @@ from flask import Blueprint, jsonify, render_template, request, redirect, flash,
 from flask_login import login_required
 from app.forms.permission_form import PermissionForm
 from app.forms.role_form import RoleForm
+from app.forms.role_user_form import RoleUserForm
 from app.models.role_permissions import Permission, Role, RolePermissions
+from app.models.users import Usuario
 
 bp_admin = Blueprint("admin", __name__, url_prefix='/master')
 
@@ -160,8 +162,28 @@ def permission_delete(id_permission: int, id_role):
         permission: Permission = Permission.get_permission(int(id_permission)) # type: ignore
         if permission is not None:
             permission.delete_permission()
+        flash('A permissão foi deletada', 'success')
     except:
-        flash('Não foi possivel apagar a permissão')
+        flash('Não foi possivel apagar a permissão', 'danger')
     finally:
         return redirect(url_for('admin.role_permission', id_role=id_role))
+
+@bp_admin.route('/role_user/', methods=['POST'])
+@login_required
+def role_user():
+
+    form = RoleUserForm(request.form)
+    role_id = form.role.data
+    user_id = request.form.get('id_user')
+    print(user_id, role_id)
+    try:
+        user: Usuario = Usuario.get_user(user_id) #type: ignore
+        print(user)
+        user.choice_role(role_id)
+        flash('O perfil do usuario foi alterado', 'success')
+    except Exception as e:
+        print(e)
+        flash(f'Não foi possivel altear o perfil, tente novamente {[e]}', 'danger')
+    finally:
+        return redirect(url_for('user.manager_user'))
     

@@ -92,6 +92,10 @@ class Usuario(db.Model, UserMixin):
         except Exception as e:
             return False
     
+    def choice_role(self, role_id):
+        self.role = role_id
+        db.session.commit()
+    
     
     def __repr__(self):
         return f"<Usuario {self.nome_completo}>"

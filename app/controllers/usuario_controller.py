@@ -1,5 +1,6 @@
 from sqlalchemy import or_
 from app.models.departamento import Departamento
+from app.models.role_permissions import Role
 from app.models.users import Usuario
 from app.ext.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -61,9 +62,13 @@ class UsuarioController:
         query = db.session.query(
             Usuario,
             Departamento,
+            Role,
         ).join(
             Departamento,
             Usuario.departamento_id == Departamento.id
+        ).join(
+            Role,
+            Usuario.role == Role.id
         )
 
         if nome:

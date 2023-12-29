@@ -10,6 +10,7 @@ from app.ext.database import db
 from werkzeug.security import check_password_hash
 
 from app.forms.reset_senha_form import ResetSenhaForm
+from app.forms.role_user_form import RoleUserForm
 from app.models.departamento import Departamento
 from app.models.users import Usuario
 from app.utils.dict_layout import button_layout
@@ -118,13 +119,13 @@ def create_user():
             new_user.email=email
             new_user.tentativas_login = 0
             new_user.bloqueado = 0
-            new_user.role = 'user'
+            new_user.role = 1
             new_user.criado_em = datetime.utcnow()
             db.session.add(new_user)
             db.session.commit()
 
             flash(f'Usuario criado com sucesso: login {new_user.username}', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('user.manager_user'))
         except Exception as e:
             flash(f'Algo inesperado aconteceu, tente novamente mais tarde!', 'danger')
             return redirect(url_for('user.create_user'))
@@ -151,9 +152,11 @@ def manager_user():
     for l in listaDepartamentos:
         departamentos.append((l.id, l.nome))
 
+    form = RoleUserForm()
+
     listaUsuarios = UsuarioController.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
     title = 'Gestão de Usuarios'
-    return render_template('/pages/user/manager_user.html', title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button, page=page, nome=nome, departamento=departamento)
+    return render_template('/pages/user/manager_user.html',form=form, title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button, page=page, nome=nome, departamento=departamento)
 
 @bp_user.route('/edit-user/<id_user>', methods=['GET', 'POST'])
 @login_required

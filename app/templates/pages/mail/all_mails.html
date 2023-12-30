@@ -74,7 +74,7 @@
             {% set correspondencia_id = mail.Correspondencias.id %}
             {% set nome_usuario = mail.Usuario.nome_completo %}
             {% set departamento = mail.Usuario.departamento.nome %}
-            {{card_mail(numero, assunto, tipo, data, correspondencia_id, nome_usuario, departamento)}}
+            {{card_mail(numero, assunto, tipo, data, correspondencia_id, nome_usuario, departamento, current_user.nome_completo)}}
         {% endfor %}
     
       </div>

@@ -1,19 +1,10 @@
-from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask_login import login_required
 from app.controllers.depart_controller import DepartController
 from app.controllers.usuario_controller import UsuarioController
 from app.forms.depart_form import DepartForm
-from app.forms.edit_perfil_form import EditPerfilForm
-from app.forms.edit_user_form import EditUserForm
-from app.forms.new_user_form import NewUserForm
-from app.ext.database import db
-from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.forms.reset_senha_form import ResetSenhaForm
-from app.models import departamento
 from app.models.departamento import Departamento
-from app.models.users import Usuario
 from app.utils.dict_layout import button_layout
 
 bp_depart = Blueprint('depart', __name__, url_prefix='/depart' )

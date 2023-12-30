@@ -13,14 +13,15 @@ class Usuario(db.Model, UserMixin):
     nome_completo = db.Column(db.String(255), nullable=False)
     departamento_id = db.Column(db.Integer, db.ForeignKey('departamento.id'), nullable=False)
     username = db.Column(db.String(255), nullable=False, unique=True)
-    senha = db.Column(db.String(255), nullable=False)
+    senha = db.Column(db.String(300), nullable=False)
     email = db.Column(db.String(255), nullable=True, unique=True)
     tentativas_login = db.Column(db.Integer)
     bloqueado = db.Column(db.Boolean)
-    role = db.Column(db.String(255))
+    role = db.Column(db.String(255), db.ForeignKey('role.id'), nullable=False)
     criado_em = db.Column(db.TIMESTAMP)
     
     departamento = db.relationship('Departamento', backref='users', lazy=True)
+    perfil = db.relationship('Role', backref='users', lazy=True)
     
     def get_id(self):
         return str(self.id)
@@ -73,7 +74,7 @@ class Usuario(db.Model, UserMixin):
     def lock_user(cls, id_user):
         try:
             user = cls.get_user(id_user)
-            user.bloqueado = 1
+            user.bloqueado = 1 #type: ignore
             db.session.commit()
 
             return user
@@ -84,8 +85,8 @@ class Usuario(db.Model, UserMixin):
     def unlock_user(cls, id_user):
         try:
             user = cls.get_user(id_user)
-            user.bloqueado = 0
-            user.tentativas_login = 0
+            user.bloqueado = 0 #type: ignore
+            user.tentativas_login = 0 #type: ignore
             db.session.commit()
 
             return user
@@ -94,6 +95,10 @@ class Usuario(db.Model, UserMixin):
     
     def choice_role(self, role_id):
         self.role = role_id
+        db.session.commit()
+
+    def resetar_tentativas(self):
+        self.tentativas_login = 0
         db.session.commit()
     
     

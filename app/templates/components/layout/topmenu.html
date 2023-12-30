@@ -1,6 +1,4 @@
-<nav class="navbar navbarmenu" role="navigation" aria-label="main navigation">
-    
-  
+<nav class="navbar navbarmenu navbar-second" role="navigation" aria-label="main navigation">
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
         <a href="{{url_for('index')}}" class="navbar-item">
@@ -25,20 +23,6 @@
               </a>
             {% endif %}
             
-          </div>
-        </div>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">
-            Perfil
-          </a>
-  
-          <div class="navbar-dropdown">
-            <a href="{{url_for('user.edit_perfil')}}" class="navbar-item">
-              Editar perfil
-            </a>
-            <a href="{{url_for('user.reset_password')}}" class="navbar-item">
-              Alterar senha
-            </a>
           </div>
         </div>
         {% if 'acesso restrito' in user_permissions %}

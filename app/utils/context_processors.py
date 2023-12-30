@@ -3,7 +3,7 @@ from app.models.role_permissions import RolePermissions
 
 def permission_processor():
     permissions = set()
-
+    
     if current_user.is_authenticated:
         role_id = current_user.role
         role_permissions = RolePermissions.query.filter_by(role_id=role_id).all()

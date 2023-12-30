@@ -3,7 +3,7 @@ from app.models.departamento import Departamento
 from app.models.role_permissions import Role
 from app.models.users import Usuario
 from app.ext.database import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 class UsuarioController:
     
@@ -33,7 +33,7 @@ class UsuarioController:
     def change_password(id_user, nova_senha):
         try:
             user = Usuario.get_user(id_user)
-            hash_nova_senha = generate_password_hash(nova_senha)
+            hash_nova_senha = generate_password_hash(password=nova_senha)
             user.senha = hash_nova_senha
         
             db.session.commit()

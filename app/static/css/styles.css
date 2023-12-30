@@ -175,4 +175,27 @@ footer {
     border-radius: 5px;
     color: #2c3e50;
   }
-  
+
+a.disabled {
+  color: #ccc; /* Cor do link inativo */
+  pointer-events: none; /* Impede que o link seja clicado */
+  cursor: not-allowed; /* Altera o cursor para indicar que está inativo */
+  text-decoration: none; /* Remove sublinhado */
+}
+
+.navbar-second {
+    z-index: 1; /* Defina um valor maior do que a z-index da primeira navbar ou do dropdown */
+}
+
+.dropdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-item {
+    flex: 1;
+}
+.dropdown-item {
+    width: 100%; /* Ou qualquer outra largura desejada */
+}
+

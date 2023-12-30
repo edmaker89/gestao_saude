@@ -32,8 +32,14 @@
                         <a href=""> - remover todos</a>
                     </div>
                 </div>
+                {% if 'gerenciar permissão' in user_permissions %}
+                    {% set permitido = True %}
+                {% else%}
+                    {% set permitido = '' %}
+                {% endif %}
+                
                 {% for linked in permission_linked %}
-                        {{ card_permission(linked.nome, 'remover', role.id, linked.id)}}
+                        {{ card_permission(linked.nome, 'remover', role.id, linked.id, permitido)}}
                 {% endfor %}
             </div>
             <div class="column">
@@ -46,7 +52,7 @@
                     </div>
                 </div>
                 {% for unliked in unlinked_permissions %}
-                        {{ card_permission(unliked.nome, 'adicionar', role.id, unliked.id)}}
+                        {{ card_permission(unliked.nome, 'adicionar', role.id, unliked.id, permitido)}}
                 {% endfor %}
                 
             </div>

@@ -1,4 +1,4 @@
-<nav class="navbar is-full" role="navigation" aria-label="main navigation">
+<nav class="navbar is-full p-0 m-0" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="">
         <span class="ml-1 is-size-3 has-text-white has-text-weight-bold has-text-shadow has-text-info">
@@ -12,12 +12,70 @@
       </a>
     </div>  
       <div class="navbar-end">
-        <div class="navbar-item">
+        <div class="navbar-item p-0">
           <div class="buttons">
-            <a href="{{url_for('auth.logout')}}" class="button is-primary">
-              <strong>Sair</strong>
-            </a>
+            <!-- teste -->
+            <div class="dropdown m-0" id='userDropDown'>
+              <div class="dropdown-trigger m-0">
+                <button class="button is-info m-0 p-5 mr-3 mb-2" aria-haspopup="true" aria-controls="dropdown-menu" >
+                  <span>
+                    <div class="is-flex is-flex-direction-column mr-3 is-justify-content-center has-text-left p-2">
+                    <p class="is-size-7 has-text-weight-semibold">{{current_user.nome_completo}} </p>
+                    <p class="is-size-7 has-text-weight-semibold">{{current_user.departamento.nome}}</p>
+                  </div>
+                </span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu is-fullheight" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <div class="dropdown-item has-background-info-light">
+                    <p>Seu usuário: <strong>{{current_user.username}}</strong></p>
+                  </div>
+                  <hr class="dropdown-divider">
+                  <a href="{{url_for('user.edit_perfil')}}" class="dropdown-item">
+                    <i class="fa-solid fa-address-card mr-2"></i>Editar perfil
+                  </a>
+                  <a href="{{url_for('user.reset_password')}}" class="dropdown-item">
+                    <i class="fa-solid fa-key mr-2"></i>Alterar senha
+                  </a>
+                  <hr class="dropdown-divider">
+                  <a href="{{url_for('auth.logout')}}" class="dropdown-item">
+                    <strong>
+                      <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
+                      Sair
+                    </strong>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
     </div>
   </nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Seletor do botão e do menu dropdown
+    var dropdownButton = document.querySelector('.dropdown-trigger');
+    var dropdownMenu = document.querySelector('#userDropDown');
+
+    // Adicionar evento de clique ao botão
+    dropdownButton.addEventListener('click', function () {
+        // Alternar a classe 'is-active' no menu dropdown para mostrar ou ocultar
+        console.log('clicado')
+        dropdownMenu.classList.toggle('is-active');
+    });
+
+    // Adicionar evento de clique fora do menu para fechar o menu
+    document.addEventListener('click', function (event) {
+        var isClickInside = dropdownButton.contains(event.target) || dropdownMenu.contains(event.target);
+        if (!isClickInside) {
+            dropdownMenu.classList.remove('is-active');
+        }
+    });
+});
+
+</script>

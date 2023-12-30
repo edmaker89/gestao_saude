@@ -34,6 +34,7 @@ def autenticar():
     if usuario and senha:
         if check_password_hash(usuario.senha, senha):
             login_user(usuario)
+            usuario.resetar_tentativas()
             proxima_pagina = request.form['proxima']
             return redirect(proxima_pagina)
 

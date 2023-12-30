@@ -7,7 +7,7 @@ from app.forms.edit_perfil_form import EditPerfilForm
 from app.forms.edit_user_form import EditUserForm
 from app.forms.new_user_form import NewUserForm
 from app.ext.database import db
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.forms.reset_senha_form import ResetSenhaForm
 from app.forms.role_user_form import RoleUserForm
@@ -112,11 +112,13 @@ def create_user():
         if exist_email:
             flash('O esse email ja esta cadastrado no banco de dados, tente outro email!', 'danger')
             return redirect(url_for('user.create_user'))
+        
+        senha = str(senha)
         try:
             new_user = Usuario()
             new_user.nome_completo=nome_completo
             new_user.username=username
-            new_user.senha=senha
+            new_user.senha= generate_password_hash(senha)
             new_user.departamento_id=departamento_id
             new_user.email=email
             new_user.tentativas_login = 0

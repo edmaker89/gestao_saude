@@ -50,9 +50,16 @@
                   </div>
                   <div class="flex flex-col mt-4">
                       <label for="" class="label">Senha: </label>
-                      {{ form.password(class="px-4 py-3 rounded-lg bg-blue-100 mt-2 border focus:border-blue-500 border-blue-100 focus:outline-none focus:bg-white")}}
+                      {{ form.password(id="pass", class="px-4 py-3 rounded-lg bg-blue-100 mt-2 border focus:border-blue-500 border-blue-100 focus:outline-none focus:bg-white")}}
                   </div>
               </div>
+              <div class="field mt-4">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" id="mostrarSenha"> Mostrar Senha
+                    </label>
+                </div>
+            </div>
               {{form.submit(class='w-full bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-4 py-3 mt-6 cursor-pointer')}}
           </form>
       </div>
@@ -60,7 +67,7 @@
           <hr class='mt-6 border-gray-300 w-full' />
 
           <p class='mt-8'> Esqueceu a senha?
-              <a class='text-blue-500 hover:text-blue-700 font-semibold cursor-pointer'> Redefina aqui!
+              <a onclick="openModal()" class='text-blue-500 hover:text-blue-700 font-semibold cursor-pointer'> Redefina aqui!
           </a>
           </p>
           <p class='flex justify-center text-center items-end text-sm text-gray-400 m-7'>
@@ -72,6 +79,8 @@
             <img class='h-screen w-full object-cover' src="{{ url_for('static', filename='img/splash_art_3.png') }}" alt="imagem da tela de autenticacao" />
         </div>
     </div>
+
+    
     <script>
         function hideMessage(button) {
           var notification = button.parentElement
@@ -92,7 +101,16 @@
         window.onload = function () {
           closeNotificationAfterDelay();
         };
+          // Mostrar ou ocultar senha ao marcar/desmarcar o checkbox
+          document.getElementById('mostrarSenha').addEventListener('change', function () {
+              var senhaInputs = document.querySelectorAll('#pass');
+              senhaInputs.forEach(function (input) {
+                  input.type = this.checked ? 'text' : 'password';
+              }, this);
+          });
+      
       </script>
+      {% include "components/modals/solicitar_redifinir_senha.html" %}
 </body>
 
 </html>

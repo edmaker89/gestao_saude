@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boas-vindas!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-color: #cdf5fd; /* Cor de fundo branco */
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white; /* Cor de fundo branco */
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .primary-email {
+            background-color: #013179; /* Azul claro */
+            color: #fff;
+        }
+
+        .is-link {
+            background-color: #3273dc; /* Azul escuro */
+            color: #fff;
+        }
+
+        .has-text-danger {
+            color: #ff3860; /* Vermelho */
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2 class="title has-text-link">Olá {{nome_do_usuario}},</h2>
+        <p class="subtitle">Bem-vindo ao Nosso Serviço! Estamos felizes em tê-lo como parte da nossa comunidade.</p>
+
+        <p class=""><strong>Aqui estão suas credenciais de acesso:</strong></p><br>
+        <div class="primary-email is-flex is-flex-direction-column is-align-content-center is-aling-items-center p-5">
+                <p class="is-2 has-text-center"><strong class="has-text-white">Usuário:</strong> {{username}}</p></li>
+                <p class="is-4 has-text-center"><strong class="has-text-white">Senha:</strong> {{sua_senha}}</p></li>
+        </div>
+        <br>
+        <p class="is-5">Por motivos de segurança, recomendamos que você altere sua senha assim que possível. Para fazer isso, faça login em sua conta e vá para as configurações de perfil.</p>
+        <br><br><br>
+        <p class="is-4">Agradecemos por escolher nosso serviço! Se precisar de ajuda ou tiver alguma dúvida, não hesite em entrar em contato conosco.</p>
+        <br><br><br>
+        <p class="is-4">Atenciosamente,<br>
+        Centro de Soluções Tecnologicas<br>
+        Centro Administrativo de Saúde - Itaberaí-GO</p>
+    </div>
+</body>
+</html>

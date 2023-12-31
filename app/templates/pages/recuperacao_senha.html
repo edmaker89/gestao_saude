@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href='{{ url_for("static", filename="css/styles.css") }}'>
+    <title>Recuperação de Senha</title>
+</head>
+<body>
+<div style="margin: 32px auto;">
+<section style="min-width: 600px;">
+    <div class="container">
+                <div class="box">
+                    <h1 class="title has-text-centered">Recuperação de Senha</h1>
+
+                    <!-- Formulário de Recuperação de Senha -->
+                    <form action="" method="post">
+                        <div class="field">
+                            <label class="label">Nova Senha</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="password" placeholder="Nova Senha" name="senha" required id="pass" minlength="6">
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Confirmar Senha</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="password" placeholder="Confirmar Senha" name="confirmar_senha" id="pass" required minlength="6">
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="mostrarSenha"> Mostrar Senha
+                                </label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="username" id="username" value={{username}}>
+                        <input type="hidden" name="token" id="token" value={{token}}>
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-primary">Recuperar Senha</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+</section>
+
+<script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
+<script>
+    // Mostrar ou ocultar senha ao marcar/desmarcar o checkbox
+    document.getElementById('mostrarSenha').addEventListener('change', function () {
+        var senhaInputs = document.querySelectorAll('#pass');
+        senhaInputs.forEach(function (input) {
+            input.type = this.checked ? 'text' : 'password';
+        }, this);
+    });
+</script>
+
+</body>
+</html>

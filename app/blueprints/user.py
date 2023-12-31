@@ -13,6 +13,7 @@ from app.forms.reset_senha_form import ResetSenhaForm
 from app.forms.role_user_form import RoleUserForm
 from app.models.departamento import Departamento
 from app.models.users import Usuario
+from app.utils.comunications.email import novo_cadastro
 from app.utils.dict_layout import button_layout
 from app.utils.verify_permission import permission_required
 
@@ -129,6 +130,8 @@ def create_user():
             db.session.commit()
 
             flash(f'Usuario criado com sucesso: login {new_user.username}', 'success')
+            # implementar envio de email aqui
+            novo_cadastro(nome_completo=nome_completo, username=username, senha=senha, email=email)
             return redirect(url_for('user.manager_user'))
         except Exception as e:
             flash(f'Algo inesperado aconteceu, tente novamente mais tarde!', 'danger')

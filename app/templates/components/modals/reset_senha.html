@@ -8,10 +8,11 @@
         <section class="modal-card-body">
             <form action="{{url_for('user.reset_pass')}}" method="post">
                 <label for="nova_senha"><strong>Nova senha:</strong></label>
-                <input class="input" type="password" name="nova_senha" id="nova_senha" required minlength="6">
+                <input class="input" type="password" name="nova_senha" id="pass" required minlength="6">
                 <label for="confirmar_senha"><strong>Confirmar senha:</strong></label>
-                <input class="input" type="password" name="confirmar_senha" id="confirmar_senha" required minlength="6">
+                <input class="input" type="password" name="confirmar_senha" id="pass" required minlength="6">
                 <input type="hidden" name="user_id" id="user_id">
+                {% include "components/mostrar_senha.html" %}
             </section>
             <footer class="modal-card-foot">
                 <button type="submit" class="button is-primary">Salvar</button>

@@ -35,6 +35,7 @@ class UsuarioController:
             user = Usuario.get_user(id_user)
             hash_nova_senha = generate_password_hash(password=nova_senha)
             user.senha = hash_nova_senha
+            user.tentativa = 0
         
             db.session.commit()
             return True
@@ -92,3 +93,6 @@ class UsuarioController:
         if pessoas:
             return True
         return False
+    
+        
+

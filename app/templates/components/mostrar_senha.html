@@ -1,0 +1,17 @@
+<div class="field mt-4">
+    <div class="control">
+        <label class="checkbox">
+            <input type="checkbox" id="mostrarSenha"> Mostrar Senha
+        </label>
+    </div>
+</div>
+
+<script>
+    // Mostrar ou ocultar senha ao marcar/desmarcar o checkbox
+    document.getElementById('mostrarSenha').addEventListener('change', function () {
+        var senhaInputs = document.querySelectorAll('#pass');
+        senhaInputs.forEach(function (input) {
+            input.type = this.checked ? 'text' : 'password';
+        }, this);
+    });
+</script>

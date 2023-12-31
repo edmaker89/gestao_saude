@@ -119,4 +119,9 @@ def init_app(app):
 
       return render_template('/pages/index.html', title=title, subtitle=subtitle)
    
+
+   @app.route('/teste')
+   def teste():
+      return 'hellow teste'
+   
       

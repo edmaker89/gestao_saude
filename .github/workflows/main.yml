@@ -8,15 +8,6 @@ jobs:
     CI:
         runs-on: ubuntu-latest
 
-        env:
-            SECRET_KEY: ${{ secrets.SECRET_KEY }}
-            DATABASE_URI: ${{ secrets.DATABASE_URI }}
-            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-            EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
-            EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
-            EMAIL_USER: ${{ secrets.EMAIL_USER }}
-            FLASK_APP: ${{ secrets.FLASK_APP }}
-
         steps:
             - uses: actions/checkout@v4.1.1
             - name: Escolher versão do python 3.12
@@ -34,16 +25,6 @@ jobs:
               with:
                 username: ${{secrets.DOCKER_USERNAME}}
                 password: ${{secrets.DOCKER_PASSWORD}}
-
-            - name: Configurar Ambiente para Docker
-              run: |
-                echo "SECRET_KEY=${SECRET_KEY}" >> $GITHUB_ENV
-                echo "SQLALCHEMY_DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
-                echo "EMAIL_PASSWORD=${EMAIL_PASSWORD}" >> $GITHUB_ENV
-                echo "EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT}" >> $GITHUB_ENV
-                echo "EMAIL_SMTP_SERVER=${EMAIL_SMTP_SERVER}" >> $GITHUB_ENV
-                echo "EMAIL_USER=${EMAIL_USER}" >> $GITHUB_ENV
-                echo "FLASK_APP=${FLASK_APP}" >> $GITHUB_ENV
                 
             - name: Construção da imagem Docker
               uses: docker/build-push-action@v5.0.0
@@ -52,5 +33,5 @@ jobs:
                 file: ./Dockerfile
                 push: true
                 tags: |
-                    edmaker89/sis-healthplus:v1.0.0
+                    edmaker89/sis-healthplus:v1.0.1
                     edmaker89/sis-healthplus:latest

@@ -9,7 +9,7 @@ COPY requirements.txt requirements.txt
 
 COPY settings.toml settings.toml
 
-# COPY .env .env
+COPY .env .env
 
 # Instale as dependências
 RUN pip install -r requirements.txt

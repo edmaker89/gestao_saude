@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 8000
 
 # Configuração do Gunicorn
-CMD ["gunicorn", "app.app:create_app()", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "app.app:create_app()", "--bind", "0.0.0.0:8000", "--certfile", "cert.pem", "--keyfile", "/privkey.pem"]

@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-
-
+{% for aviso, aviso_html in avisos %}
+<div class="notification is-info is-light">
+    <h2 class='subtitle'>
+        <strong>
+            {{aviso.titulo}}
+        </strong>
+    </h2>
+    <div class="has-text-black">
+        {{aviso_html|safe}}
+        <p>{{aviso.autor_relacionamento.nome_completo}}</p>
+    </div>
+</div>
+<hr>
+{% endfor %}
 {% endblock content %}

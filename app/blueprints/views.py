@@ -8,10 +8,13 @@ from app.blueprints.admin import bp_admin
 from app.controllers.usuario_controller import UsuarioController
 from app.ext.auth import login_manager
 from werkzeug.exceptions import Forbidden
+from app.models.avisos import Avisos
 from app.models.token import Token
 
 from app.models.users import Usuario
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
+
+import markdown
 
 def init_app(app):
    # registre seus blueprints ex.: app.register_blueprint(modulo)
@@ -116,8 +119,10 @@ def init_app(app):
    def index():
       title = 'Avisos'
       subtitle = 'Leia com regularidade esses avisos'
+      avisos = Avisos.query.order_by(Avisos.create_at.desc()).all()
+      avisos_html = [markdown.markdown(aviso.descricao.replace(r'\n', '<br>')) for aviso in avisos]
 
-      return render_template('/pages/index.html', title=title, subtitle=subtitle)
+      return render_template('/pages/index.html', title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html))
    
 
    @app.route('/teste')

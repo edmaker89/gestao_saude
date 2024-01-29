@@ -87,10 +87,16 @@
         <a class="pagination-next" href="{{ url_for('mail.all_mails', page=mails.next_num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}" >Próximo</a>
         {% endif %}
         <ul class="pagination-list">
-            {% for num in mails.iter_pages() %}
-                <li>
-                    <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.all_mails', page=num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">{{ num }}</a>
-                </li>
+            {% for num in mails.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if num %}
+                    <li>
+                        <a class="pagination-link {% if num == mails.page %}is-current{% endif %}" href="{{ url_for('mail.all_mails', page=num, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem=ordem) }}">{{ num }}</a>
+                    </li>
+                {% else %}
+                <strong>
+                    <li><span class="pagination-ellipsis">&hellip;</span></li>
+                </strong>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

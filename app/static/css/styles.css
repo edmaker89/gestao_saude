@@ -121,7 +121,6 @@ footer {
 
 .custom-card {
     width: 290px; /* Largura fixa dos cartões */
-    height: 280px;
     margin-right: 20px; /* Espaçamento entre os cartões */
     background-color: #f0f8ff; /* Azul claro de fundo */
     transition: background-color 0.3s; /* Transição suave de cor */

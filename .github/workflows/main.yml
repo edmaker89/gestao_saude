@@ -33,5 +33,5 @@ jobs:
                 file: ./Dockerfile
                 push: true
                 tags: |
-                    edmaker89/sis-healthplus:v1.0.3
+                    edmaker89/sis-healthplus:v1.0.4
                     edmaker89/sis-healthplus:latest

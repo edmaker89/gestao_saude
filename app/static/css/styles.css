@@ -198,3 +198,6 @@ a.disabled {
     width: 100%; /* Ou qualquer outra largura desejada */
 }
 
+.text-aviso {
+    min-height: 20em;
+  }

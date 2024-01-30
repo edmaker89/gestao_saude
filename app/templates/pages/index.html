@@ -1,10 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
+{% if 'gestao de avisos' in user_permissions %}
+<div class="mb-3">
+    <a class="" href="{{url_for('aviso_new')}}">
+        + novo aviso
+    </a>
+</div>
+{% endif %}
+
 {% for aviso, aviso_html in avisos %}
 <div class="notification is-info is-light">
     <h2 class='subtitle'>
         <strong>
             {{aviso.titulo}}
+            {% if 'gestao de avisos' in user_permissions %}
+                <a href="{{url_for('aviso_edit', id_aviso=aviso.id)}}">
+                    <span class="has-text-link mr-2"><i class="fas fa-edit"></i></span>
+                </a>
+                <a href="{{url_for('delete_aviso', id_aviso=aviso.id)}}">
+                    <span class="has-text-danger"><i class="fas fa-trash"></i></span>
+                </a>
+            {% endif %}
         </strong>
     </h2>
     <div class="has-text-black">

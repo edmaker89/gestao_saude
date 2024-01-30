@@ -1,5 +1,5 @@
 from flask import abort, flash, redirect, render_template, jsonify, request, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
 from app.blueprints.mail import bp_mail
 from app.blueprints.auth import bp_auth
 from app.blueprints.user import bp_user
@@ -8,8 +8,10 @@ from app.blueprints.admin import bp_admin
 from app.controllers.usuario_controller import UsuarioController
 from app.ext.auth import login_manager
 from werkzeug.exceptions import Forbidden
+from app.forms.avisos_form import AvisosForm
 from app.models.avisos import Avisos
 from app.models.token import Token
+from app.ext.database import db
 
 from app.models.users import Usuario
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
@@ -124,9 +126,65 @@ def init_app(app):
 
       return render_template('/pages/index.html', title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html))
    
+   @app.route('/aviso/edit/<id_aviso>', methods=['GET', 'POST'])
+   @login_required
+   def aviso_edit(id_aviso):
+      aviso = Avisos.query.filter(Avisos.id == id_aviso).first()
+      if request.method == 'POST':
+         form = AvisosForm(request.form)
+         aviso.descricao = form.descricao.data 
+         aviso.titulo = form.titulo.data
 
-   @app.route('/teste')
-   def teste():
-      return 'hellow teste'
+         try:
+            db.session.commit()
+            flash('Aviso editado com sucesso', 'success')
+            return redirect(url_for('index'))
+         except:
+            flash('Ocorreu um erro inesperado, tente novamente', 'danger')
+            return redirect(url_for('aviso_edit', id_aviso=id_aviso))
+
+      title = 'Editar Aviso'
+      form = AvisosForm()
+      form.descricao.data = aviso.descricao
+      form.titulo.data = aviso.titulo
+
+      return render_template ('/pages/avisos/form.html', form=form, aviso=aviso, title=title, id_aviso=id_aviso)
    
+   @app.route('/aviso/new/', methods=['GET', 'POST'])
+   @login_required
+   def aviso_new():
+      if request.method == 'POST':
+         new_aviso = Avisos()
+         form = AvisosForm(request.form)
+         titulo = form.titulo.data
+         descricao = form.descricao.data
+         new_aviso.autor = current_user.id
+         new_aviso.titulo = titulo
+         new_aviso.descricao = descricao
+
+         try:
+            db.session.add(new_aviso)
+            db.session.commit()
+            flash('Aviso criado com sucesso', 'success')
+            return redirect(url_for('index'))
+         except:
+            flash('Ocorreu um erro inesperado, tente novamente', 'danger')
+            return redirect(url_for('aviso_new'))
+         
+      title = 'Criar aviso'
+      form = AvisosForm()
+      return render_template ('/pages/avisos/form.html', form=form, title=title)
+   
+   @app.route('/aviso/delete/<id_aviso>')
+   @login_required
+   def delete_aviso(id_aviso):
+      aviso = Avisos.query.filter(Avisos.id == id_aviso).first()
       
+      try:
+         db.session.delete(aviso)
+         db.session.commit()
+         flash('Aviso apagado com sucesso', 'success')
+         return redirect(url_for('index'))
+      except:
+         flash('Erro ao tentar apagar o aviso, tente novamente mais tarde!', 'danger')
+         return redirect(url_for('index'))

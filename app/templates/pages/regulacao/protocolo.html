@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="mb-5">
+        <p><strong>Pesquisar usuarios: </strong></p>
+        <form action="" method="get">
+            <div class="field mt-4">
+                <div class="control">
+                    <label for="nome">Nome ou Usuario: </label>
+                    <input class="input" type="text" name="nome" placeholder="Procure digitando o nome ou usuario" value={{nome}}>
+                </div>
+            </div>
+            <div class="is-flex columns">
+                <div class="is-flex column">
+                    <div class="is-flex is-flex-direction-column">
+                        <label for="departamento">Departamento: </label>
+                        <div class="select">
+                            <select name="departamento" id="departamento">
+                                <option value=''></option>
+                                {% for departamento_option in departamentos %}
+                                <option value="" >Departamento</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="is-flex is-justify-content-flex-end column">
+                    <div class="control is-flex is-justify-content-flex-end mt-5">
+                        <a href="" class="button is-danger mr-4">Limpar</a>
+                        <button type="submit" class="button is-info">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        <hr/>
+    </div>
+  <div class="notification p-3 bg-blue-plus">
+    <div class="columns">
+        <div class="column is-flex is-align-items-center">
+            <p>
+                <strong class="has-text-dark">
+                    Usuarios encontrados:
+                </strong>
+            </p>
+        </div>
+        <div class="column">
+            <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                <span class="has-text-dark">Ordem:</span>
+                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+            </div>
+        </div>
+    </div>
+  </div>
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+        <th>Nome</th>
+        <th>Usuario</th>
+        <th>Departamento</th>
+        <th>email</th>
+        <th>role</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for protocolo in list_protocolo %}
+            <tr>
+                <th></th>
+                <td>
+                </td>
+                <td>
+                   
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="" class="tooltip" data-tooltip="editar">
+                      <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
+                    </a>                    
+                    <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                            <a >
+                                <span class=""><i class="fa-solid fa-ellipsis-vertical has-text-dark px-2"></i></span>
+                            </a>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                            <div class="dropdown-content">
+                                <a onclick="openResetSenhaModal('')" class="dropdown-item"><i class="fa-solid fa-key has-text-dark"></i>
+                                    Redefinir Senha
+                                </a>
+                                <a onclick="openRoleUser(, )" class="dropdown-item">
+                                    <span class=""><i class="fa-solid fa-user-tie has-text-dark"></i> Definir permissão</span>
+                                </a>
+                                
+                                  <a href="" class="dropdown-item">
+                                    <span class="has-text-danger"><i class="fa-solid fa-unlock icon-hover has-text-danger"></i> <strong>Desbloquear</strong></span>
+                                </a>
+                                
+                                    <a href="" class="dropdown-item">
+                                        <span class=""><i class="fa-solid fa-lock icon-hover has-text-danger"></i> Bloquear</span>
+                                    </a>
+                               
+                            </td>
+                            </div>
+                        </div>
+                    </div>
+                      
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

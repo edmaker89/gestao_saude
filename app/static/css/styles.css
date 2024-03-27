@@ -39,17 +39,21 @@ main {
 }
 
 .bg-light-blue {
-    background-color: #f5fcff;
+    background-color: #d6eaf8; /* Azul claro mais escuro */
 }
+
 .bg-blue {
-    background-color: #cdf5fd;
+    background-color: #aed6f1; /* Azul médio mais escuro */
 }
+
 .bg-blue-plus {
-    background-color: #89cff3;
+    background-color: #7fb3d5; /* Azul mais escuro */
 }
+
 .bg-white {
     background-color: white;
 }
+
 
 .bg-form {
     border-radius: 15px;
@@ -57,16 +61,16 @@ main {
 }
 
 .navbar {
-	background-color: #89cff3; /* Cor de fundo da navbar */
+	background-color: #035ea0; /* Cor de fundo da navbar */
 	color: #2c3e50; /* Cor do texto da navbar */
 }
 .navbarmenu {
-	background-color: #cdf5fd; /* Cor de fundo da navbar */
-	color: #2c3e50; /* Cor do texto da navbar */
+	background-color: white; /* Cor de fundo da navbar */
+	
 }
 
 .button.is-primary {
-    background-color: #00a9ff; /* Cor de fundo do botão primário */
+    background-color: #015dc7; /* Cor de fundo do botão primário */
     color: white; /* Cor do texto do botão primário */
     transition: background-color 0.3s; /* Transição suave de cor */
 }
@@ -84,8 +88,6 @@ main {
 .button.is-light:hover {
     background-color: #87c2eb; /* Cor de fundo do botão light no hover */
 }
-/* styles.css */
-
 
 aside.menu {
     flex: 0 0 250px; /* Largura fixa de 250px, não flexível */

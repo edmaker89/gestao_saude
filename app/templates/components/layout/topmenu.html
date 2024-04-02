@@ -26,17 +26,20 @@
           </div>
         </div>
 
-        {% if 'acesso restrito' in user_permissions %}
+        {% if 'regulacao' in user_permissions %}
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
             Central de Regulação
           </a>
   
           <div class="navbar-dropdown">
+            <a href="{{url_for('regulacao.cidadao_novo')}}" class="navbar-item">
+              Cidadãos
+            </a>
             <a href="{{url_for('regulacao.protocolo')}}" class="navbar-item">
               Protocolo
             </a>
-            {% if 'todas correspondencias' in user_permissions %}
+            {% if 'acesso restrito' in user_permissions %}
               <a href="" class="navbar-item">
                 Relatórios
               </a>

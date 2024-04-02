@@ -10,6 +10,8 @@ def format_cpf(cpf):
     
 def format_data(data):
     try:
+        if type(data) == str:
+            data = datetime.strptime(data, "%Y-%m-%d")
         data_formatada = data.strftime("%d/%m/%Y")
         return Markup(data_formatada)
     except ValueError:

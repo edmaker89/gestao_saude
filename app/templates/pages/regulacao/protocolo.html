@@ -2,29 +2,52 @@
 {% block content %}
 <div class="container">
     <div class="mb-5">
-        <p><strong>Pesquisar usuarios: </strong></p>
+        <p><strong>Pesquisar protocolos: </strong></p>
         <form action="" method="get">
             <div class="field mt-4">
                 <div class="control">
-                    <label for="nome">Nome ou Usuario: </label>
-                    <input class="input" type="text" name="nome" placeholder="Procure digitando o nome ou usuario" value={{nome}}>
+                    <label for="nome">Cidadão</label>
+                    <input class="input" type="text" name="nome" placeholder="Nome, CPF, CNS" value={{nome}}>
                 </div>
             </div>
             <div class="is-flex columns">
                 <div class="is-flex column">
+                    <div class="is-flex is-flex-direction-column mr-4">
+                        <label for="protocolo">Protocolo: </label>
+                        <input class="input" type="text" name="protocolo" placeholder="0000/0000" value={{protocolo}}>
+                    </div>
+                    <div class="is-flex is-flex-direction-column mr-4">
+                        <label for="data_entrada">Data Entrada: </label>
+                        <input class="input" type="date" name="data_entrada" placeholder="00/00/0000" value={{data_entrada}}>
+                    </div>
+                    <div class="is-flex is-flex-direction-column mr-4">
+                        <label for="data_liberacao">Data Liberação: </label>
+                        <input class="input" type="date" name="data_liberacao" placeholder="00/00/0000" value={{data_liberacao}}>
+                    </div>
                     <div class="is-flex is-flex-direction-column">
-                        <label for="departamento">Departamento: </label>
+                        <label for="Especilidade">Especialidade: </label>
                         <div class="select">
-                            <select name="departamento" id="departamento">
+                            <select name="Especilidade" id="Especilidade">
                                 <option value=''></option>
-                                {% for departamento_option in departamentos %}
-                                <option value="" >Departamento</option>
+                                {% for Especilidade_option in Especilidades %}
+                                <option value="" >Especilidade</option>
                                 {% endfor %}
                             </select>
-                        </div>
-                        
+                        </div> 
+                    </div>
+                    <div class="is-flex is-flex-direction-column">
+                        <label for="status">Situação: </label>
+                        <div class="select">
+                            <select name="status" id="status">
+                                <option value=''></option>
+                                {% for status_option in statuss %}
+                                <option value="" >Situação</option>
+                                {% endfor %}
+                            </select>
+                        </div> 
                     </div>
                 </div>
+                
                 <div class="is-flex is-justify-content-flex-end column">
                     <div class="control is-flex is-justify-content-flex-end mt-5">
                         <a href="" class="button is-danger mr-4">Limpar</a>
@@ -41,7 +64,7 @@
         <div class="column is-flex is-align-items-center">
             <p>
                 <strong class="has-text-dark">
-                    Usuarios encontrados:
+                    Protocolos encontrados:
                 </strong>
             </p>
         </div>
@@ -57,25 +80,31 @@
   <table class="table is-striped is-hoverable is-fullwidth">
     <thead>
         <tr>
-        <th>Nome</th>
-        <th>Usuario</th>
-        <th>Departamento</th>
-        <th>email</th>
-        <th>role</th>
+        <th>Protocolo</th>
+        <th>Data Entrada</th>
+        <th>Cidadão</th>
+        <th>Telefone</th>
+        <th>Especialidade</th>
+        <th>Data Liberação</th>
+        <th>Data Entrega</th>
+        <th>Status</th>
         <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for protocolo in list_protocolo %}
+        {% for protocolo in protocolos %}
             <tr>
-                <th></th>
+                <th>{{protocolo.numero}}</th>
+                <td>{{protocolo.data_entrada}}</td>
+                <td>{{protocolo.cidadao}}</td>
+                <td>{{protocolo.whatsapp}} | {{protocolo.telefone}}</td>
+                <td>{{protocolo.especilialidade}}</td>
                 <td>
-                </td>
-                <td>
-                   
-                </td>
-                <td></td>
-                <td></td>
+                    {% if protocolo.data_liberacao %}
+                        {{protocolo.data_liberacao|format_data}}</td>
+                    {% endif %}
+                <td>{{protocolo.data_entrega}}</td>
+                <td>{{protocolo.status}}</td>
                 <td>
                     <a href="" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>

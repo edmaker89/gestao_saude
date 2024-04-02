@@ -133,6 +133,14 @@ footer {
     column-gap: 20px; /* Espaçamento entre as colunas */
 }
 
+.tam-field-1-125 {
+    max-width: 50px;
+}
+
+.tam-field-1-25 {
+    max-width: 75px;
+}
+
 .tam-field-1-5 {
     max-width: 125px;
 }
@@ -202,4 +210,65 @@ a.disabled {
 
 .text-aviso {
     min-height: 20em;
+  }
+
+/* SELECT USUARIOS */
+
+.select {
+    margin-top: 20px;
+    position: relative;
+}
+
+.btn-select {
+    border: 1px solid gray;
+    padding: 5px 8px;
+    width: 200px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+}
+
+.select-content {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    width: 200px;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+}
+
+.select-content input {
+    padding: 3px;
+    width: 100%;
+    margin-bottom: 5px;
+    outline: 0;
+    font-size: 14px;
+}
+
+.select-content .options {
+    max-height: 250px;
+    list-style: none;
+    overflow: auto;
+    height: 100%;
+    font-size: 14px;
+}
+
+.options li {
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+  
+  .options li:hover {
+    background-color: lightgray;
+  }
+  
+  .select .active {
+    display: block;
   }

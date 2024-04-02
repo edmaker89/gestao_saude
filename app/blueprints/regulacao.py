@@ -1,13 +1,193 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import login_required
 from app.controllers.depart_controller import DepartController
 from app.controllers.usuario_controller import UsuarioController
+from app.forms.cidadao_form import CidadaoForm
 from app.forms.depart_form import DepartForm
 
+from app.forms.protocolo_form import ProtocoloForm
 from app.models.departamento import Departamento
 from app.utils.dict_layout import button_layout
 
 bp_regulacao = Blueprint('regulacao', __name__, url_prefix='/regulacao' )
+
+cidadaos = [
+    {
+        'nome': 'Sebastiana Camilo Neris',
+        'telefone': 'XX XXXXXXXXX',  # Preencha com o número de telefone da pessoa
+        'cpf': 'XXX.XXX.XXX-XX',  # Preencha com o CPF da pessoa
+        'endereco': 'Endereço completo',  # Preencha com o endereço da pessoa
+        'email': 'email@example.com'  # Preencha com o email da pessoa
+    },
+    {
+        'nome': 'Marcos Paulo de Souza',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Benedito Rodrigues Chaveiro Neto',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Daniela Dias de Oliveira',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Marco Antonio Morais Guimarães',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Lúcia Maria da Silva Costa',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Polyane Guimarães da Mota',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Noah Borges Dias',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Nair Maria de Jesus Silva',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Herculano Pereira da Silva',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Sandra Alves de Oliveira',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Maria do Rosário Emídio de Oliveira',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Patrícia Cristina Pistore',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Cleusa Francisco Camargo Graciano',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Solange Ribeiro da Silva',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'José Modesto de Souza',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Oranizio José de Sousa',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Lyandra Vitória Gonçalves de Sousa',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Estácio José de Lima Neto',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Lucas Luiz da Silva Oliveira',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Elismar Miguel Almeida Faria Barbosa',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Ivaneide Ferreira da Cruz',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Gemima Amaral Cândido',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'Marceni Paiva Moreira',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    },
+    {
+        'nome': 'José de Fátima de Souza',
+        'telefone': 'XX XXXXXXXXX',
+        'cpf': 'XXX.XXX.XXX-XX',
+        'endereco': 'Endereço completo',
+        'email': 'email@example.com'
+    }
+]
 
 list_protocolo = [
     {
@@ -138,6 +318,27 @@ list_protocolo = [
     }
 ]
 
+@bp_regulacao.route('/cidadao/novo/', methods=['GET', 'POST'])
+@login_required
+def cidadao_novo():
+    title = "Cadastrar novo cidadão"
+    form = CidadaoForm()
+    return render_template('pages/regulacao/cidadao/form.html',
+                           form = form,
+                           title=title)
+
+
+@bp_regulacao.route('/buscar_cidadao')
+def buscar_cidadao():
+    termo_busca = request.args.get('query')  # Obtém o termo de busca do parâmetro cidadao
+    # Chame sua função que consome a API com o termo de busca
+    resultados = cidadaos
+    # Renderiza os resultados como uma lista de <li>
+    lista_resultados = jsonify([resultado for resultado in resultados])
+
+    return lista_resultados
+
+
 @bp_regulacao.route('/protocolo')
 @login_required
 def protocolo():
@@ -145,11 +346,36 @@ def protocolo():
     page = request.args.get('page', 1, type=int)
     departamento = request.args.get('departamento', '', type=str)
     ordem = request.args.get('ordem', 'asc', type=str)
+    data_entrada = request.args.get('data-entrada', 'asc', type=str)
+    data_liberacao = request.args.get('data-liberacao', 'asc', type=str)
+    data_entrega = request.args.get('data-entrega', 'asc', type=str)
+    especialidade = request.args.get('especialidade', 'asc', type=str)
+    status = request.args.get('status', 'asc', type=str)
     per_page = 20
 
-    novo_departamento = button_layout(url='depart.new_depart', classname='button is-primary', label="Novo protocolo", icon='fa-solid fa-file-circle-plus')
+    novo_protocolo = button_layout(url='regulacao.selecionar_cidadao', classname='button is-primary', label="Novo protocolo", icon='fa-solid fa-file-circle-plus')
 
-    lista_departamentos = DepartController.get_departs_by_filters(page=page, per_page=per_page, departamento=departamento, ordem=ordem)
+    return render_template('/pages/regulacao/protocolo.html', 
+                           departamento=departamento, 
+                           page=page, 
+                           protocolos=list_protocolo, 
+                           ordem=ordem, 
+                           title=title, 
+                           button_layout=novo_protocolo)
+    
+@bp_regulacao.route('/protocolo/selecionar_cidadao')
+@login_required
+def selecionar_cidadao():
+    
+    return render_template('pages/regulacao/selecionar_cidadao.html')
 
-    return render_template('/pages/regulacao/protocolo.html', departamento=departamento, page=page, protocolos=list_protocolo, ordem=ordem, title=title, button_layout=novo_departamento)
-
+@bp_regulacao.route('/protocolo/form', methods=['GET', 'POST'])
+@login_required
+def form_protocolo():
+    
+    form = ProtocoloForm()
+    return render_template('pages/regulacao/form_protocolo.html', 
+                           id_protocolo=None, 
+                           form=form,
+                           citizens=cidadaos
+                           )

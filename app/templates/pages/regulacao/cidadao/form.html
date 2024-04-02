@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if id_protocolo %}
+        <form action="{{url_for('regulacao.cidadao_novo', id_cidadao=id_cidadao)}}" method="post">
+        <input type="hidden" name="id_cidadao" value={{id_cidadao}}>
+    {% else %}
+        <form action="{{url_for('regulacao.cidadao_novo')}}" method="post">
+    {% endif %}
+    <div class="container">
+      <div class="notification p-2 is-info">
+        <strong>
+          Dados pessoais:
+        </strong>
+      </div>
+      <div class="field tam-field-3">
+        <strong>{{form.nome.label()}}</strong> 
+          {{form.nome(class='input', placeholder="Nome completo", oninput="this.value = this.value.toUpperCase()")}}
+      </div>   
+      <div class="field tam-field-3">
+        <div class='columns'>
+          <div class='column'>
+            <strong>{{form.cns.label()}}</strong> 
+              {{form.cns(class='input')}}
+          </div>
+          <div class='column'>
+          <strong>{{form.cpf.label()}}</strong> 
+            {{form.cpf(class='input')}}
+          </div>
+          <div class='column tam-field-1'>
+          <strong>{{form.rg.label()}}</strong> 
+            {{form.rg(class='input')}}
+          </div>
+          <div class='column'>
+          <strong>{{form.orgao_expedidor.label()}}</strong> 
+            {{form.orgao_expedidor(class='input', oninput="this.value = this.value.toUpperCase()")}}
+          </div>
+        </div>
+      </div>   
+      <div class="field tam-field-3">
+        <div class='columns'>
+          <div class='column tam-field-1'>
+            <strong>{{form.data_de_nascimento.label()}}</strong> 
+              {{form.data_de_nascimento(class='input')}}
+          </div>
+          <div class='column tam-field-1'>
+            <strong>{{form.sexo.label()}}</strong> 
+              {{form.sexo(class='input')}}
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="notification p-2 is-info">
+        <strong>
+          Contato:
+        </strong>
+      </div>
+      <div class="field tam-field-3">
+        <div class="is-flex is-align-content-center">
+          <div class="is-flex is-flex-direction-column tam-field-1-25">
+            <strong>DDD </strong>
+            <input class="input" type="number" name="ddd" id="ddd" maxlength="2">
+          </div>
+          <div class="is-flex is-flex-direction-column ml-3">
+            <strong>telefone </strong>
+            <input class="input" type="number" name="telefone" id="telefone" maxlength="9" minlength="8">
+          </div>
+          <div class="is-flex is-flex-direction-row is-align-content-end ml-3 pt-3">
+            <div class="pt-5">
+              <input type="checkbox" name="whatsapp" id="whatsapp">
+              Whatsapp
+            </div>
+          </div>   
+          <div class="is-flex is-flex-direction-row is-align-content-end ml-6 mt-5">
+            <div class="">
+              <a class="button is-info" href=""><i class="fa-solid fa-plus mr-2"></i> Adicionar</a>
+            </div>
+          </div>   
+        </div>
+        <div class="mt-6 tam-field-3">
+          <table class="table is-striped is-hoverable is-fullwidth is-bordered is-narrow">
+            <thead>
+              <tr>
+                <th>DDD</th>
+                <th>Telefone</th>
+                <th>Whatsapp</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>62</td>
+                <td>985054642</td>
+                <td>Sim</td>
+                <input type="hidden" name="telefones">
+                <td>
+                  <a class="is-info" href="">
+                    <i class="fa-solid fa-pen-to-square "></i>
+                  </a>
+                  <a class="is-danger" href="">
+                    <i class="fa-solid fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr>
+        
+      </div>
+      <div class="field tam-field-3">
+        <strong>
+          {{form.responsavel.label()}}
+        </strong>
+        {{form.responsavel(class='input', oninput="this.value = this.value.toUpperCase()", placeholder="Selecione o responsavel pelo cidadão, se houver")}}
+      </div>
+      <hr>
+      <div class="notification p-2 is-info">
+        <strong>
+          Endereço:
+        </strong>
+      </div>
+      <div class="field tam-field-3">
+        <div class="columns">
+          <div class="column">
+            <strong>
+              {{form.cep.label()}}
+            </strong>
+            {{form.cep(class='input', placeholder="00000-000", maxlength="9")}}
+          </div>
+          <div class="column">
+            <strong>
+              {{form.cidade.label()}}
+            </strong>
+            {{form.cidade(class='input', oninput="this.value = this.value.toUpperCase()")}}
+          </div>
+          <div class="column">
+            <strong>
+              {{form.uf.label()}}
+            </strong>
+            {{form.uf(class='input', oninput="this.value = this.value.toUpperCase()", maxlength="2")}}
+          </div>
+        </div>
+      </div>   
+      <div class="field tam-field-3">
+        <strong>{{form.logradouro.label()}}</strong> 
+          {{form.logradouro(class='input', placeholder="Endereço completo")}}
+      </div> 
+      <div class="field tam-field-3">
+        <div class="columns">
+          <div class="column">
+            <strong>
+              {{form.numero.label()}}
+            </strong>
+            {{form.numero(class='input', placeholder="")}}
+          </div>
+          <div class="column">
+            <strong>
+              {{form.complemento.label()}}
+            </strong>
+            {{form.complemento(class='input', oninput="this.value = this.value.toUpperCase()", placeholder="Quadra, lote, casa, apto.")}}
+          </div>
+          <div class="column">
+            <strong>
+              {{form.bairro.label()}}
+            </strong>
+            {{form.bairro(class='input')}}
+          </div>
+        </div>
+      </div>
+      <hr>   
+        <div class="field">
+          <a class="button is-danger" href="{{url_for('regulacao.protocolo')}}">Cancelar</a>
+          {{ form.submit(class = 'button is-primary') }}
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock content %}

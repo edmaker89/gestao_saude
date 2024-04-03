@@ -18,6 +18,6 @@ class CidadaoForm(FlaskForm):
     cidade = StringField('Cidade: ')
     uf = StringField('UF: ')
     ocupacao = StringField('Ocupacao: ')
-    responsavel = StringField('Responsavel: ')
+    mae = StringField('Mãe: ')
     
     submit = SubmitField('Salvar')

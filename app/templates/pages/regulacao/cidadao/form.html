@@ -15,6 +15,12 @@
       <div class="field tam-field-3">
         <strong>{{form.nome.label()}}</strong> 
           {{form.nome(class='input', placeholder="Nome completo", oninput="this.value = this.value.toUpperCase()")}}
+      </div>
+      <div class="field tam-field-3">
+        <strong>
+          {{form.mae.label()}}
+        </strong>
+        {{form.mae(class='input', oninput="this.value = this.value.toUpperCase()", placeholder="Nome completo da mãe do cidadão")}}
       </div>   
       <div class="field tam-field-3">
         <div class='columns'>
@@ -59,10 +65,12 @@
           <div class="is-flex is-flex-direction-column tam-field-1-25">
             <strong>DDD </strong>
             <input class="input" type="number" name="ddd" id="ddd" maxlength="2">
+            <span class="has-text-danger is-size-7 hidden" id="erroddd"></span>
           </div>
           <div class="is-flex is-flex-direction-column ml-3">
             <strong>telefone </strong>
             <input class="input" type="number" name="telefone" id="telefone" maxlength="9" minlength="8">
+            <span class="has-text-danger is-size-7 hidden" id="erroTelefone"></span>
           </div>
           <div class="is-flex is-flex-direction-row is-align-content-end ml-3 pt-3">
             <div class="pt-5">
@@ -72,12 +80,13 @@
           </div>   
           <div class="is-flex is-flex-direction-row is-align-content-end ml-6 mt-5">
             <div class="">
-              <a class="button is-info" href=""><i class="fa-solid fa-plus mr-2"></i> Adicionar</a>
+              <a class="button is-info" onclick="addTel()"><i class="fa-solid fa-plus mr-2"></i> Adicionar</a>
             </div>
           </div>   
         </div>
+        <input type="hidden" name="telefones" id="telefones">
         <div class="mt-6 tam-field-3">
-          <table class="table is-striped is-hoverable is-fullwidth is-bordered is-narrow">
+          <table class="table is-striped is-hoverable is-fullwidth is-bordered is-narrow" id="tabletels">
             <thead>
               <tr>
                 <th>DDD</th>
@@ -87,32 +96,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>62</td>
-                <td>985054642</td>
-                <td>Sim</td>
-                <input type="hidden" name="telefones">
-                <td>
-                  <a class="is-info" href="">
-                    <i class="fa-solid fa-pen-to-square "></i>
-                  </a>
-                  <a class="is-danger" href="">
-                    <i class="fa-solid fa-trash"></i>
-                  </a>
-                </td>
-              </tr>
+                <!-- inserido com javascript os elementos da tabela -->
             </tbody>
           </table>
-        </div>
-        <hr>
-        
+        </div>        
       </div>
-      <div class="field tam-field-3">
-        <strong>
-          {{form.responsavel.label()}}
-        </strong>
-        {{form.responsavel(class='input', oninput="this.value = this.value.toUpperCase()", placeholder="Selecione o responsavel pelo cidadão, se houver")}}
-      </div>
+      
       <hr>
       <div class="notification p-2 is-info">
         <strong>
@@ -175,4 +164,5 @@
       </div>
     </form>
   </div>
+  <script src="{{url_for('static', filename="js/select.js")}}"></script>
 {% endblock content %}

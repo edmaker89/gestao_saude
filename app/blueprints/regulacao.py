@@ -1,12 +1,10 @@
-from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+import json
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for, flash
 from flask_login import login_required
-from app.controllers.depart_controller import DepartController
-from app.controllers.usuario_controller import UsuarioController
 from app.forms.cidadao_form import CidadaoForm
-from app.forms.depart_form import DepartForm
 
 from app.forms.protocolo_form import ProtocoloForm
-from app.models.departamento import Departamento
+from app.models.cidadaos import Cidadaos, TelefoneCidadao
 from app.utils.dict_layout import button_layout
 
 bp_regulacao = Blueprint('regulacao', __name__, url_prefix='/regulacao' )
@@ -321,8 +319,62 @@ list_protocolo = [
 @bp_regulacao.route('/cidadao/novo/', methods=['GET', 'POST'])
 @login_required
 def cidadao_novo():
+    if request.method == 'POST':
+        form = CidadaoForm(request.form)
+        novo_cidadao = Cidadaos()
+        novo_cidadao.nome = form.nome.data
+        novo_cidadao.mae = form.mae.data
+        novo_cidadao.cns = form.cns.data
+        novo_cidadao.cpf = form.cpf.data
+        novo_cidadao.rg = form.rg.data
+        novo_cidadao.orgao_expedidor = form.orgao_expedidor.data
+        novo_cidadao.data_de_nascimento = form.data_de_nascimento.data
+        novo_cidadao.sexo = form.sexo.data
+        novo_cidadao.cep = form.cep.data
+        novo_cidadao.cidade = form.cidade.data
+        novo_cidadao.uf = form.uf.data
+        novo_cidadao.logradouro = form.logradouro.data
+        novo_cidadao.numero = form.numero.data
+        novo_cidadao.complemento = form.complemento.data
+        novo_cidadao.bairro = form.bairro.data
+        
+        try:
+            cadastrado = novo_cidadao.save()
+            if cadastrado:
+                msg = 'Cadastrado com sucesso!'
+                flash(msg, 'success')
+                
+            # cadastrar telefone
+            telefones_json = request.form.get('telefones')
+            print('telefones_json', telefones_json)
+            if telefones_json:
+                telefones = json.loads(telefones_json)
+
+                for telefone in telefones:
+                    print(telefone)
+                    print(telefone['ddd'])
+                    novo_telefone = TelefoneCidadao()
+                    novo_telefone.ddd = telefone['ddd']
+                    novo_telefone.numero = telefone['numero']
+                    novo_telefone.tipo = telefone['whatsapp']
+                    novo_telefone.cidadao_id = novo_cidadao.id
+                    
+                    novo_telefone.save()
+            else:
+                msg = f'O cpf {novo_cidadao.cpf} já existe na base de dados!'
+                flash(msg, 'danger')
+        except Exception as e:
+            print(e)
+            flash('Houve um erro inesperado. Tente novamente mais tarde!', 'danger')
+        
+        
+        
+        
+        return redirect(url_for('regulacao.cidadao_novo'))
+    
     title = "Cadastrar novo cidadão"
     form = CidadaoForm()
+    
     return render_template('pages/regulacao/cidadao/form.html',
                            form = form,
                            title=title)

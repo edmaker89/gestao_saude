@@ -1,3 +1,4 @@
+from flask import json
 from markupsafe import Markup 
 from datetime import datetime
 
@@ -37,3 +38,11 @@ def data_padrao(data):
         return data_obj
     except Exception as e:
         return data
+
+# def tojson(obj):
+#     try:
+#         telefones = json.loads(obj)
+#         return Markup(telefones)
+#     except Exception as e:
+#         print(e)
+#         return obj

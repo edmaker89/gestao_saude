@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    {% if id_protocolo %}
-        <form action="{{url_for('regulacao.cidadao_novo', id_cidadao=id_cidadao)}}" method="post">
+    {% if edit %}
+        <form action="{{url_for('regulacao.cidadao_update', id_cidadao=id_cidadao)}}" method="post">
         <input type="hidden" name="id_cidadao" value={{id_cidadao}}>
     {% else %}
         <form action="{{url_for('regulacao.cidadao_novo')}}" method="post">
@@ -84,7 +84,7 @@
             </div>
           </div>   
         </div>
-        <input type="hidden" name="telefones" id="telefones">
+        <input type="hidden" name="telefones" id="telefones" value={{telefones|tojson}}>
         <div class="mt-6 tam-field-3">
           <table class="table is-striped is-hoverable is-fullwidth is-bordered is-narrow" id="tabletels">
             <thead>
@@ -132,7 +132,7 @@
       </div>   
       <div class="field tam-field-3">
         <strong>{{form.logradouro.label()}}</strong> 
-          {{form.logradouro(class='input', placeholder="Endereço completo")}}
+          {{form.logradouro(class='input', placeholder="Endereço completo", oninput="this.value = this.value.toUpperCase()")}}
       </div> 
       <div class="field tam-field-3">
         <div class="columns">
@@ -152,7 +152,7 @@
             <strong>
               {{form.bairro.label()}}
             </strong>
-            {{form.bairro(class='input')}}
+            {{form.bairro(class='input', oninput="this.value = this.value.toUpperCase()")}}
           </div>
         </div>
       </div>

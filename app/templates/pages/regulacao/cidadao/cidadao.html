@@ -76,7 +76,7 @@
                 <td>{{cidadao.data_de_nascimento|format_data}}</td>
                 <td>{{cidadao.mae|title}}</td>
                 <td>
-                    <a href="" class="tooltip" data-tooltip="editar">
+                    <a href="{{url_for('regulacao.cidadao_update', id_cidadao=cidadao.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>                    
                     <a href="" class="tooltip" data-tooltip="detalhes">

@@ -1,4 +1,6 @@
 from datetime import UTC, datetime
+
+from flask import json
 from app.ext.database import db
 
 class Cidadaos(db.Model):
@@ -68,5 +70,19 @@ class TelefoneCidadao(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+    
+    @staticmethod 
+    def delete_all_tels_cidadao(id_cidadao):
+        # Deleta todos os telefones do cidadao com o id_cidadao especificado
+        TelefoneCidadao.query.filter_by(cidadao_id=id_cidadao).delete()
+        db.session.commit()
+    
+    @staticmethod
+    def get_telefones_by_cidadao_id(cidadao_id):
+        telefones = TelefoneCidadao.query.filter_by(cidadao_id=cidadao_id).all()
+        telefones_json = [{"ddd": telefone.ddd, "numero": telefone.numero, "tipo": telefone.tipo} for telefone in telefones]
+        return json.dumps(telefones_json)
+        
+        
     def __repr__(self):
         return f'TelefoneCidadao {self.numero}'

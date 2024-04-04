@@ -222,61 +222,85 @@ def cidadao_novo():
                            form = form,
                            title=title)
     
-@bp_regulacao.route('/cidadao/atualizar/', methods=['GET', 'POST'])
+@bp_regulacao.route('/cidadao/atualizar/<id_cidadao>', methods=['GET', 'POST'])
 @login_required
-def cidadao_update():
+def cidadao_update(id_cidadao):
     if request.method == 'POST':
         form = CidadaoForm(request.form)
-        novo_cidadao = Cidadaos()
-        novo_cidadao.nome = form.nome.data
-        novo_cidadao.mae = form.mae.data
-        novo_cidadao.cns = form.cns.data
-        novo_cidadao.cpf = form.cpf.data
-        novo_cidadao.rg = form.rg.data
-        novo_cidadao.orgao_expedidor = form.orgao_expedidor.data
-        novo_cidadao.data_de_nascimento = form.data_de_nascimento.data
-        novo_cidadao.sexo = form.sexo.data
-        novo_cidadao.cep = form.cep.data
-        novo_cidadao.cidade = form.cidade.data
-        novo_cidadao.uf = form.uf.data
-        novo_cidadao.logradouro = form.logradouro.data
-        novo_cidadao.numero = form.numero.data
-        novo_cidadao.complemento = form.complemento.data
-        novo_cidadao.bairro = form.bairro.data
+        # update_cidadao = Cidadaos.query.filter(Cidadaos.id == id_cidadao).first()
+        update_cidadao = Cidadaos.query.get(id_cidadao)
+        
+        update_cidadao.nome = form.nome.data # type: ignore
+        update_cidadao.mae = form.mae.data # type: ignore
+        update_cidadao.cns = form.cns.data # type: ignore
+        update_cidadao.cpf = form.cpf.data # type: ignore
+        update_cidadao.rg = form.rg.data # type: ignore
+        update_cidadao.orgao_expedidor = form.orgao_expedidor.data # type: ignore
+        update_cidadao.data_de_nascimento = form.data_de_nascimento.data # type: ignore
+        update_cidadao.sexo = form.sexo.data # type: ignore
+        update_cidadao.cep = form.cep.data # type: ignore
+        update_cidadao.cidade = form.cidade.data # type: ignore
+        update_cidadao.uf = form.uf.data # type: ignore
+        update_cidadao.logradouro = form.logradouro.data # type: ignore
+        update_cidadao.numero = form.numero.data # type: ignore
+        update_cidadao.complemento = form.complemento.data # type: ignore
+        update_cidadao.bairro = form.bairro.data # type: ignore
         
         try:
-            novo_cidadao.save()
-                
-            # cadastrar telefone
+            update_cidadao.save() # type: ignore
             telefones_json = request.form.get('telefones')
-            print('telefones_json', telefones_json)
+            
             if telefones_json:
                 telefones = json.loads(telefones_json)
+                
+                #remover os telefones antigos para colocar os novos
+                TelefoneCidadao.delete_all_tels_cidadao(id_cidadao)                
 
                 for telefone in telefones:
                     novo_telefone = TelefoneCidadao()
                     novo_telefone.ddd = telefone['ddd']
                     novo_telefone.numero = telefone['numero']
                     novo_telefone.tipo = telefone['whatsapp']
-                    novo_telefone.cidadao_id = novo_cidadao.id
+                    novo_telefone.cidadao_id = id_cidadao
                     
                     novo_telefone.save()
-                    flash('Cidadão cadastrado com sucesso, favor confirme os dados digitados!', 'success')
+                    flash('Cidadão atualizado com sucesso!', 'success')
                     return redirect(url_for('regulacao.cidadao'))
-            else:
-                msg = f'O cpf {novo_cidadao.cpf} já existe na base de dados!'
-                flash(msg, 'danger')
-                return redirect(url_for('regulacao.cidadao'))
+
         except Exception as e:
             print(e)
             flash('Houve um erro inesperado. Tente novamente mais tarde!', 'danger')
         return redirect(url_for('regulacao.cidadao_novo'))
     
-    title = "Cadastrar novo cidadão"
+    citizen: Cidadaos = Cidadaos.query.get(id_cidadao) # type: ignore
+    edit = True
+    title = "Atualizar cidadão"
     form = CidadaoForm()
+    form.nome.data = citizen.nome
+    form.mae.data = citizen.mae
+    form.cns.data = citizen.cns
+    form.cpf.data = citizen.cpf
+    form.rg.data = citizen.rg
+    form.orgao_expedidor.data = citizen.orgao_expedidor
+    form.data_de_nascimento.data = citizen.data_de_nascimento
+    form.sexo.data = citizen.sexo
+    form.cep.data = citizen.cep
+    form.cidade.data = citizen.cidade
+    form.uf.data = citizen.uf
+    form.logradouro.data = citizen.logradouro
+    form.numero.data = citizen.numero
+    form.complemento.data = citizen.complemento
+    form.bairro.data = citizen.bairro
+    
+    telefones = TelefoneCidadao.get_telefones_by_cidadao_id(id_cidadao)
+    
+    
     return render_template('pages/regulacao/cidadao/form.html',
                            form = form,
-                           title=title)
+                           title=title,
+                           edit=edit,
+                           telefones=telefones
+                           )
 
 @bp_regulacao.route('/cidadao/')
 def cidadao():

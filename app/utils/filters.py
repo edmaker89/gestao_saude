@@ -8,6 +8,13 @@ def format_cpf(cpf):
     else:
         return cpf
     
+def format_cns(cns):
+    if len(cns) == 15:
+        cns_formatado = f"{cns[:3]} {cns[3:7]} {cns[7:11]} {cns[11:]}"
+        return Markup(cns_formatado)
+    else:
+        return cns
+    
 def format_data(data):
     try:
         if type(data) == str:

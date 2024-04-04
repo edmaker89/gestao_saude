@@ -1,191 +1,41 @@
 import json
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for, flash
 from flask_login import login_required
+from sqlalchemy import or_
 from app.forms.cidadao_form import CidadaoForm
-
 from app.forms.protocolo_form import ProtocoloForm
 from app.models.cidadaos import Cidadaos, TelefoneCidadao
 from app.utils.dict_layout import button_layout
+from app.ext.database import db
 
 bp_regulacao = Blueprint('regulacao', __name__, url_prefix='/regulacao' )
 
-cidadaos = [
-    {
-        'nome': 'Sebastiana Camilo Neris',
-        'telefone': 'XX XXXXXXXXX',  # Preencha com o número de telefone da pessoa
-        'cpf': 'XXX.XXX.XXX-XX',  # Preencha com o CPF da pessoa
-        'endereco': 'Endereço completo',  # Preencha com o endereço da pessoa
-        'email': 'email@example.com'  # Preencha com o email da pessoa
-    },
-    {
-        'nome': 'Marcos Paulo de Souza',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Benedito Rodrigues Chaveiro Neto',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Daniela Dias de Oliveira',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Marco Antonio Morais Guimarães',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Lúcia Maria da Silva Costa',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Polyane Guimarães da Mota',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Noah Borges Dias',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Nair Maria de Jesus Silva',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Herculano Pereira da Silva',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Sandra Alves de Oliveira',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Maria do Rosário Emídio de Oliveira',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Patrícia Cristina Pistore',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Cleusa Francisco Camargo Graciano',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Solange Ribeiro da Silva',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'José Modesto de Souza',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Oranizio José de Sousa',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Lyandra Vitória Gonçalves de Sousa',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Estácio José de Lima Neto',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Lucas Luiz da Silva Oliveira',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Elismar Miguel Almeida Faria Barbosa',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Ivaneide Ferreira da Cruz',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Gemima Amaral Cândido',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'Marceni Paiva Moreira',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    },
-    {
-        'nome': 'José de Fátima de Souza',
-        'telefone': 'XX XXXXXXXXX',
-        'cpf': 'XXX.XXX.XXX-XX',
-        'endereco': 'Endereço completo',
-        'email': 'email@example.com'
-    }
-]
+def search_citizens_with_params(cidadao=None, mae=None, data_de_nascimento=None, ordem='asc', per_page=20, page=1):
+    query = db.session.query(
+            Cidadaos
+        )
+    print(cidadao)
+    if cidadao:
+        query = query.filter(or_(
+        Cidadaos.nome.like(f"%{cidadao}%"),
+        Cidadaos.cpf == cidadao,
+        Cidadaos.cns == cidadao
+    ))
+
+    if mae:
+        query = query.filter(Cidadaos.mae.like(f"%{mae}%"))
+    if data_de_nascimento:
+        query = query.filter(Cidadaos.data_de_nascimento == data_de_nascimento)
+
+    # Adicione a ordenação pela data ou outro campo apropriado
+    if ordem == 'asc':
+        query = query.order_by(Cidadaos.nome.asc())
+    else:
+        query = query.order_by(Cidadaos.nome.desc())
+
+    cidadaos = query.paginate(page=page, per_page=per_page) # type: ignore
+
+    return cidadaos
 
 list_protocolo = [
     {
@@ -339,10 +189,7 @@ def cidadao_novo():
         novo_cidadao.bairro = form.bairro.data
         
         try:
-            cadastrado = novo_cidadao.save()
-            if cadastrado:
-                msg = 'Cadastrado com sucesso!'
-                flash(msg, 'success')
+            novo_cidadao.save()
                 
             # cadastrar telefone
             telefones_json = request.form.get('telefones')
@@ -351,8 +198,6 @@ def cidadao_novo():
                 telefones = json.loads(telefones_json)
 
                 for telefone in telefones:
-                    print(telefone)
-                    print(telefone['ddd'])
                     novo_telefone = TelefoneCidadao()
                     novo_telefone.ddd = telefone['ddd']
                     novo_telefone.numero = telefone['numero']
@@ -360,35 +205,111 @@ def cidadao_novo():
                     novo_telefone.cidadao_id = novo_cidadao.id
                     
                     novo_telefone.save()
+                    flash('Cidadão cadastrado com sucesso, favor confirme os dados digitados!', 'success')
+                    return redirect(url_for('regulacao.cidadao'))
             else:
                 msg = f'O cpf {novo_cidadao.cpf} já existe na base de dados!'
                 flash(msg, 'danger')
+                return redirect(url_for('regulacao.cidadao'))
         except Exception as e:
             print(e)
             flash('Houve um erro inesperado. Tente novamente mais tarde!', 'danger')
-        
-        
-        
-        
         return redirect(url_for('regulacao.cidadao_novo'))
     
     title = "Cadastrar novo cidadão"
     form = CidadaoForm()
+    return render_template('pages/regulacao/cidadao/form.html',
+                           form = form,
+                           title=title)
     
+@bp_regulacao.route('/cidadao/atualizar/', methods=['GET', 'POST'])
+@login_required
+def cidadao_update():
+    if request.method == 'POST':
+        form = CidadaoForm(request.form)
+        novo_cidadao = Cidadaos()
+        novo_cidadao.nome = form.nome.data
+        novo_cidadao.mae = form.mae.data
+        novo_cidadao.cns = form.cns.data
+        novo_cidadao.cpf = form.cpf.data
+        novo_cidadao.rg = form.rg.data
+        novo_cidadao.orgao_expedidor = form.orgao_expedidor.data
+        novo_cidadao.data_de_nascimento = form.data_de_nascimento.data
+        novo_cidadao.sexo = form.sexo.data
+        novo_cidadao.cep = form.cep.data
+        novo_cidadao.cidade = form.cidade.data
+        novo_cidadao.uf = form.uf.data
+        novo_cidadao.logradouro = form.logradouro.data
+        novo_cidadao.numero = form.numero.data
+        novo_cidadao.complemento = form.complemento.data
+        novo_cidadao.bairro = form.bairro.data
+        
+        try:
+            novo_cidadao.save()
+                
+            # cadastrar telefone
+            telefones_json = request.form.get('telefones')
+            print('telefones_json', telefones_json)
+            if telefones_json:
+                telefones = json.loads(telefones_json)
+
+                for telefone in telefones:
+                    novo_telefone = TelefoneCidadao()
+                    novo_telefone.ddd = telefone['ddd']
+                    novo_telefone.numero = telefone['numero']
+                    novo_telefone.tipo = telefone['whatsapp']
+                    novo_telefone.cidadao_id = novo_cidadao.id
+                    
+                    novo_telefone.save()
+                    flash('Cidadão cadastrado com sucesso, favor confirme os dados digitados!', 'success')
+                    return redirect(url_for('regulacao.cidadao'))
+            else:
+                msg = f'O cpf {novo_cidadao.cpf} já existe na base de dados!'
+                flash(msg, 'danger')
+                return redirect(url_for('regulacao.cidadao'))
+        except Exception as e:
+            print(e)
+            flash('Houve um erro inesperado. Tente novamente mais tarde!', 'danger')
+        return redirect(url_for('regulacao.cidadao_novo'))
+    
+    title = "Cadastrar novo cidadão"
+    form = CidadaoForm()
     return render_template('pages/regulacao/cidadao/form.html',
                            form = form,
                            title=title)
 
-
-@bp_regulacao.route('/buscar_cidadao')
-def buscar_cidadao():
-    termo_busca = request.args.get('query')  # Obtém o termo de busca do parâmetro cidadao
-    # Chame sua função que consome a API com o termo de busca
-    resultados = cidadaos
-    # Renderiza os resultados como uma lista de <li>
-    lista_resultados = jsonify([resultado for resultado in resultados])
-
-    return lista_resultados
+@bp_regulacao.route('/cidadao/')
+def cidadao():
+    page = request.args.get('page', 1, type=int)
+    cidadao = request.args.get('cidadao', '', type=str)
+    print(cidadao)
+    ordem = request.args.get('ordem', 'asc', type=str)
+    mae = request.args.get('mae', '', type=str)
+    per_page = 20
+    data_de_nascimento = request.args.get('dataNascimento', '', type=str)
+    title = 'Cidadão'
+    subtitle = 'Procure por cidadãos cadastrados ou realize um novo cadastros'
+    
+    if cidadao != '' or mae != '' or data_de_nascimento != '':
+        cidadaos = search_citizens_with_params(cidadao, mae, data_de_nascimento, ordem, per_page, page)
+    else:
+        cidadaos = []
+    
+    btn_novo_cidadao = button_layout('regulacao.cidadao_novo', 'button is-info', 'Novo Cidadao', 'fa-solid fa-user-plus')
+    
+    form = request.form
+    return render_template('pages/regulacao/cidadao/cidadao.html', 
+                           form=form,
+                           title=title,
+                           subtitle=subtitle,
+                           button_layout=btn_novo_cidadao,
+                           page=page,
+                           cidadao=cidadao,
+                           ordem=ordem,
+                           mae=mae,
+                           data_de_nascimento=data_de_nascimento,
+                           cidadaos=cidadaos
+                           )
 
 
 @bp_regulacao.route('/protocolo')
@@ -429,5 +350,5 @@ def form_protocolo():
     return render_template('pages/regulacao/form_protocolo.html', 
                            id_protocolo=None, 
                            form=form,
-                           citizens=cidadaos
+                           citizens=[]
                            )

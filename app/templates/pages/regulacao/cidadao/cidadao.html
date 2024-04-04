@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+{% from 'components/layout/tag.html' import tag %}
+
+<div class="container">
+    <div class="mb-5">
+        <p><strong>Pesquisar cidadãos: </strong></p>
+        <form action="{{url_for('regulacao.cidadao')}}" method="get">
+            <div class="field mt-4">
+                <div class="control">
+                    <label for="cidadao">Cidadao: </label>
+                    <input class="input" type="text" name="cidadao" placeholder="Procure digitando o nome do cidadao, cns ou cpf" value={{cidadao}}>
+                </div>
+            </div>
+            <div class="is-flex columns">
+                <div class="is-flex column tam-field-1-75 mr-5">
+                    <div class="is-flex is-flex-direction-column">
+                        <label for="dataNascimento">Data de Nascimento: </label>  
+                        <input type="date" name="dataNascimento" id="dataNascimento" class="input">                      
+                    </div>
+                </div>
+                <div class="is-flex column">
+                    <div class="is-flex is-flex-direction-column">
+                        <div class="control">
+                            <label for="mae">Mãe: </label>  
+                            <input type="text" name="mae" id="mae" class="input" placeholder="Nome da mãe">                      
+                        </div>
+                    </div>
+                </div>
+                <div class="is-flex is-justify-content-flex-end column">
+                    <div class="control is-flex is-justify-content-flex-end mt-5">
+                        <a href="{{url_for('regulacao.cidadao')}}" class="button is-danger mr-4">Limpar</a>
+                        <button type="submit" class="button is-info">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        <hr/>
+    </div>
+  <div class="notification p-3 bg-blue-plus">
+    <div class="columns">
+        <div class="column is-flex is-align-items-center">
+            <p>
+                <strong class="has-text-dark">
+                    Cidadãos encontrados:
+                </strong>
+            </p>
+        </div>
+        <div class="column">
+            <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
+                <span class="has-text-dark">Ordem:</span>
+                <a href="{{url_for('regulacao.cidadao', cidadao=cidadao, dataNascimento=data_de_nascimento, mae=mae, ordem='asc', page=page)}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+                <a href="{{url_for('regulacao.cidadao', cidadao=cidadao, dataNascimento=data_de_nascimento, mae=mae, ordem='desc', page=page)}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+            </div>
+        </div>
+    </div>
+  </div>
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+        <th>Cidadao</th>
+        <th>CNS</th>
+        <th>CPF</th>
+        <th>Nascimento</th>
+        <th>Mae</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cidadao in cidadaos %}
+            <tr>
+                <th>{{cidadao.nome|title}}</th>
+                <td>{{cidadao.cns|format_cns}}</td>
+                <td>{{cidadao.cpf|format_cpf}}</td>
+                <td>{{cidadao.data_de_nascimento|format_data}}</td>
+                <td>{{cidadao.mae|title}}</td>
+                <td>
+                    <a href="" class="tooltip" data-tooltip="editar">
+                      <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
+                    </a>                    
+                    <a href="" class="tooltip" data-tooltip="detalhes">
+                      <span><i class="fa-regular fa-eye icon-hover has-text-link ml-3"></i></span>
+                    </a>                    
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

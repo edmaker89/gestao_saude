@@ -84,7 +84,7 @@
             </div>
           </div>   
         </div>
-        <input type="hidden" name="telefones" id="telefones" value={{telefones|tojson}}>
+        <input type="hidden" name="telefones" id="telefones" {% if edit %}value="{{telefones}}"{% endif %}>
         <div class="mt-6 tam-field-3">
           <table class="table is-striped is-hoverable is-fullwidth is-bordered is-narrow" id="tabletels">
             <thead>

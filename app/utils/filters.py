@@ -39,10 +39,10 @@ def data_padrao(data):
     except Exception as e:
         return data
 
-# def tojson(obj):
-#     try:
-#         telefones = json.loads(obj)
-#         return Markup(telefones)
-#     except Exception as e:
-#         print(e)
-#         return obj
+def tojson(obj):
+    try:
+        telefones = json.loads(obj)
+        return Markup(telefones)
+    except Exception as e:
+        print(e)
+        return obj

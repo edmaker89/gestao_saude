@@ -1,6 +1,8 @@
+from ctypes import Array
 from datetime import UTC, datetime
 
 from flask import json
+from app.blueprints import cidadao
 from app.ext.database import db
 
 class Cidadaos(db.Model):
@@ -76,11 +78,32 @@ class TelefoneCidadao(db.Model):
         # Deleta todos os telefones do cidadao com o id_cidadao especificado
         TelefoneCidadao.query.filter_by(cidadao_id=id_cidadao).delete()
         db.session.commit()
+        
+    @staticmethod
+    def update_new_tels(id_cidadao, listatelefone):
+        print('listatelefone')
+        print(listatelefone)
+        quant_tel = len(listatelefone)
+        if quant_tel < 1:
+            return False
+        TelefoneCidadao.delete_all_tels_cidadao(id_cidadao)
+        for telefone in listatelefone:
+            print(telefone)
+            novo_telefone = TelefoneCidadao()
+            novo_telefone.cidadao_id = id_cidadao
+            novo_telefone.ddd = telefone['ddd']
+            novo_telefone.numero = telefone['numero']
+            novo_telefone.tipo = telefone['tipo']
+            
+            novo_telefone.save()
+        
+        return True
+        
     
     @staticmethod
     def get_telefones_by_cidadao_id(cidadao_id):
         telefones = TelefoneCidadao.query.filter_by(cidadao_id=cidadao_id).all()
-        telefones_json = [{"ddd": telefone.ddd, "numero": telefone.numero, "tipo": telefone.tipo} for telefone in telefones]
+        telefones_json = [{"idFront": telefone.id,"ddd": telefone.ddd, "numero": telefone.numero, "tipo": telefone.tipo} for telefone in telefones]
         return json.dumps(telefones_json)
         
         

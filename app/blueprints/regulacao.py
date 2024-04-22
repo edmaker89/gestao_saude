@@ -197,16 +197,9 @@ def cidadao_novo():
             if telefones_json:
                 telefones = json.loads(telefones_json)
 
-                for telefone in telefones:
-                    novo_telefone = TelefoneCidadao()
-                    novo_telefone.ddd = telefone['ddd']
-                    novo_telefone.numero = telefone['numero']
-                    novo_telefone.tipo = telefone['whatsapp']
-                    novo_telefone.cidadao_id = novo_cidadao.id
-                    
-                    novo_telefone.save()
-                    flash('Cidadão cadastrado com sucesso, favor confirme os dados digitados!', 'success')
-                    return redirect(url_for('regulacao.cidadao'))
+                TelefoneCidadao.update_new_tels(novo_cidadao.id, telefones)
+                flash('Cidadão cadastrado com sucesso, favor confirme os dados digitados!', 'success')
+                return redirect(url_for('regulacao.cidadao'))
             else:
                 msg = f'O cpf {novo_cidadao.cpf} já existe na base de dados!'
                 flash(msg, 'danger')
@@ -222,7 +215,7 @@ def cidadao_novo():
                            form = form,
                            title=title)
     
-@bp_regulacao.route('/cidadao/atualizar/<id_cidadao>', methods=['GET', 'POST'])
+@bp_regulacao.route('/cidadao/atualizar/<id_cidadao>/', methods=['GET', 'POST'])
 @login_required
 def cidadao_update(id_cidadao):
     if request.method == 'POST':
@@ -252,25 +245,15 @@ def cidadao_update(id_cidadao):
             
             if telefones_json:
                 telefones = json.loads(telefones_json)
+                TelefoneCidadao.update_new_tels(id_cidadao, telefones)
                 
-                #remover os telefones antigos para colocar os novos
-                TelefoneCidadao.delete_all_tels_cidadao(id_cidadao)                
-
-                for telefone in telefones:
-                    novo_telefone = TelefoneCidadao()
-                    novo_telefone.ddd = telefone['ddd']
-                    novo_telefone.numero = telefone['numero']
-                    novo_telefone.tipo = telefone['whatsapp']
-                    novo_telefone.cidadao_id = id_cidadao
-                    
-                    novo_telefone.save()
-                    flash('Cidadão atualizado com sucesso!', 'success')
-                    return redirect(url_for('regulacao.cidadao'))
+            flash('Cidadão atualizado com sucesso!', 'success')
+            return redirect(url_for('regulacao.cidadao'))
 
         except Exception as e:
             print(e)
-            flash('Houve um erro inesperado. Tente novamente mais tarde!', 'danger')
-        return redirect(url_for('regulacao.cidadao_novo'))
+            flash(f'Houve um erro inesperado. Tente novamente mais tarde! {e}', 'danger')
+            return redirect(url_for('regulacao.cidadao_update', id_cidadao=id_cidadao))
     
     citizen: Cidadaos = Cidadaos.query.get(id_cidadao) # type: ignore
     edit = True
@@ -293,13 +276,15 @@ def cidadao_update(id_cidadao):
     form.bairro.data = citizen.bairro
     
     telefones = TelefoneCidadao.get_telefones_by_cidadao_id(id_cidadao)
+    print(telefones)
     
     
     return render_template('pages/regulacao/cidadao/form.html',
                            form = form,
                            title=title,
                            edit=edit,
-                           telefones=telefones
+                           telefones=telefones,
+                           id_cidadao=id_cidadao
                            )
 
 @bp_regulacao.route('/cidadao/')
@@ -341,30 +326,50 @@ def cidadao():
 def protocolo():
     title = 'Regulação - Protocolo'
     page = request.args.get('page', 1, type=int)
-    departamento = request.args.get('departamento', '', type=str)
     ordem = request.args.get('ordem', 'asc', type=str)
-    data_entrada = request.args.get('data-entrada', 'asc', type=str)
-    data_liberacao = request.args.get('data-liberacao', 'asc', type=str)
-    data_entrega = request.args.get('data-entrega', 'asc', type=str)
-    especialidade = request.args.get('especialidade', 'asc', type=str)
-    status = request.args.get('status', 'asc', type=str)
+    nome = request.args.get('nome', '', type=str)
+    
+    data_entrada = request.args.get('data_entrada', '', type=str)
+    data_liberacao = request.args.get('data_liberacao', '', type=str)
+    data_entrega = request.args.get('data_entrega', '', type=str)
+    especialidade = request.args.get('especialidade', '', type=str)
+    protocolo = request.args.get('protocolo', '', type=str)
+    status = request.args.get('status', '', type=str)
     per_page = 20
+    
+    especialidades = [(1, 'Oftalmologista'), (2, 'Clinico Geral'), (3, 'Pediatria')]
+    situacao = [(1, 'liberado'), (2, 'pendente'), (3, 'entregue'), (4, 'cancelado'), (5, 'negado')]
+    print(nome)
+    
+    params = {
+        'page': page,
+        'ordem':ordem, 
+        'nome':nome, 
+        'data_entrada': data_entrada,
+        'data_liberacao': data_liberacao,
+        'data_entrega': data_entrega,
+        'especialidade': especialidade,
+        'protocolo': protocolo,
+        'status': status,
+        }
 
     novo_protocolo = button_layout(url='regulacao.selecionar_cidadao', classname='button is-primary', label="Novo protocolo", icon='fa-solid fa-file-circle-plus')
 
     return render_template('/pages/regulacao/protocolo.html', 
-                           departamento=departamento, 
-                           page=page, 
                            protocolos=list_protocolo, 
-                           ordem=ordem, 
                            title=title, 
-                           button_layout=novo_protocolo)
+                           button_layout=novo_protocolo,
+                           especialidades=especialidades,
+                           situacao=situacao,
+                           params = params
+                           )
     
 @bp_regulacao.route('/protocolo/selecionar_cidadao')
 @login_required
 def selecionar_cidadao():
-    
-    return render_template('pages/regulacao/selecionar_cidadao.html')
+    title = "Selecione o cidadão"
+    button_novo_cidadao = button_layout(url='regulacao.cidadao_novo', classname='button is-primary', label='Novo cidadao')
+    return render_template('pages/regulacao/selecionar_cidadao.html', button_layout=button_novo_cidadao, title=title)
 
 @bp_regulacao.route('/protocolo/form', methods=['GET', 'POST'])
 @login_required

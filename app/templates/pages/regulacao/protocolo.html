@@ -2,47 +2,48 @@
 {% block content %}
 <div class="container">
     <div class="mb-5">
-        <p><strong>Pesquisar protocolos: </strong></p>
+        <p><strong>Pesquisar protocolos:</strong></p>
         <form action="" method="get">
             <div class="field mt-4">
                 <div class="control">
-                    <label for="nome">Cidadão</label>
-                    <input class="input" type="text" name="nome" placeholder="Nome, CPF, CNS" value={{nome}}>
+                    <label for="nome">Cidadão </label>
+                    <input class="input" type="text" name="nome" placeholder="Nome, CPF, CNS" 
+                    value="{{params.nome}}">
                 </div>
             </div>
             <div class="is-flex columns">
-                <div class="is-flex column">
-                    <div class="is-flex is-flex-direction-column mr-4">
+                <div class="is-flex column tam-field-1a">
+                    <div class="is-flex is-flex-direction-column mr-4 tam-field-1a">
                         <label for="protocolo">Protocolo: </label>
-                        <input class="input" type="text" name="protocolo" placeholder="0000/0000" value={{protocolo}}>
+                        <input class="input tam-field-1a" type="text" name="protocolo" placeholder="0000/0000" value={{params.protocolo}}>
                     </div>
                     <div class="is-flex is-flex-direction-column mr-4">
                         <label for="data_entrada">Data Entrada: </label>
-                        <input class="input" type="date" name="data_entrada" placeholder="00/00/0000" value={{data_entrada}}>
+                        <input class="input" type="date" name="data_entrada" placeholder="00/00/0000" value={{params.data_entrada}}>
                     </div>
                     <div class="is-flex is-flex-direction-column mr-4">
                         <label for="data_liberacao">Data Liberação: </label>
-                        <input class="input" type="date" name="data_liberacao" placeholder="00/00/0000" value={{data_liberacao}}>
+                        <input class="input" type="date" name="data_liberacao" placeholder="00/00/0000" value={{params.data_liberacao}}>
                     </div>
-                    <div class="is-flex is-flex-direction-column">
-                        <label for="Especilidade">Especialidade: </label>
-                        <div class="select">
-                            <select name="Especilidade" id="Especilidade">
+                    <div class="is-flex is-flex-direction-column mr-3">
+                        <label for="especialidade">Especialidade: </label>
+                        <div class="select mt-0">
+                            <select name="especialidade" id="especialidade">
                                 <option value=''></option>
-                                {% for Especilidade_option in Especilidades %}
-                                <option value="" >Especilidade</option>
+                                {% for e_option in especialidades %}
+                                    <option value="{{e_option[0]}}" {% if e_option[0] == params.especialidade|int %} selected {% endif %}>{{e_option[1]}}</option>
                                 {% endfor %}
                             </select>
                         </div> 
                     </div>
                     <div class="is-flex is-flex-direction-column">
                         <label for="status">Situação: </label>
-                        <div class="select">
+                        <div class="select mt-0 ml-2">
                             <select name="status" id="status">
                                 <option value=''></option>
-                                {% for status_option in statuss %}
-                                <option value="" >Situação</option>
-                                {% endfor %}
+                                    {% for s_option in situacao %}
+                                        <option value="{{s_option[0]}}"{% if params.status|int == s_option[0] %} selected {% endif %} >{{s_option[1]}}</option>
+                                    {% endfor %}
                             </select>
                         </div> 
                     </div>
@@ -71,8 +72,9 @@
         <div class="column">
             <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
                 <span class="has-text-dark">Ordem:</span>
-                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
-                <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
+                <a href="{{url_for('regulacao.protocolo', nome=params.nome, data_entrada=params.data_entrada, data_liberacao=params.data_liberacao,departamento=params.departamento, page=params.page, ordem='asc', protocolo=params.protocolo, especialidade=params.especialidade, status=params.status)}}" {% if params.ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
+
+                <a href="{{url_for('regulacao.protocolo', nome=params.nome, data_entrada=params.data_entrada, data_liberacao=params.data_liberacao,departamento=params.departamento, page=params.page, ordem='desc', protocolo=params.protocolo, especialidade=params.especialidade, status=params.status)}}" class="button" {% if params.ordem =='desc' or params.ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
             </div>
         </div>
     </div>

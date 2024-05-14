@@ -367,17 +367,30 @@ def protocolo():
 @bp_regulacao.route('/protocolo/selecionar_cidadao')
 @login_required
 def selecionar_cidadao():
+    query = request.args.get('cidadao', '', type=str)
+    if query == '':
+        cidadao = []
+    else:
+        cidadao = search_citizens_with_params(query)
+    print(cidadao)
     title = "Selecione o cidadão"
+    subtitle = "Procure o cidadão pelo nome, cartão sus ou cpf"
     button_novo_cidadao = button_layout(url='regulacao.cidadao_novo', classname='button is-primary', label='Novo cidadao')
-    return render_template('pages/regulacao/selecionar_cidadao.html', button_layout=button_novo_cidadao, title=title)
+    return render_template('pages/regulacao/selecionar_cidadao.html', 
+                           button_layout=button_novo_cidadao, 
+                           title=title,
+                           subtitle=subtitle,
+                           query=query,
+                           cidadao=cidadao
+                           )
 
-@bp_regulacao.route('/protocolo/form', methods=['GET', 'POST'])
+@bp_regulacao.route('/protocolo/form/<id_cidadao>', methods=['GET', 'POST'])
 @login_required
-def form_protocolo():
-    
+def form_protocolo(id_cidadao):
+    print(id_cidadao)
     form = ProtocoloForm()
     return render_template('pages/regulacao/form_protocolo.html', 
                            id_protocolo=None, 
                            form=form,
-                           citizens=[]
+                           id_cidadao=id_cidadao,
                            )

@@ -167,6 +167,13 @@ footer {
 .tam-field-3 {
    max-width: 700px;
 }
+.tam-field-3a {
+   width: 700px;
+}
+.tam-field-full {
+    width: 100%;
+    max-width: 100%;
+}
 
 #messages-container {
     position: fixed;

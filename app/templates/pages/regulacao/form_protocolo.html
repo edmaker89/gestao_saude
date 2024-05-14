@@ -4,23 +4,12 @@
         <form action="{{url_for('regulacao.form_protocolo', id_protocolo=id_protocolo)}}" method="post">
         <input type="hidden" name="id_protocolo" value={{id_protocolo}}>
     {% else %}
-        <form action="{{url_for('regulacao.form_protocolo')}}" method="post">
+        <form action="{{url_for('regulacao.form_protocolo', id_cidadao=id_cidadao)}}" method="post">
     {% endif %}
 
     <div class="container">
         <div class="field">
-          <div class="select">
-            <div class="btn-select">
-                <span>Selecione um cidadão</span>
-                <i id="icon-select" class="fa fas-arrow-down"></i>
-            </div>
-            <div class="select-content">
-                <input type="text">
-                {% for citizen in citizen_list %}
-                    <ul class="options">{{citizen.nome}}</ul>
-                {% endfor %}
-            </div>
-          </div>
+          
         </div>    
         <div class="field">
           <a class="button is-danger" href="{{url_for('regulacao.protocolo')}}">Cancelar</a>

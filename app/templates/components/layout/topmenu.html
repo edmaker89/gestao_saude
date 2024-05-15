@@ -48,6 +48,31 @@
           </div>
         </div>
         {% endif %}
+
+        {% if 'pesquisa' in user_permissions %}
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Pesquisas
+          </a>
+  
+          <div class="navbar-dropdown">
+            <a href="#" class="navbar-item">
+              Pesquisas Finalizadas
+            </a>
+            <a href="#" class="navbar-item">
+              Pesquisas em Andamentos
+            </a>
+            {% if 'acesso restrito' in user_permissions %}
+              <a href="{{url_for('survey.index')}}" class="navbar-item">
+                Gerenciar pesquisas
+              </a>
+            {% endif %}
+            
+          </div>
+        </div>
+        {% endif %}
+
+
         {% if 'acesso restrito' in user_permissions %}
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">

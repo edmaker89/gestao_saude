@@ -13,6 +13,7 @@ from app.models.avisos import Avisos
 from app.models.token import Token
 from app.ext.database import db
 from app.blueprints.regulacao import bp_regulacao
+from app.blueprints.survey import bp_survey
 
 from app.models.users import Usuario
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
@@ -27,6 +28,7 @@ def init_app(app):
    app.register_blueprint(bp_depart)
    app.register_blueprint(bp_admin)
    app.register_blueprint(bp_regulacao)
+   app.register_blueprint(bp_survey)
 
    @app.errorhandler(Forbidden)
    def handle_forbidden_error(e):

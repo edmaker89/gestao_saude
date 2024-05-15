@@ -7,6 +7,7 @@ from app.forms.protocolo_form import ProtocoloForm
 from app.models.cidadaos import Cidadaos, TelefoneCidadao
 from app.utils.dict_layout import button_layout
 from app.ext.database import db
+from app.utils.verify_permission import verify_permission
 
 bp_regulacao = Blueprint('regulacao', __name__, url_prefix='/regulacao' )
 
@@ -169,6 +170,7 @@ list_protocolo = [
 @bp_regulacao.route('/cidadao/novo/', methods=['GET', 'POST'])
 @login_required
 def cidadao_novo():
+    verify_permission('regulacao')
     if request.method == 'POST':
         form = CidadaoForm(request.form)
         novo_cidadao = Cidadaos()
@@ -218,6 +220,7 @@ def cidadao_novo():
 @bp_regulacao.route('/cidadao/atualizar/<id_cidadao>/', methods=['GET', 'POST'])
 @login_required
 def cidadao_update(id_cidadao):
+    verify_permission('regulacao')
     if request.method == 'POST':
         form = CidadaoForm(request.form)
         # update_cidadao = Cidadaos.query.filter(Cidadaos.id == id_cidadao).first()
@@ -289,6 +292,7 @@ def cidadao_update(id_cidadao):
 
 @bp_regulacao.route('/cidadao/')
 def cidadao():
+    verify_permission('regulacao')
     page = request.args.get('page', 1, type=int)
     cidadao = request.args.get('cidadao', '', type=str)
     print(cidadao)
@@ -324,6 +328,7 @@ def cidadao():
 @bp_regulacao.route('/protocolo')
 @login_required
 def protocolo():
+    verify_permission('regulacao')
     title = 'Regulação - Protocolo'
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', 'asc', type=str)
@@ -367,6 +372,7 @@ def protocolo():
 @bp_regulacao.route('/protocolo/selecionar_cidadao')
 @login_required
 def selecionar_cidadao():
+    verify_permission('regulacao')
     query = request.args.get('cidadao', '', type=str)
     if query == '':
         cidadao = []
@@ -387,6 +393,7 @@ def selecionar_cidadao():
 @bp_regulacao.route('/protocolo/form/<id_cidadao>', methods=['GET', 'POST'])
 @login_required
 def form_protocolo(id_cidadao):
+    verify_permission('regulacao')
     print(id_cidadao)
     form = ProtocoloForm()
     return render_template('pages/regulacao/form_protocolo.html', 

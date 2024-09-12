@@ -5,18 +5,19 @@
           SIS-HealthPlus
         </span>
       </a>
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
+      <!-- Botão para telas pequenas -->
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
     </div>  
       <div class="navbar-end">
         <div class="navbar-item p-0 m-0">
           <div class="buttons">
             <div class="dropdown m-0" id='userDropDown'>
               <div class="dropdown-trigger m-0">
-                <button class="button is-info m-0 p-5 mr-3 mb-2" aria-haspopup="true" aria-controls="dropdown-menu" >
+                <button class="button bg-blue-str has-text-white m-0 p-5 mr-3 mb-2" aria-haspopup="true" aria-controls="dropdown-menu" >
                   <span>
                     <div class="is-flex is-flex-direction-column mr-3 is-justify-content-center has-text-left p-2">
                     <p class="is-size-7 has-text-weight-semibold">{{current_user.nome_completo}} </p>
@@ -28,7 +29,7 @@
                   </span>
                 </button>
               </div>
-              <div class="dropdown-menu is-fullheight" id="dropdown-menu" role="menu">
+              <div class="dropdown-menu dropdown-menu-user is-fullheight" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
                   <div class="dropdown-item has-background-info-light">
                     <p>Seu usuário: <strong>{{current_user.username}}</strong></p>
@@ -53,28 +54,133 @@
           </div>
       </div>
     </div>
+    <!-- Menu que será exibido/ocultado em telas pequenas -->
+  <div id="navbarMenu" class="navbar-menu hidden">
+    <div class="navbar-end">
+      <div class="navbar-item p-0 m-0">
+        <div class="buttons">
+          <div class="navbar-start">
+            <a href="{{url_for('index')}}" class="navbar-item">
+              Home
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Correspondencias
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a href="{{url_for('mail.new')}}" class="navbar-item">
+                  Nova Correspondencia
+                </a>
+                <a href="{{url_for('mail.my_mails')}}" class="navbar-item">
+                  Minhas Correspondencias
+                </a>
+                {% if 'todas correspondencias' in user_permissions %}
+                  <a href="{{url_for('mail.all_mails')}}" class="navbar-item">
+                    Todas Correspondências
+                  </a>
+                {% endif %}
+                
+              </div>
+            </div>
+    
+            {% if 'regulacao' in user_permissions %}
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Central de Regulação
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a href="{{url_for('regulacao.cidadao')}}" class="navbar-item">
+                  Cidadãos
+                </a>
+                <a href="{{url_for('regulacao.protocolo')}}" class="navbar-item">
+                  Protocolo
+                </a>
+                {% if 'acesso restrito' in user_permissions %}
+                  <a href="" class="navbar-item">
+                    Relatórios
+                  </a>
+                {% endif %}
+                
+              </div>
+            </div>
+            {% endif %}
+    
+            {% if 'pesquisa' in user_permissions %}
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Pesquisas
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a href="#" class="navbar-item">
+                  Pesquisas Finalizadas
+                </a>
+                <a href="#" class="navbar-item">
+                  Pesquisas em Andamentos
+                </a>
+                {% if 'acesso restrito' in user_permissions %}
+                  <a href="{{url_for('survey.index')}}" class="navbar-item">
+                    Gerenciar pesquisas
+                  </a>
+                {% endif %}
+                
+              </div>
+            </div>
+            {% endif %}
+    
+    
+            {% if 'acesso restrito' in user_permissions %}
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Acesso Restrito
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a href="{{url_for('user.manager_user')}}" class="navbar-item">
+                  Gestão de usuários
+                </a>
+                <a href="{{url_for('depart.manager')}}" class="navbar-item">
+                  Gestão de departamentos
+                </a>
+                <a href="{{url_for('admin.roles')}}" class="navbar-item">
+                  Gestão de perfil e permissão
+                </a>
+              </div>
+            </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
   </nav>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Seletor do botão e do menu dropdown
-    var dropdownButton = document.querySelector('.dropdown-trigger');
-    var dropdownMenu = document.querySelector('#userDropDown');
-
-    // Adicionar evento de clique ao botão
-    dropdownButton.addEventListener('click', function () {
-        // Alternar a classe 'is-active' no menu dropdown para mostrar ou ocultar
-        console.log('clicado')
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var dropdownButton = document.querySelector('.dropdown-trigger');  // Botão do dropdown
+      var dropdownMenu = document.querySelector('#userDropDown');        // Menu dropdown
+      var navbarBurger = document.querySelector('.navbar-burger');       // Botão de menu (hamburger)
+      var navbarMenu = document.querySelector('#navbarMenu');            // Menu de navegação
+  
+      // Evento para abrir/fechar o dropdown quando o botão for clicado
+      dropdownButton.addEventListener('click', function (event) {
+        event.stopPropagation(); // Impede o clique de se propagar para outros elementos
         dropdownMenu.classList.toggle('is-active');
-    });
-
-    // Adicionar evento de clique fora do menu para fechar o menu
-    document.addEventListener('click', function (event) {
-        var isClickInside = dropdownButton.contains(event.target) || dropdownMenu.contains(event.target);
-        if (!isClickInside) {
-            dropdownMenu.classList.remove('is-active');
+      });
+  
+      // Evento para fechar o dropdown se clicar fora dele
+      document.addEventListener('click', function (event) {
+        if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+          dropdownMenu.classList.remove('is-active'); // Fecha o menu
         }
+      });
+  
+      // Evento para abrir/fechar o menu de navegação em telas pequenas
+      navbarBurger.addEventListener('click', function () {
+        navbarBurger.classList.toggle('is-active');  // Alterna o ícone do menu hamburger
+        navbarMenu.classList.toggle('is-active');    // Mostra/oculta o menu
+      });
     });
-});
-
-</script>
+  </script>

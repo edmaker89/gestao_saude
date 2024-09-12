@@ -50,6 +50,10 @@ main {
     background-color: #7fb3d5; /* Azul mais escuro */
 }
 
+.bg-blue-str {
+    background-color: #035ea0;
+}
+
 .bg-white {
     background-color: white;
 }
@@ -286,3 +290,15 @@ a.disabled {
 .hidden {
     display: none;
 }
+
+#userDropDown {
+    position: relative; /* O contêiner pai tem position relative */
+  }
+  
+  .dropdown-menu {
+    position: absolute; /* O menu suspenso agora está posicionado de forma absoluta */
+    top: 100%; /* Alinhar logo abaixo do botão */
+    left: 0; /* Garantir que o menu fique alinhado à esquerda do botão */
+    margin-top: -10px; /* Subir um pouco o menu, ajustando o espaçamento */
+  }
+  

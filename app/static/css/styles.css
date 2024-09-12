@@ -302,3 +302,11 @@ a.disabled {
     margin-top: -10px; /* Subir um pouco o menu, ajustando o espaçamento */
   }
   
+  .hidden-textarea {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}

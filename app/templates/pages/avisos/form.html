@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     {% if id_aviso %}
-        <form action="{{url_for('aviso_edit', id_aviso=aviso.id)}}" method="post">
+        <form action="{{url_for('aviso_edit', id_aviso=aviso.id)}}" method="post" onsubmit="updateTextarea()">
         <input type="hidden" name="id_aviso" value={{aviso.id}}>
     {% else %}
         <form action="{{url_for('aviso_new')}}" method="post">
@@ -14,7 +14,7 @@
         </div>    
         <div class="field">
           <label class="label">{{ form.descricao.label() }}</label>
-          <div class="control">{{ form.descricao(class = 'input text-aviso tam-field-3', placeholder = '') }}</div>
+          {{ form.descricao(class='input text-aviso hidden-textarea', placeholder='') }}
         </div>    
         <div class="field">
           <a class="button is-danger" href="{{url_for('index')}}">Cancelar</a>
@@ -23,4 +23,31 @@
       </div>
     </form>
     </div>
+
+    <!-- Script do TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/68mw1snk4xm82756xf748m7dur7fkkeite53nu84hwuzta4h/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <script>
+        tinymce.init({
+            selector: '.text-aviso',  // Aplica o TinyMCE ao campo de descrição
+            plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak anchor autolink charmap emoticons media searchreplace table visualblocks wordcount mediaembed pageembed pagebreak',
+            toolbar_mode: 'floating',
+            height: 300,
+            menubar: false,
+            toolbar: 'undo redo | blocks fontsize | formatselect | bold italic underline backcolor | alignleft aligncenter alignright | bullist numlist outdent indent | pageembed link image media table | emoticons | removeformat | help',
+            // Adicionando a configuração de quebra de linha automática
+            content_style: "body { white-space: normal; word-wrap: break-word; }",
+            // Configuração do pageembed
+            pageembed_mode: 'origin',  // Permite incorporar a partir do link original
+            pageembed_content_css: '//www.tiny.cloud/css/codepen.min.css',  // Estilos para o conteúdo embedado
+            setup: function (editor) {
+              editor.on('change', function () {
+                  tinymce.triggerSave();  // Atualiza o textarea com o conteúdo do editor
+              });
+          }
+        });
+        function updateTextarea() {
+          tinymce.triggerSave();  // Garante que o TinyMCE atualize o conteúdo antes de enviar o formulário
+      }
+    </script>
 {% endblock content %}

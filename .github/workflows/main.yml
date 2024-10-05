@@ -2,7 +2,8 @@ name: CI-CD Devops
 
 on:
     push:
-        branches: ["main"]
+        tags:
+          - "v*.*.*"
 
 jobs:
     CI:
@@ -33,5 +34,5 @@ jobs:
                 file: ./Dockerfile
                 push: true
                 tags: |
-                    edmaker89/sis-healthplus:v1.1.0
+                    edmaker89/sis-healthplus:${{ github.ref_name }}
                     edmaker89/sis-healthplus:latest

@@ -4,7 +4,9 @@
       {% for category, message in messages %}
         <div class="alerts notification is-{{ category }} is-light">
           <button type="button" class="delete" onclick="hideMessage(this)"></button>
-          {{ message }}
+          <span class="mr-5">
+            {{ message }}
+          </span>
         </div>
       {% endfor %}
     </div>

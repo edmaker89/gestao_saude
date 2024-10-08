@@ -1,137 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{url_for('static', filename="img/logo1.png")}}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Health Mail - Login</title>
-</head>
-
-<body class="bg-white">
-    
-    <div class='flex h-screen v-screen items-center justify-center'>
-      <div class='m-10 md:w-1/3 lg:w-1/4 v-screen'>
-          
-          {% with messages = get_flashed_messages(with_categories=True) %}
-{% if messages %}
-<div id="messages" class="list-none m-4 mb-5 fixed top-20 flex items-center justify-center">
-{% for category, message in messages %}
-  <div class="alerts bg-red-500 bg-opacity-30 p-4 mb-4 rounded text-red-500">
-    <button type="button" class="float-right" onclick="hideMessage(this)">
-      <svg class="ml-2 fill-current text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm6.72 15.72c-.36.36-.92.39-1.32.07L12 13.32l-5.4 4.47c-.4.32-.98.29-1.34-.07-.36-.36-.39-.92-.07-1.32L10.68 12 5.2 7.53c-.32-.4-.29-.98.07-1.34.36-.36.92-.39 1.32-.07L12 10.68l5.47-4.48c.4-.32.98-.29 1.34.07.36.36.39.92.07 1.32L13.32 12l5.4 4.47c.32.4.29.98-.07 1.32z"/>
-      </svg>
-    </button>
-    {{ message }}
-  </div>
-{% endfor %}
-</div>
-{% endif %}
-{% endwith %}
-          <div class=''>
-          <h1 class='text-3xl font-bold text-center'>
-            SIS-Health Plus
-          </h1>
-          <h2 class="text-xl text-center">Acesse com suas credenciais:</h2>
-          <form class="form-login" method="POST" action="{{url_for('auth.autenticar')}}">
-              <input type="hidden" name="proxima" value="{{ proxima }}">
-              {{ form.csrf_token }}
-              <div class='flex flex-col mt-4'>
-                  <div class="flex flex-col">
-                      <label for="" class="label">Usuario: </label>
-                  {{ form.username(class="px-4 py-3 rounded-lg bg-blue-100 mt-2 border focus:border-blue-500 border-blue-100 focus:outline-none focus:bg-white")}}
-                  </div>
-                  <div class="flex flex-col mt-4">
-                      <label for="" class="label">Senha: </label>
-                      {{ form.password(id="pass", class="px-4 py-3 rounded-lg bg-blue-100 mt-2 border focus:border-blue-500 border-blue-100 focus:outline-none focus:bg-white")}}
-                  </div>
-              </div>
-              <div class="field mt-4">
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" id="mostrarSenha"> Mostrar Senha
-                    </label>
-                </div>
-            </div>
-              {{form.submit(class='w-full bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-4 py-3 mt-6 cursor-pointer')}}
-          </form>
-      </div>
-
-          <hr class='mt-6 border-gray-300 w-full' />
-
-          <p class='mt-8'> Esqueceu a senha?
-              <a onclick="openModal()" class='text-blue-500 hover:text-blue-700 font-semibold cursor-pointer'> Redefina aqui!
-          </a>
-          </p>
-          <p class='flex justify-center text-center items-end text-sm text-gray-400 m-7'>
-              SIS-Health Plus 1.1.0 <br></br>
-              Todos direitos reservados - 2023 - edmaker.dev.br <br />
-          </p>
-      </div>
-        <div class='hidden md:block md:w-2/3 lg:w-5/6'>
-            <img class='h-screen w-full object-cover' src="{{ url_for('static', filename='img/splash_art_3.png') }}" alt="imagem da tela de autenticacao" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo2.png') }}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>LOGIN - CONECTA+</title>
+    <style>
+      body{
+        background-image: url("{{url_for('static', filename='img/45184589_9150533.jpg')}}");
+      }
+      .login-box {
+        width: 900px;
+        height: 600px;
+      }
+      @media (max-width: 800px) {
+        .login-box {
+          display: flex;
+          flex-direction: column;
+          width: 80%;
+          height: auto;
+        }
+        .column.is-half.custom-border-radius-left {  
+          width: 100%; /* Faz a div ocupar 100% da largura */  
+          display: flex;
+          flex-direction: column;  
+          justify-content: center; /* Centraliza o conteúdo horizontalmente */  
+          align-items: center; /* Centraliza o conteúdo verticalmente */  
+        }
+      }
+    </style>
+  </head>
+  <body class="is-flex is-justify-content-center is-align-items-center">
+    <div id="notification-area">
+      {% include "components/notification.html" %}
+    </div>
+    <div class="login-box box columns p-0">
+      <div class="column is-half custom-border-radius-left" style="background-color: #12073d;">
+        <img class="pt-5" src="{{ url_for('static', filename='img/logo base.png') }}" alt="logo base" />
+        <div class="has-text-centered">
+            <a class="button is-outlined" href="">Cadastre-se</a>
         </div>
+      </div>
+      <div class="column custom-border-radius-right p-6">
+        
+        <h2 class="title has-text-centered">LOGIN</h2>
+        <form class="form-login" method="POST" action="{{ url_for('auth.autenticar') }}">
+          <input type="hidden" name="proxima" value="{{ proxima }}" />
+          {{ form.csrf_token }}
+          <div class="field">
+            <label for="" class="label">Usuario:</label>
+            <div class="control has-icons-left">
+              {{ form.username(class='input') }}
+              <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="" class="label">Senha:</label>
+            <div class="control has-icons-left">
+              {{ form.password(class='input', id='pass') }}
+              <span class="icon is-small is-left"><i class="fa-solid fa-lock"></i></span>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <div class="control">
+                  <label class="checkbox"><input type="checkbox" id="mostrarSenha" /> Mostrar Senha</label>
+                </div>
+              </div>
+            </div>
+            <div class="column is-flex is-justify-content-flex-end has-text-right">
+              <p>
+                <a onclick="openModal()">Esqueceu a senha?</a>
+              </p>
+            </div>
+          </div>
+
+          {{ form.submit(class='button is-fullwidth is-primary') }}
+        </form>
+        <hr />
+        <p class="has-text-centered mt-5 pt-5 has-text-grey-light">
+            CONECTA+ 2.0.0 <br></br>
+            Todos direitos reservados - 2023₢ - edmaker.dev.br <br />
+        </p>
+      </div>
     </div>
 
-    
     <script>
-        function hideMessage(button) {
-          var notification = button.parentElement
-          notification.style.display = 'none'
-        }
-        
-        // Função para fechar a notificação após 5 segundos
-        function closeNotificationAfterDelay() {
-          var notifications = document.querySelectorAll('.alerts');
-          notifications.forEach(function (notification) {
-            setTimeout(function () {
-              notification.style.display = 'none';
-            }, 5000);
-          });
-        }
-      
-        // Chama a função para fechar a notificação após o carregamento da página
-        window.onload = function () {
-          closeNotificationAfterDelay();
-        };
-          // Mostrar ou ocultar senha ao marcar/desmarcar o checkbox
-          document.getElementById('mostrarSenha').addEventListener('change', function () {
-              var senhaInputs = document.querySelectorAll('#pass');
-              senhaInputs.forEach(function (input) {
-                  input.type = this.checked ? 'text' : 'password';
-              }, this);
-          });
-      
-      </script>
-      {% include "components/modals/solicitar_redifinir_senha.html" %}
-</body>
-
+      // Mostrar ou ocultar senha ao marcar/desmarcar o checkbox
+      document.getElementById('mostrarSenha').addEventListener('change', function () {
+        var senhaInputs = document.querySelectorAll('#pass')
+        senhaInputs.forEach(function (input) {
+          input.type = this.checked ? 'text' : 'password'
+        }, this)
+      })
+    </script>
+    {% include 'components/modals/solicitar_redifinir_senha.html' %}
+  </body>
 </html>
-
-<!--
-
-    <div className='flex flex-col mt-4'>
-        <label htmlFor={props.label}>
-            {props.label}
-        </label>
-        <input type={props.tipo ?? 'text'}
-        name={props.label} 
-        id={props.label} 
-        value={props.valor}
-        onChange={e => props.valorMudou?.(e.target.value)}
-        required={props.obrigatorio}
-        className={`
-            px-4 py-3 rounded-lg bg-blue-100 mt-2
-            border focus:border-blue-500 border-blue-100
-            focus:outline-none focus:bg-white
-            `}
-            />
-        </div>
-    -->

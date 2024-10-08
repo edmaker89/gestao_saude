@@ -17,11 +17,11 @@ from app.blueprints.survey import bp_survey
 
 from app.models.users import Usuario
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
+from app.utils.data_menu import MENU
 
 import markdown
 
 def init_app(app):
-   # registre seus blueprints ex.: app.register_blueprint(modulo)
    app.register_blueprint(bp_mail)
    app.register_blueprint(bp_auth)
    app.register_blueprint(bp_user)
@@ -29,6 +29,10 @@ def init_app(app):
    app.register_blueprint(bp_admin)
    app.register_blueprint(bp_regulacao)
    app.register_blueprint(bp_survey)
+   
+   @app.context_processor  
+   def inject_menu():  
+      return dict(menu=MENU)  
 
    @app.errorhandler(Forbidden)
    def handle_forbidden_error(e):

@@ -57,21 +57,27 @@ main {
 
 aside.menu {
     flex: 0 0 250px; /* Largura fixa de 250px, não flexível */
-    background-color: #cdf5fd; /* Tom diferente */
-    color: #2c3e50;
+    background-color: #12073d; /* Tom diferente */
+    color: #d9d9d9;
     transition: background-color 0.3s; /* Transição suave de cor */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     margin-right: 20px; /* Espaço à direita para separar do conteúdo principal */
+    font-size: 0.92rem;
 }
 
 aside.menu a {
-    color: #2c3e50;
+    color: #d9d9d9;
+    background-color: #12073d;
     transition: color 0.3s; /* Transição suave de cor */
 }
 
 aside.menu a.is-active {
-    color: #ffffff;
-    background-color: #00a9ff;
+    color: #12073d;
+    background-color: #5ce1e6;
+}
+aside.menu a.is-active:hover {
+    color: #12073d;
+    background-color: #1ec1c7;
 }
 
 aside.menu a:hover {

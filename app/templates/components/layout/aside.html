@@ -1,37 +1,17 @@
-<aside class="menu px-5 pb-5 pt-0 mt-0">
+<aside class="menu px-5 pb-5 pt-0 mt-0 mr-0">
   <div class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center mt-5 mb-6">
     <img src="{{url_for('static', filename='img/logo_comp.png')}}" alt="">
   </div>
-  <p class="menu-label">Navegação</p>
-  <ul class="menu-list">
-    <li><a>Início</a></li>
-  </ul>
-
-  <p>{{menu}}</p>
-  <p class="menu-label">{{menu.label}}</p>
-  <ul class="menu-list">
-    <li><a class="{% if menu.submenu[0].label == menu_ativo %}is-active{% endif%}" href="{{url_for(menu.submenu[0].url)}}">{{menu.submenu[0].label}}</a></li>
-  </ul>
-
-  <p class="menu-label">Administration</p>
-  <ul class="menu-list">
-    <li><a>Team Settings</a></li>
-    <li>
-      <a class="is-active">Manage Your Team</a>
-      <ul>
-        <li><a>Members</a></li>
-        <li><a>Plugins</a></li>
-        <li><a>Add a member</a></li>
-      </ul>
-    </li>
-    <li><a>Invitations</a></li>
-    <li><a>Cloud Storage Environment Settings</a></li>
-    <li><a>Authentication</a></li>
-  </ul>
-  <p class="menu-label">Transactions</p>
-  <ul class="menu-list">
-    <li><a>Payments</a></li>
-    <li><a>Transfers</a></li>
-    <li><a>Balance</a></li>
-  </ul>
+  {% for item in menu %}
+    {% if not item.permission or item.permission in user_permissions %}
+      <p class="menu-label">{{item.label}}</p>
+      {% for sub in item.submenu %}
+        {% if sub.permission in user_permissions or sub.permission == None %}
+          <ul class="menu-list">
+            <li><a class="{% if sub.label == menu_ativo %}is-active{% endif%}" href="{{url_for(sub.url)}}">{{sub.label}}</a></li>
+          </ul>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
 </aside>

@@ -129,10 +129,11 @@ def init_app(app):
    def index():
       title = 'Avisos'
       subtitle = 'Leia com regularidade esses avisos'
+      menu_ativo = 'Início'
       avisos = Avisos.query.order_by(Avisos.create_at.desc()).all()
       avisos_html = [markdown.markdown(aviso.descricao.replace(r'\n', '<br>')) for aviso in avisos]
 
-      return render_template('/pages/index.html', title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html))
+      return render_template('/pages/index.html', title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html), menu_ativo=menu_ativo)
    
    @app.route('/aviso/edit/<id_aviso>', methods=['GET', 'POST'])
    @login_required

@@ -1,53 +1,146 @@
 <!DOCTYPE html>
 {% from 'components/layout/button.html' import button %}
 <html lang="pt-BR">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo2.png') }}" type="image/x-icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>CONECTA+ - {{title}}</title>
-</head>
-<body class=''>
-    <main class=''>
-        <div class="is-flex">
-            {% include "components/layout/aside.html" %}
-            <div class="is-flex is-flex-direction-column">
-                <header class="ml-4 mt-5">
-                    <h2 class="title">Bem vindo ao CONECTA+</h2>
-                    <p class="subtitle mt-2">Olá, {{current_user.nome_completo}}, bem vindo de volta!</p>
-                </header>
-                <div style="flex: 1;">
-                    <section class="mt-5">
-                        <section class="section bg-white mb-3">
-                            {% include "components/notification.html" %}
-                            {% if title %}
-                                <div class="columns mb-0 pb-0">
-                                    <div class="column mb-0 pb-0">
-                                        <h1 class="title">{{title}}</h1>
-                                        <h2 class="subtitle">
-                                            {{subtitle}}
-                                        </h2>
-                                    </div>
-                                    <div class="column has-text-right mb-0 pb-0">
-                                        {% if button_layout %}
-                                            {{ button(button_layout.label, button_layout.classname, button_layout.url, button_layout.icon) }}
-                                        {% endif %}
-                                    </div>
-                                    
-                                </div>
-                                <hr/>
-                            {% endif %}
-                            {% block content %}{% endblock content %}
-                          </section>
-                    </section>
-                </div>
-            </div>
-            
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/logo2.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>CONECTA+ | {{title}}</title>
+  </head>
+  <body class="is-full">
+    <main class="is-full">
+      <div class="is-flex">
+        <div id="notification-area">
+          {% include "components/notification.html" %}
         </div>
+        {% include "components/layout/aside.html" %}
+        <div class="is-flex is-flex-direction-column full-width">
+          <header class="">
+            <nav class="navbar">
+              <div class="navbar-menu">
+                <div class="navbar-end">
+                  <div class="dropdown m-0" id="userDropDown">
+                    <div
+                      class="dropdown-trigger m-0 is-flex is-align-items-center menu-perfil px-4 pr-5"
+                    >
+                      <div class="is-flex is-align-items-center">
+                        <div
+                          class="is-size-7 is-flex is-flex-direction-column is-justify-content-center mr-2"
+                        >
+                          <span>{{current_user.nome_completo}}</span>
+                          <span>{{current_user.departamento.nome}}</span>
+                        </div>
+                        <span><i class="fa-solid fa-sort-down"></i></span>
+                      </div>
+                    </div>
+                    <div
+                      class="dropdown-menu dropdown-menu-user is-fullheight is-active"
+                      id="dropdown-menu"
+                      role="menu"
+                    >
+                      <div class="dropdown-content">
+                        <div class="dropdown-item has-background-info-light">
+                          <p>
+                            Seu usuário:
+                            <strong>{{current_user.username}}</strong>
+                          </p>
+                        </div>
+                        <hr class="dropdown-divider" />
+                        <a
+                          href="{{url_for('user.edit_perfil')}}"
+                          class="dropdown-item"
+                        >
+                          <i class="fa-solid fa-address-card mr-2"></i>Editar
+                          perfil
+                        </a>
+                        <a
+                          href="{{url_for('user.reset_password')}}"
+                          class="dropdown-item"
+                        >
+                          <i class="fa-solid fa-key mr-2"></i>Alterar senha
+                        </a>
+                        <hr class="dropdown-divider" />
+                        <a
+                          href="{{url_for('auth.logout')}}"
+                          class="dropdown-item"
+                        >
+                          <strong>
+                            <i
+                              class="fa-solid fa-arrow-right-from-bracket mr-2"
+                            ></i>
+                            Sair
+                          </strong>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </header>
+          <div class="" style="flex: 1">
+            <section class="">
+              <section class="section bg-white mt-3 mb-3 p-5 mr-3 is-fullhd">
+                {% if title %}
+                <div class="columns mb-2 pb-0">
+                  <div class="column mb-0 pb-0">
+                    <h1 class="title">{{title}}</h1>
+                    <h2 class="subtitle">{{subtitle}}</h2>
+                  </div>
+                  <div class="column has-text-right mb-0 pb-0">
+                    {% if button_layout %} {{ button(button_layout.label,
+                    button_layout.classname, button_layout.url,
+                    button_layout.icon) }} {% endif %}
+                  </div>
+                </div>
+                {% endif %} 
+                {% block content %}{% endblock content %}
+              </section>
+            </section>
+          </div>
+        </div>
+      </div>
     </main>
     <div></div>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var dropdownButton = document.querySelector(".dropdown-trigger"); // Botão do dropdown
+        var dropdownMenu = document.querySelector("#userDropDown"); // Menu dropdown correto
+
+        // Evento para abrir/fechar o dropdown quando o botão for clicado
+        dropdownButton.addEventListener("click", function (event) {
+          dropdownMenu.classList.toggle("is-active");
+        });
+
+        // Evento para fechar o dropdown se clicar fora dele
+        document.addEventListener("click", function (event) {
+          if (
+            !dropdownButton.contains(event.target) &&
+            !dropdownMenu.contains(event.target)
+          ) {
+            dropdownMenu.classList.remove("is-active"); // Fecha o menu
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

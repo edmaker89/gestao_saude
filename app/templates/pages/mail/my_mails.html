@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 {% from 'components/macros/card_mail.html' import card_mail %}
-
-    <div class="container">
-        <div class="mb-5">
+    <div class="">
+        <div class="has-background-white-ter p-4 is-rounded">
             <form action="{{ url_for('mail.my_mails') }}" method="get">
                 <p><strong>Pesquisar Correspondências: </strong></p>
                 <div class="field mt-4">
@@ -12,7 +11,7 @@
                         <input class="input" type="text" name="assunto" placeholder="Assunto" value={{assunto}}>
                     </div>
                 </div>
-                <div class="is-flex columns">
+                <div class="is-flex columns mb-0">
                     <div class="is-flex column">
                         <div class="tam-field-1-5 mr-5">
                             <label for="numero">Número: </label>
@@ -24,7 +23,7 @@
                         </div>
                         <div class="is-flex is-flex-direction-column">
                             <label for="tipo">Tipo: </label>
-                            <div class="select">
+                            <div class="select mt-0">
                                 <select name="tipo" id="tipo">
                                     <option value=''></option>
                                     {% for tipo_option in tipos %}
@@ -32,39 +31,37 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            
                         </div>
                     </div>
                     <div class="is-flex is-justify-content-flex-end column">
-                        <div class="control is-flex is-justify-content-flex-end mt-5">
-                            <a href="{{url_for('mail.my_mails', page=1)}}" class="button is-danger mr-4">Limpar</a>
-                            <button type="submit" class="button is-info">Buscar</button>
+                        <div class="buttons control is-flex is-justify-content-flex-end mt-5">
+                            <a href="{{url_for('mail.my_mails', page=1)}}" class="button is-danger">Limpar</a>
+                            <button type="submit" class="button is-primary">Buscar</button>
                         </div>
                     </div>
                 </div>
                 
             </form>
-            <hr/>
         </div>
-      <div class="notification p-3 bg-blue-plus">
+      <div class="notification p-3 bg-blue-plus mb-0">
         <div class="columns">
             <div class="column is-flex is-align-items-center">
                 <p>
-                    <strong class="has-text-dark">
+                    <strong class="">
                         Correspondências encontradas:
                     </strong>
                 </p>
             </div>
             <div class="column">
                 <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
-                    <span class="has-text-dark">Ordem:</span>
+                    <span class="">Ordem:</span>
                     <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
                     <a href="{{url_for('mail.my_mails', page=1, numero=numero, data=data, assunto=assunto, tipo=tipo)}}" class="button" {% if ordem =='' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
                 </div>
             </div>
         </div>
       </div>
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between p-5 has-background-white-ter mt-0 ">
         {% for mail in mails %}
             {% set numero = mail.Correspondencias.numero_ano %}
             {% set assunto = mail.Correspondencias.assunto %}

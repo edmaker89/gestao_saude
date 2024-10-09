@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="has-background-white-ter p-4 is-rounded">
 <form action="{{url_for('mail.new')}}" method="post">
-
     <div class="field">
         <label class="label">{{ form.assunto.label() }}</label>
         <div class="control">
@@ -18,11 +18,12 @@
     <hr/>
     <div class="field is-flex">
         <div class="control mr-4">
-            <a href="" class="button is-light">Cancelar</a>
+            <a href="" class="button is-danger">Cancelar</a>
         </div>
         <div class="control">
                 {{ form.submit(class="button is-primary") }}
         </div>
     </div>
 </form>
+</div>
 {% endblock %}

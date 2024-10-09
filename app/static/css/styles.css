@@ -7,11 +7,18 @@ body {
     font-family: 'Arial', sans-serif; 
     display: flex; 
     min-height: 100vh;
+    min-width: 100vw;
+}
+ 
+.full-width {  
+    width: 100%;  
 }
 
 main {
     flex: 1; /* Ocupar o espaço restante disponível */
     background-color: #f5fcff; /* Cor de fundo do conteúdo principal */
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
 .custom-border-radius-left {
@@ -24,15 +31,32 @@ main {
 .bg-form {
     border-radius: 15px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.card-form {
+    padding: 1.5rem;
+    margin-right: 1rem;
+    border-radius: 15px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.menu-perfil:hover{
+    background-color: #0f037c;
 }
 
 .navbar {
-	background-color: #035ea0; /* Cor de fundo da navbar */
-	color: #2c3e50; /* Cor do texto da navbar */
+	background-color: #12073d; /* Cor de fundo da navbar */
+	color: #f7f7f7; /* Cor do texto da navbar */
 }
 .navbarmenu {
 	background-color: white; /* Cor de fundo da navbar */
 	
+}
+
+.navbar-item {
+    color: #d9d9d9;
 }
 
 .button.is-primary {
@@ -63,6 +87,7 @@ aside.menu {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     margin-right: 20px; /* Espaço à direita para separar do conteúdo principal */
     font-size: 0.92rem;
+    min-height: 100vh;
 }
 
 aside.menu a {
@@ -80,8 +105,13 @@ aside.menu a.is-active:hover {
     background-color: #1ec1c7;
 }
 
+.bg-blue-plus {
+    background-color: #12073d;
+    color: white;
+}
+
 aside.menu a:hover {
-    background-color: #87c2eb; /* Cor de fundo no hover */
+    background-color: #0f037c; /* Cor de fundo no hover */
     color: #ffffff; /* Cor do texto no hover */
 }
 
@@ -181,6 +211,7 @@ a.disabled {
 .dropdown-content {
     display: flex;
     flex-direction: column;
+    font-size: .92rem;
 }
 
 .dropdown-item {
@@ -259,6 +290,10 @@ a.disabled {
     display: none;
 }
 
+.dropdown-item{
+    font-size: .75rem;
+}
+
 #userDropDown {
     position: relative; /* O contêiner pai tem position relative */
   }
@@ -268,6 +303,7 @@ a.disabled {
     top: 100%; /* Alinhar logo abaixo do botão */
     left: 0; /* Garantir que o menu fique alinhado à esquerda do botão */
     margin-top: -10px; /* Subir um pouco o menu, ajustando o espaçamento */
+    font-size: .88rem;
   }
   
   .hidden-textarea {
@@ -284,4 +320,12 @@ a.disabled {
     top: 50px;  
     right: 20px;  
     z-index: 1000; 
-} 
+}
+
+.title {
+    font-size: 1.2rem;
+}
+
+.subtitle {
+    font-size: 1rem;
+}

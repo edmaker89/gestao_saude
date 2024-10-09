@@ -1,9 +1,9 @@
 {% macro card_mail(numero, assunto, tipo, data, correspondencia_id, nome_usuario, departamento, current_user) %}
   <div class="card custom-card mb-5 mr-0">
     <div class="card-content">
-        <p class="title is-5">
+        <p class="title is-6">
             {{tipo}}: {{numero}}
-            <a href="#" class="icon has-text-info ml-2 {% if current_user != nome_usuario %}
+            <a href="#" class="icon has-text-link ml-2 {% if current_user != nome_usuario %}
             disabled has-text-grey
             {% endif %}
             " onclick="openEditModal('{{correspondencia_id}}', '{{assunto}}')">

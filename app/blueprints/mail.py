@@ -13,6 +13,7 @@ def new():
     form = MailForm()
     title = "Nova Correspondencia"
     subtitle = "O numero da correspondecia será mostrado após cadastrar a correspondencia"
+    menu_ativo = 'Nova'
     
     #if post
     if request.method == "POST":
@@ -40,7 +41,7 @@ def new():
     form.tipo.choices = choices
     
     
-    return render_template('/pages/mail/new.html', title=title, subtitle=subtitle, form=form)
+    return render_template('/pages/mail/new.html', title=title, subtitle=subtitle, form=form, menu_ativo=menu_ativo)
 
 @bp_mail.route('/create_success/<id_mail>')
 @login_required
@@ -62,6 +63,7 @@ def my_mails():
     numero = request.args.get('numero', '', type=str)
     ordem = request.args.get('ordem', '', type=str)
     tipo = request.args.get('tipo', '', type=int)
+    menu_ativo = 'Enviados'
 
     listaTipo = TipoCorrespondencias.query.all()
     tipos = []
@@ -71,7 +73,7 @@ def my_mails():
     mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
         user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
-    title = 'Minhas correspondências'
+    title = 'Enviados'
     subtitle = "Lista de todos os números de envios gerados"
 
     return render_template('/pages/mail/my_mails.html',
@@ -83,13 +85,13 @@ def my_mails():
                            numero=numero,
                            ordem=ordem,
                            tipo=tipo,
-                           tipos=tipos                     
+                           tipos=tipos,
+                           menu_ativo=menu_ativo                     
                            )
 
 @bp_mail.route('/edit_assunto', methods=['POST'])
 @login_required
 def edit_assunto():
-
     if request.method == 'POST':
         form = request.form
         assunto = form.get('assunto')

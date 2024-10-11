@@ -1,8 +1,8 @@
 <div class="modal" id="resetSenhaModal">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head bg-blue">
-            <p class="modal-card-title">Redefinir senha</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white">Redefinir senha</p>
             <button class="delete" aria-label="close" onclick="closeResetSenhaModal()"></button>
         </header>
         <section class="modal-card-body">
@@ -13,12 +13,12 @@
                 <input class="input" type="password" name="confirmar_senha" id="pass" required minlength="6">
                 <input type="hidden" name="user_id" id="user_id">
                 {% include "components/mostrar_senha.html" %}
+                <div class="buttons is-flex is-justify-content-end mt-4">
+                    <button type="submit" class="button is-primary">Salvar</button>
+                    </form>
+                    <button class="button is-danger" onclick="closeResetSenhaModal()">Cancelar</button>
+                </div>
             </section>
-            <footer class="modal-card-foot">
-                <button type="submit" class="button is-primary">Salvar</button>
-            </form>
-            <button class="button" onclick="closeResetSenhaModal()">Cancelar</button>
-        </footer>
     </div>
 </div>
 

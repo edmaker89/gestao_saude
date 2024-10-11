@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% from 'components/card_permission.html' import card_permission %}
-    <div class="container">
+    <div class="has-background-white-ter p-4 is-rounded">
         <p><strong>Perfil: </strong>{{role.nome}}</p>
         <p><strong>Descrição: </strong>{{role.descricao}}</p>
         <div class="has-text-right mb-4">
@@ -12,7 +12,7 @@
             <div class="columns">
                 <div class="column is-flex is-align-items-center">
                     <p>
-                        <strong class="has-text-dark">
+                        <strong class="">
                             Lista de permissões:
                         </strong>
                     </p>

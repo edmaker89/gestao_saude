@@ -1,6 +1,13 @@
-{% macro button(label, classname, url, icon) %}
+{% macro button(label, classname, url, icon, onclick) %}
+	{% if onclick %}
+	<a class="{{classname}}" onclick={{onclick}}><span><i class="{{icon}} {% if icon %}
+		mr-2
+	{% endif %}
+ 	"></i>{{label}}</span></a>
+	{% else %}
     <a class="{{classname}}" href="{{url_for(url)}}"><span><i class="{{icon}} {% if icon %}
             mr-2
     {% endif %}
      "></i>{{label}}</span></a>
+	{% endif %}
 {%endmacro %}

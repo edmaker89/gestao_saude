@@ -1,20 +1,20 @@
 <div class="modal" id="newDepart">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head bg-blue">
-            <p class="modal-card-title">Novo departamento</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white">Novo departamento</p>
             <button class="delete" aria-label="close" onclick="closeNewDepart()"></button>
         </header>
         <section class="modal-card-body">
             <form action="{{url_for('depart.new_depart')}}" method="post">
                 {{form_depart.departamento.label()}}
                 {{form_depart.departamento(class='input')}}
-            </section>
-            <footer class="modal-card-foot">
-                {{form_depart.submit(class='button is-primary')}}
+                <div class="buttons is-flex is-justify-content-end mt-3">
+                    {{form_depart.submit(class='button is-primary')}}
             </form>
-            <button class="button" onclick="closeNewDepart()">Cancelar</button>
-        </footer>
+                <button class="button is-danger" onclick="closeNewDepart()">Cancelar</button>
+            </section>
+        </div>
     </div>
 </div>
 

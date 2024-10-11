@@ -1,21 +1,22 @@
 <div class="modal" id="editModal">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head p-3">
-            <p class="modal-card-title is-size-5">Editar correspondência</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white">Editar correspondência</p>
             <button class="delete" aria-label="close" onclick="closeEditModal()"></button>
         </header>
-        <section class="modal-card-body">
+        <section class="modal-card-body has-background-white-ter p-4 is-rounded">
             <form action="{{url_for('mail.edit_assunto')}}" method="post">
                 <label for="assunto"><strong>Assunto:</strong></label>
                 <input class="input" type="text" name="assunto" id="assunto">
                 <input type="hidden" name="mail_id" id="mail_id">
-            </section>
-            <footer class="modal-card-foot p-3">
-                <button type="submit" class="button is-primary">Salvar</button>
+                
+            <div class="buttons mt-5 is-flex is-justify-content-end">
+                <button type="submit" class="button is-primary px-5">Salvar</button>
             </form>
             <button class="ml-2 button is-danger" onclick="closeEditModal()">Cancelar</button>
-        </footer>
+        </div>
+        </section>
     </div>
 </div>
 

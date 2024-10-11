@@ -7,7 +7,7 @@
         <form action="{{url_for('depart.new_depart')}}" method="post">
     {% endif %}
 
-    <div class="container">
+    <div class="has-background-white-ter p-4 is-rounded">
         <div class="field">
           <label class="label">{{ form.departamento.label() }}</label>
           <div class="control">{{ form.departamento(class = 'input tam-field-2', placeholder = '') }}</div>

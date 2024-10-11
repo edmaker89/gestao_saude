@@ -1,8 +1,8 @@
 <div class="modal" id="roleUser">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head bg-blue">
-            <p class="modal-card-title" id='title-modal'>Definir perfil de usuário</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white" id='title-modal'>Definir perfil de usuário</p>
             <button class="delete" aria-label="close" onclick="closeRoleUser()"></button>
         </header>
         <section class="modal-card-body" id="loading">
@@ -14,12 +14,12 @@
                 {{form.role.label()}}
                 {{form.role(class="input", id="role")}}
                 <input type="hidden" name="id_user" id="id_user" value={{id_user}}>
-            </section>
-            <footer class="modal-card-foot">
+                <div class="buttons is-flex is-justify-content-end mt-4">
                 {{form.submit(class="button is-primary")}}
             </form>
             <button class="button" onclick="closeRoleUser()">Cancelar</button>
-        </footer>
+            </div>
+            </section>
     </div>
 </div>
 

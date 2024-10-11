@@ -2,7 +2,7 @@
 {% block content %}
 {% from 'components/layout/tag.html' import tag %}
 
-<div class="container">
+<div class="has-background-white-ter p-4 is-rounded">
     <div class="mb-5">
         <p><strong>Pesquisar usuarios: </strong></p>
         <form action="{{ url_for('user.manager_user') }}" method="get">
@@ -16,7 +16,7 @@
                 <div class="is-flex column">
                     <div class="is-flex is-flex-direction-column">
                         <label for="departamento">Departamento: </label>
-                        <div class="select">
+                        <div class="select mt-1">
                             <select name="departamento" id="departamento">
                                 <option value=''></option>
                                 {% for departamento_option in departamentos %}
@@ -24,11 +24,10 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="is-flex is-justify-content-flex-end column">
-                    <div class="control is-flex is-justify-content-flex-end mt-5">
+                    <div class="control is-flex is-justify-content-flex-end mt-5 buttons">
                         <a href="{{url_for('user.manager_user', page=1)}}" class="button is-danger mr-4">Limpar</a>
                         <button type="submit" class="button is-info">Buscar</button>
                     </div>
@@ -36,27 +35,26 @@
             </div>
             
         </form>
-        <hr/>
     </div>
-  <div class="notification p-3 bg-blue-plus">
+  <div class="notification p-3 bg-blue-plus mb-0">
     <div class="columns">
         <div class="column is-flex is-align-items-center">
             <p>
-                <strong class="has-text-dark">
+                <strong class="">
                     Usuarios encontrados:
                 </strong>
             </p>
         </div>
-        <div class="column">
+        <div class="column mb-0">
             <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
-                <span class="has-text-dark">Ordem:</span>
+                <span class="">Ordem:</span>
                 <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
                 <a href="{{url_for('user.manager_user', nome=nome, departamento=departamento, page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
             </div>
         </div>
     </div>
   </div>
-  <table class="table is-striped is-hoverable is-fullwidth">
+  <table class="table is-striped is-hoverable is-fullwidth mt-0">
     <thead>
         <tr>
         <th>Nome</th>
@@ -84,7 +82,7 @@
                     <a href="{{url_for('user.edit_user', id_user=usuario.Usuario.id)}}" class="tooltip" data-tooltip="editar">
                       <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                     </a>                    
-                    <div class="dropdown is-hoverable">
+                    <div class="dropdown is-hoverable is-right">
                         <div class="dropdown-trigger">
                             <a >
                                 <span class=""><i class="fa-solid fa-ellipsis-vertical has-text-dark px-2"></i></span>

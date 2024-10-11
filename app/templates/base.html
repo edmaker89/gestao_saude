@@ -99,7 +99,7 @@
           </header>
           <div class="" style="flex: 1">
             <section class="">
-              <section class="section bg-white mt-3 mb-3 p-5 mr-3 is-fullhd">
+              <section class="section bg-white mt-3 mb-3 p-6 mr-3 is-fullhd">
                 {% if title %}
                 <div class="columns mb-2 pb-0">
                   <div class="column mb-0 pb-0">
@@ -109,7 +109,7 @@
                   <div class="column has-text-right mb-0 pb-0">
                     {% if button_layout %} {{ button(button_layout.label,
                     button_layout.classname, button_layout.url,
-                    button_layout.icon) }} {% endif %}
+                    button_layout.icon, button_layout.onclick) }} {% endif %}
                   </div>
                 </div>
                 {% endif %} 

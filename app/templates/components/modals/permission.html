@@ -1,8 +1,8 @@
 <div class="modal" id="newPermission">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head bg-blue">
-            <p class="modal-card-title" id='title-modal'>Nova Permissão</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white" id='title-modal'>Nova Permissão</p>
             <button class="delete" aria-label="close" onclick="closeNewPermission()"></button>
         </header>
         <section class="modal-card-body" id="loading">
@@ -17,12 +17,12 @@
                 {{form.descricao(class="input")}}
                 <input type="hidden" name="id_role" id="id_role">
                 <input type="hidden" name="id_permission" id="id_permission">
+                <div class="buttons is-flex is-justify-content-end mt-4">
+                    {{form.submit(class="button is-primary")}}
+                </form>
+                <button class="button is-danger" onclick="closeNewPermission()">Cancelar</button>
+            </div>
             </section>
-            <footer class="modal-card-foot">
-                {{form.submit(class="button is-primary")}}
-            </form>
-            <button class="button" onclick="closeNewPermission()">Cancelar</button>
-        </footer>
     </div>
 </div>
 

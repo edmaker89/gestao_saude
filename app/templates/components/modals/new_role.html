@@ -1,8 +1,8 @@
 <div class="modal" id="newRole">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head bg-blue">
-            <p class="modal-card-title" id='title-modal'>Novo perfil</p>
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white" id='title-modal'>Novo perfil</p>
             <button class="delete" aria-label="close" onclick="closeNewRole()"></button>
         </header>
         <section class="modal-card-body" id="loading">
@@ -16,12 +16,12 @@
                 {{form.description.label()}}
                 {{form.description(class="input", id="description")}}
                 <input type="hidden" name="id_role" id="id_role" value={{id_role}}>
-            </section>
-            <footer class="modal-card-foot">
+        <div class="buttons is-flex is-justify-content-end mt-4">
                 {{form.submit(class="button is-primary")}}
             </form>
-            <button class="button" onclick="closeNewRole()">Cancelar</button>
-        </footer>
+            <button class="button is-danger" onclick="closeNewRole()">Cancelar</button>
+        </div>
+        </section>
     </div>
 </div>
 

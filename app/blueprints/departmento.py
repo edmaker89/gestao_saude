@@ -17,12 +17,13 @@ def manager():
     departamento = request.args.get('departamento', '', type=str)
     ordem = request.args.get('ordem', 'asc', type=str)
     per_page = 20
+    menu_ativo = "Gestão Organizacional"
 
     novo_departamento = button_layout(url='depart.new_depart', classname='button is-primary', label="Novo departamento", icon='fa-solid fa-folder-plus')
 
     lista_departamentos = DepartController.get_departs_by_filters(page=page, per_page=per_page, departamento=departamento, ordem=ordem)
 
-    return render_template('/pages/depart/manager.html', departamento=departamento, page=page, departamentos=lista_departamentos, ordem=ordem, title=title, button_layout=novo_departamento)
+    return render_template('/pages/depart/manager.html', menu_ativo=menu_ativo, departamento=departamento, page=page, departamentos=lista_departamentos, ordem=ordem, title=title, button_layout=novo_departamento)
 
 @bp_depart.route('/new_depart', methods=['GET', 'POST'])
 @login_required
@@ -86,7 +87,7 @@ def delete_depart(depart_id):
     pessoas = UsuarioController.departamento_vazio(depart_id)
     if not pessoas:
         try:
-            departamento: Departamento = Departamento.get_departamento(depart_id)
+            departamento = Departamento.get_departamento(depart_id)
             departamento.delete()
             flash('Departamento Excluido com sucesso!', 'success')
         except:

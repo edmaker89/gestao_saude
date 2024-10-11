@@ -5,6 +5,7 @@ from app.forms.role_form import RoleForm
 from app.forms.role_user_form import RoleUserForm
 from app.models.role_permissions import Permission, Role, RolePermissions
 from app.models.users import Usuario
+from app.utils.dict_layout import button_layout
 from app.utils.verify_permission import permission_required
 
 bp_admin = Blueprint("admin", __name__, url_prefix='/master')
@@ -41,10 +42,10 @@ def roles():
         ordem = 'asc'
     title = 'Gestão de perfil e permissão'
     form = RoleForm()
-
     roles = Role.list_perfis(ordem=ordem, page=page, per_page=20)
-
-    return render_template('/pages/roles/index.html', title=title, page=page, ordem=ordem, form=form, roles=roles)
+    button_new_perfil = button_layout(url="openNewRole()", classname="button is-link", label="+ novo perfil", icon='', onclick=True)
+    menu_ativo = "Gestão Perfis e Permissões"
+    return render_template('/pages/roles/index.html', menu_ativo=menu_ativo,title=title, page=page, ordem=ordem, form=form, roles=roles, button_layout=button_new_perfil)
 
 @bp_admin.route('/api/perfil/<int:id_perfil>', methods=['GET'])
 @login_required

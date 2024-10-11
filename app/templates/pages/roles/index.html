@@ -1,21 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
- <div class="container">
-    <div class="has-text-right mb-4">
-        <a class="button is-link" onclick="openNewRole()">+ novo perfil</a>
-    </div>
-    <div class="notification p-3 bg-blue-plus">
+<div class="has-background-white-ter p-4 is-rounded">
+    <div class="notification p-3 bg-blue-plus mb-0">
         <div class="columns">
             <div class="column is-flex is-align-items-center">
                 <p>
-                    <strong class="has-text-dark">
+                    <strong class="">
                         Lista de perfis:
                     </strong>
                 </p>
             </div>
             <div class="column">
                 <div class="is-flex is-justify-content-flex-end buttons are-small is-flex is-align-items-baseline">
-                    <span class="has-text-dark">Ordem:</span>
+                    <span class="">Ordem:</span>
                     <a href="{{url_for('admin.roles', page=page, ordem='asc')}}" {% if ordem =='asc' %}disabled{%endif%} class="ml-1 button"><i class="fa-solid fa-arrow-up-wide-short"></i></a>
                     <a href="{{url_for('admin.roles', page=page, ordem='desc')}}" class="button" {% if ordem =='desc' or ordem == '' %}disabled{%endif%}><i class="fa-solid fa-arrow-down-wide-short"></i></a>  
                 </div>
@@ -40,7 +37,7 @@
                         <a onclick="openEditRole({{r.id}})" class="tooltip" data-tooltip="editar">
                           <span><i class="fas fa-edit icon-hover has-text-info"></i></span>
                         </a>                    
-                        <div class="dropdown is-hoverable has-text-left">
+                        <div class="dropdown is-hoverable has-text-left is-right">
                             <div class="dropdown-trigger">
                                 <a href="">
                                     <span class=""><i class="fa-solid fa-ellipsis-vertical has-text-dark px-2"></i></span>

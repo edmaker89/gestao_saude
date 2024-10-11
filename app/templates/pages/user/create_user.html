@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
+<div class="has-background-white-ter p-4 is-rounded">
     
       {% if id_user %}
         <form action="{{url_for('user.edit_user', id_user=id_user)}}" method="post">
@@ -9,7 +9,7 @@
       <form action="{{url_for('user.create_user')}}" method="post">
       {% endif %}
       
-        <div class="container">
+        <div class="">
             <div class="field">
               <label class="label">{{ form.username.label() }}</label>
               <div class="control">{{ form.username(class = 'input tam-field-2', placeholder = '') }}</div>
@@ -40,7 +40,7 @@
               </div>
             {% endif %}
             
-            <div class="field">
+            <div class="field buttons mt-5">
               <a class="button is-danger" href="{{url_for('user.manager_user')}}">Cancelar</a>
               {{ form.submit(class = 'button is-primary') }}
             </div>

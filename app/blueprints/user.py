@@ -164,7 +164,21 @@ def manager_user():
 
     listaUsuarios = UsuarioController.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
     title = 'Gestão de Usuarios'
-    return render_template('/pages/user/manager_user.html',form=form, title=title, departamentos=departamentos, ordem=ordem, usuarios=listaUsuarios, button_layout=button, page=page, nome=nome, departamento=departamento)
+    
+    ctx = {
+        'form': form, 
+        'title': title, 
+        'departamentos': departamentos, 
+        'ordem':ordem, 
+        'usuarios': listaUsuarios, 
+        'button_layout': button, 
+        'page': page, 
+        'nome': nome, 
+        'departamento': departamento,
+        'menu_ativo': 'Gestão de usuários'
+    }
+    
+    return render_template('/pages/user/manager_user.html', **ctx)
 
 @bp_user.route('/edit-user/<id_user>', methods=['GET', 'POST'])
 @login_required

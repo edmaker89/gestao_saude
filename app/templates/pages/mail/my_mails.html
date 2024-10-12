@@ -2,7 +2,7 @@
 {% block content %}
 {% from 'components/macros/card_mail.html' import card_mail %}
     <div class="">
-        <div class="has-background-white-ter p-4 is-rounded">
+        <div class="has-background-white p-4 has-rounded-sm">
             <form action="{{ url_for('mail.my_mails') }}" method="get">
                 <p><strong>Pesquisar Correspondências: </strong></p>
                 <div class="field mt-4">
@@ -61,7 +61,7 @@
             </div>
         </div>
       </div>
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between p-5 has-background-white-ter mt-0 ">
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between p-5 has-background-white mt-0 has-rounded-sm">
         {% for mail in mails %}
             {% set numero = mail.Correspondencias.numero_ano %}
             {% set assunto = mail.Correspondencias.assunto %}

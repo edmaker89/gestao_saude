@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="has-background-white-ter p-4 is-rounded">
+<div class="has-background-white p-4 has-rounded-sm">
     
       {% if id_user %}
         <form action="{{url_for('user.edit_user', id_user=id_user)}}" method="post">

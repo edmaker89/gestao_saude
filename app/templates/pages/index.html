@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% if 'gestao de avisos' in user_permissions %}
-<div class="has-background-white-ter p-4 is-rounded">
+<div class="p-4 has-rounded-sm">
 <div class="mb-3">
     <a class="" href="{{url_for('aviso_new')}}">
         + novo aviso
@@ -28,7 +28,6 @@
         <p>{{aviso.autor_relacionamento.nome_completo}}</p>
     </div>
 </div>
-<hr/>
 {% endfor %}
 </div>
 {% endblock content %}

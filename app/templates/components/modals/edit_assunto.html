@@ -5,7 +5,7 @@
             <p class="modal-card-title is-size-5 has-text-white">Editar correspondência</p>
             <button class="delete" aria-label="close" onclick="closeEditModal()"></button>
         </header>
-        <section class="modal-card-body has-background-white-ter p-4 is-rounded">
+        <section class="modal-card-body has-background-white p-4 has-rounded-sm">
             <form action="{{url_for('mail.edit_assunto')}}" method="post">
                 <label for="assunto"><strong>Assunto:</strong></label>
                 <input class="input" type="text" name="assunto" id="assunto">

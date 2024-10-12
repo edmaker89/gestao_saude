@@ -330,3 +330,7 @@ a.disabled {
 .subtitle {
     font-size: 1rem;
 }
+
+.has-rounded-sm {
+    border-radius: 10px;
+}

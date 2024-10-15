@@ -2,7 +2,7 @@ from app.ext.database import db
 from app.models.departamento import Departamento
 
 
-class DepartController:
+class DepartmentService:
 
     @staticmethod
     def get_departs_by_filters(departamento=None, ordem='asc', page=1, per_page=20): 

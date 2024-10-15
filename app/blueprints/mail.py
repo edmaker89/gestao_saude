@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
-from app.controllers.correspondencia_controller import CorrespondenciaController
+from app.services.correspondencia_service import CorrespondenciaService
 from app.models.tipo_correspondencias import TipoCorrespondencias
 from app.utils.verify_permission import permission_required
 
@@ -22,7 +22,7 @@ def new():
         usuario_id = current_user.id
         
         try:
-            mail = CorrespondenciaController.nova_correspondencia(
+            mail = CorrespondenciaService.nova_correspondencia(
             tipo_id, assunto, usuario_id
             )
         except Exception as e:
@@ -47,7 +47,7 @@ def new():
 @login_required
 def create_success(id_mail):
     
-    mail = CorrespondenciaController.get_correspondencia_by_id(id_mail)
+    mail = CorrespondenciaService.get_correspondencia_by_id(id_mail)
     
     return render_template('/pages/mail/number_mail.html', mail=mail)
 
@@ -70,7 +70,7 @@ def my_mails():
     for l in listaTipo:
         tipos.append((l.id, l.tipo))
 
-    mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
+    mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
         user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
     title = 'Enviados'
@@ -98,7 +98,7 @@ def edit_assunto():
         mail_id = form.get('mail_id')
 
         try:
-            CorrespondenciaController.mail_edit_assunto(mail_id, assunto)
+            CorrespondenciaService.mail_edit_assunto(mail_id, assunto)
         except Exception as e:
             flash('Um erro inesperado ocorreu, não foi possivel alterar o assunto', 'danger')
             return redirect(url_for('mail.my_mails'))
@@ -122,7 +122,7 @@ def all_mails():
     for l in listaTipo:
         tipos.append((l.id, l.tipo))
 
-    mails = CorrespondenciaController.get_correspondencias_by_user_with_filters(
+    mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
         page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
     #cabecalho

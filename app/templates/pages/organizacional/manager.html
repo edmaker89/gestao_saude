@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+{% from 'components/layout/tag.html' import tag %}
+<style>  
+    details {  
+        border-radius: 5px;  
+        padding: 0.5em;  
+    }  
+
+    summary {  
+        cursor: pointer;  
+        display: flex; /* Usar flexbox para alinhar */  
+        align-items: center; /* Centraliza verticalmente */  
+    }    
+
+    .arrow {  
+        margin-right: 0.5em; /* Espaço entre a setinha e o texto */  
+        transform: rotate(0deg); /* Rotação inicial */  
+        transition: transform 0.2s; /* Animação suave */  
+    }  
+
+    details[open] .arrow {  
+        transform: rotate(90deg); /* Rotate quando aberto */  
+    }  
+</style>
+<div class="has-background-white p-4 has-rounded-sm">
+    <div class="bg-blue-plus has-rounded-sm p-0">
+        <details>
+            <summary class="subtitle is-size-5 has-text-white my-2 is-flex is-justify-content-space-between">
+                <span class="ml-3">Cadastrar nova organização</span>
+                <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+            </summary>
+            <div class="has-background-white p-4 has-text-dark has-rounded-sm m-0">
+                <form action="{{url_for('organization.create_new_org')}}" method="post">
+                        <div class="field">
+                            <label for="">Nome: </label>
+                            <div class="control">
+                                <input type="text" name="nome" id="nome" class="input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Sigla: </label>
+                            <div class="control">
+                                <input type="text" name="sigla" id="sigla" class="input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Responsável: </label>
+                            <div class="control">
+                                <select name="responsavel" id="responsavel" class="input">
+                                    <option value="">Selecione o responsável pela Organização</option>
+                                    {% for user in usuarios %}
+                                    <option value={{user.id}}>{{user.nome_completo}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    <div class="buttons mt-5">
+                        <button class="button is-primary" type="submit">Salvar</button>
+                        <a href="" class="button is-danger">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </details>
+    </div>
+    <hr>
+    <h2 class="subtite">Organizações: </h2>
+    <div class="mt-4">
+        {% if organizacoes %}
+        {% for org in organizacoes %}
+            <details class="has-background-light mb-4">
+                <summary class="subtitle is-size-5 has-text-dark my-2 is-flex is-justify-content-space-between ">
+                    <span class="ml-3">{{org.nome}} {% if not org.ativo %}<span class="tag is-white">inativo</span>{% endif %}</span>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </summary>
+                <div class="has-background-white p-4 has-text-dark">
+                    <p><strong>Organização: </strong>{{org.nome}}</p>
+                    <p><strong>Sigla: </strong>{{org.sigla}}</p>
+                    <p><strong>Responsável: </strong> {% if org.id_responsavel %}{{org.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
+                    <hr>
+                    <div class="buttons is-flex is-justify-content-end">
+                        <a class="button is-primary">Gerenciar</a>
+                    </div>
+                </div>
+            </details>
+        {% endfor %}
+        {% else%}
+            <p >Nenhuma organização foi cadastrada</p>
+        {% endif%}
+    </div>
+</div>
+{% endblock content %}

@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
-from app.controllers.depart_controller import DepartController
-from app.controllers.usuario_controller import UsuarioController
+from app.services.depart_service import DepartmentService
+from app.services.usuario_service import UsuarioService
 from app.forms.depart_form import DepartForm
 
 from app.models.departamento import Departamento
@@ -21,7 +21,7 @@ def manager():
 
     novo_departamento = button_layout(url='depart.new_depart', classname='button is-primary', label="Novo departamento", icon='fa-solid fa-folder-plus')
 
-    lista_departamentos = DepartController.get_departs_by_filters(page=page, per_page=per_page, departamento=departamento, ordem=ordem)
+    lista_departamentos = DepartmentService.get_departs_by_filters(page=page, per_page=per_page, departamento=departamento, ordem=ordem)
 
     return render_template('/pages/depart/manager.html', menu_ativo=menu_ativo, departamento=departamento, page=page, departamentos=lista_departamentos, ordem=ordem, title=title, button_layout=novo_departamento)
 
@@ -84,7 +84,7 @@ def edit_depart(depart_id):
 @bp_depart.route('/delete_depart/<depart_id>')
 def delete_depart(depart_id):
 
-    pessoas = UsuarioController.departamento_vazio(depart_id)
+    pessoas = UsuarioService.departamento_vazio(depart_id)
     if not pessoas:
         try:
             departamento = Departamento.get_departamento(depart_id)

@@ -3,10 +3,8 @@ from datetime import date
 from app.ext.database import db
 from app.models.tipo_correspondencias import TipoCorrespondencias
 from app.models.users import Usuario
-from app.models.departamento import Departamento
 
-
-class CorrespondenciaController:
+class CorrespondenciaService:
     
     @staticmethod
     def obter_novo_numero(tipo_id: int):
@@ -36,7 +34,7 @@ class CorrespondenciaController:
         
     @staticmethod
     def nova_correspondencia(tipo_id, assunto, usuario_id):
-        numero = CorrespondenciaController.obter_novo_numero(tipo_id)
+        numero = CorrespondenciaService.obter_novo_numero(tipo_id)
         nova = Correspondencias()
         nova.tipo = tipo_id
         nova.assunto = assunto
@@ -115,7 +113,7 @@ class CorrespondenciaController:
     
     @staticmethod
     def mail_edit_assunto(mail_id, mail_assunto):
-        mail = CorrespondenciaController.get_correspondencia_by_id_unique(mail_id)
+        mail = CorrespondenciaService.get_correspondencia_by_id_unique(mail_id)
 
         mail.assunto = mail_assunto
 

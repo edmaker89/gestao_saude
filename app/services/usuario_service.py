@@ -5,7 +5,7 @@ from app.models.users import Usuario
 from app.ext.database import db
 from werkzeug.security import generate_password_hash
 
-class UsuarioController:
+class UsuarioService:
     
     @staticmethod
     def update_user(id_user, nome_completo, departamento_id, email, username=''):
@@ -93,6 +93,11 @@ class UsuarioController:
         if pessoas:
             return True
         return False
+    
+    @staticmethod
+    def list_of_users():
+        users = Usuario.query.filter(Usuario.ativo == 1).order_by(Usuario.nome_completo).all()
+        return users
     
         
 

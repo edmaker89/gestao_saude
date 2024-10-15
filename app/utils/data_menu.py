@@ -42,7 +42,7 @@ MENU = [
         },
         {
             'label': 'Gestão Organizacional',
-            'url': 'depart.manager',
+            'url': 'organization.manager_new_org',
             'permission': 'acesso restrito'
         },
         {

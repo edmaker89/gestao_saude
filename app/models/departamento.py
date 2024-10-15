@@ -1,11 +1,19 @@
-from sqlalchemy import delete
+from datetime import datetime
 from app.ext.database import db
-from app.models.users import Usuario
 
 class Departamento(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'departamento'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(255), nullable=False)
-    ativo = db.Column(db.Boolean, nullable=False)
+    ativo = db.Column(db.Boolean, nullable=False, default=True)
+    estabelecimento_id = db.Column(db.Integer, db.ForeignKey('estabelecimento.id'), nullable=False)
+    responsavel_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    data_criacao = db.Column(db.DateTime, default=datetime.now)
+    data_atualizacao = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    responsavel = db.relationship('Usuario', backref='departamentos_responsavel', foreign_keys=[responsavel_id])
+    # users = db.relationship('Usuario', backref='departamento', foreign_keys='Usuario.departamento_id') #qualquer coisa tira
 
     @classmethod
     def new_depart(cls, departamento):

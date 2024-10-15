@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from app.controllers.usuario_controller import UsuarioController
+from app.services.usuario_service import UsuarioService
 from app.forms.login_form import FormLogin
 from werkzeug.security import check_password_hash
 
@@ -38,7 +38,7 @@ def autenticar():
             proxima_pagina = request.form['proxima']
             return redirect(proxima_pagina)
 
-    tentativa_login = UsuarioController.tentativa_login_falhou(usuario.id)
+    tentativa_login = UsuarioService.tentativa_login_falhou(usuario.id)
     if tentativa_login['bloqueado'] == 1:
         flash('Usuário bloqueado! Entre em contato com suporte ao sistema', 'danger')
         return redirect(url_for('auth.login'))

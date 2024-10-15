@@ -5,15 +5,14 @@ from app.blueprints.auth import bp_auth
 from app.blueprints.user import bp_user
 from app.blueprints.departmento import bp_depart
 from app.blueprints.admin import bp_admin
-from app.controllers.usuario_controller import UsuarioController
+from app.blueprints.manager_org import bp_org
+from app.services.usuario_service import UsuarioService
 from app.ext.auth import login_manager
 from werkzeug.exceptions import Forbidden
 from app.forms.avisos_form import AvisosForm
 from app.models.avisos import Avisos
 from app.models.token import Token
 from app.ext.database import db
-from app.blueprints.regulacao import bp_regulacao
-from app.blueprints.survey import bp_survey
 
 from app.models.users import Usuario
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
@@ -27,8 +26,7 @@ def init_app(app):
    app.register_blueprint(bp_user)
    app.register_blueprint(bp_depart)
    app.register_blueprint(bp_admin)
-   app.register_blueprint(bp_regulacao)
-   app.register_blueprint(bp_survey)
+   app.register_blueprint(bp_org)
    
    @app.context_processor  
    def inject_menu():  
@@ -86,7 +84,7 @@ def init_app(app):
                   if user and user.username == username:
                      print(user, user.username, username)
                      try:
-                        UsuarioController.change_password(user.id, senha)
+                        UsuarioService.change_password(user.id, senha)
                         flash('Senha redefinida com sucesso!', 'success')
                         return redirect(url_for('auth.login'))
                      except Exception as e:

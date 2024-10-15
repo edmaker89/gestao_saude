@@ -9,19 +9,22 @@ def load_user(user_id):
 
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)
     nome_completo = db.Column(db.String(255), nullable=False)
-    departamento_id = db.Column(db.Integer, db.ForeignKey('departamento.id'), nullable=False)
-    username = db.Column(db.String(255), nullable=False, unique=True)
+    cpf = db.Column(db.String(11), nullable=True)
+    departamento_id = db.Column(db.Integer, db.ForeignKey('departamento.id'), nullable=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     senha = db.Column(db.String(300), nullable=False)
-    email = db.Column(db.String(255), nullable=True, unique=True)
-    tentativas_login = db.Column(db.Integer)
-    bloqueado = db.Column(db.Boolean)
-    role = db.Column(db.String(255), db.ForeignKey('role.id'), nullable=False)
-    criado_em = db.Column(db.TIMESTAMP)
-    
-    departamento = db.relationship('Departamento', backref='users', lazy=True)
-    perfil = db.relationship('Role', backref='users', lazy=True)
+    tentativas_login = db.Column(db.Integer, nullable=True, default=0)
+    bloqueado = db.Column(db.Boolean, nullable=True, default=False)
+    role = db.Column(db.String(255), db.ForeignKey('role.id'), nullable=True, default='1')
+    criado_em = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    email = db.Column(db.String(255), unique=True, nullable=True)
+    ativo = db.Column(db.Boolean, nullable=False, default=True)
+
+    departamento = db.relationship('Departamento', backref='usuarios', foreign_keys=[departamento_id])
+    perfil = db.relationship('Role', foreign_keys=[role])
     
     def get_id(self):
         return str(self.id)
@@ -35,16 +38,16 @@ class Usuario(db.Model, UserMixin):
     def create_user(cls, nome_completo, departamento_id, username, senha, email):
 
         new_user = cls(
-            nome_completo=nome_completo,
-            username=username,
-            senha=senha,
-            departamento_id=departamento_id,
-            email=email,
-            tentativas_login = 0,
-            bloqueado = 0,
-            role = 'user',
-            criado_em = datetime.utcnow()
+            nome_completo=nome_completo, # type: ignore
+            username=username, # type: ignore
+            senha=senha,  # Usar a senha criptografada # type: ignore
+            departamento_id=departamento_id, # type: ignore
+            email=email, # type: ignore
+            tentativas_login=0,# type: ignore
+            bloqueado=False,  # Garantir que seja tratado como Boolean # type: ignore
+            criado_em=datetime.now() # type: ignore
         )
+        
         try:
             db.session.add(new_user)
             db.session.commit()

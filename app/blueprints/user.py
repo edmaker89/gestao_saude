@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from app.controllers.usuario_controller import UsuarioController
+from app.services.usuario_service import UsuarioService
 from app.forms.depart_form import DepartForm
 from app.forms.edit_perfil_form import EditPerfilForm
 from app.forms.edit_user_form import EditUserForm
@@ -37,7 +37,7 @@ def reset_password():
                 flash('A senha atual não confere com a senha salva', 'danger')
                 return redirect(url_for('user.reset_password'))
 
-            change_password = UsuarioController.change_password(current_user.id, nova_senha)
+            change_password = UsuarioService.change_password(current_user.id, nova_senha)
             if change_password:
                 flash('Senha alterada com sucesso', 'success')
                 return redirect(url_for('index'))
@@ -65,7 +65,7 @@ def edit_perfil():
         departamento = form.departamento.data
         email = form.email.data
 
-        update_user = UsuarioController.update_user(current_user.id, nome_completo, departamento, email)
+        update_user = UsuarioService.update_user(current_user.id, nome_completo, departamento, email)
         if update_user:
             flash("Perfil alterado com sucesso", 'success')
             return redirect(url_for('index'))
@@ -162,7 +162,7 @@ def manager_user():
 
     form = RoleUserForm()
 
-    listaUsuarios = UsuarioController.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
+    listaUsuarios = UsuarioService.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
     title = 'Gestão de Usuarios'
     
     ctx = {
@@ -194,7 +194,7 @@ def edit_user(id_user):
         departamento_id = form.departamento.data
         email = form.email.data
         
-        update_user = UsuarioController.update_user(id, nome_completo, departamento_id, email, username=username) #type: ignore
+        update_user = UsuarioService.update_user(id, nome_completo, departamento_id, email, username=username) #type: ignore
 
         if update_user:
             flash('Usuario editado com sucesso!', 'success')
@@ -255,7 +255,7 @@ def reset_pass():
         user_id = form.get('user_id')
 
         if nova_senha == confirmar_senha:
-            reset_senha = UsuarioController.change_password(user_id, nova_senha)
+            reset_senha = UsuarioService.change_password(user_id, nova_senha)
 
             if reset_senha:
                 flash('Senha Alterada com sucesso', 'success')

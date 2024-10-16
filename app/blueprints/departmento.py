@@ -87,7 +87,7 @@ def delete_depart(depart_id):
     pessoas = UsuarioService.departamento_vazio(depart_id)
     if not pessoas:
         try:
-            departamento = Departamento.get_departamento(depart_id)
+            departamento: Departamento = Departamento.get_departamento(depart_id) #type:ignore
             departamento.delete()
             flash('Departamento Excluido com sucesso!', 'success')
         except:

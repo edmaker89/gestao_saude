@@ -1,13 +1,10 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import login_required
-from app.services.depart_service import DepartmentService
+from app.models import estabelecimento
+from app.services.estabelecimento_service import EstabelecimentoService
 from app.services.organizacao_service import OrganizacaoService
 from app.services.usuario_service import UsuarioService
-from app.forms.depart_form import DepartForm
 
-from app.models.departamento import Departamento
-from app.models.organizacao import Organizacao
-from app.utils.dict_layout import button_layout
 
 bp_org = Blueprint('organization', __name__, url_prefix='/organization' )
 
@@ -53,3 +50,65 @@ def create_new_org():
         flash(str(e), 'danger')
     
     return redirect(url_for('organization.manager_new_org'))
+
+@bp_org.route('/manager/org/edit', methods=['POST']) # type: ignore
+@login_required
+def edit_org():
+    form = request.form
+    id = form.get('id_org', 0, int)
+    nome = form.get('nome', '', str)
+    sigla = form.get('sigla', '', str)
+    responsavel  = form.get('responsavel', None, int)
+    
+    try:
+        OrganizacaoService.update(id=id, nome=nome, sigla=sigla, id_responsavel=responsavel)
+        flash('Dados da organização foram editados com sucesso', 'success')
+    except ValueError as e:
+        flash(str(e), 'danger')
+    except Exception as e:
+        flash(str(e), 'danger')
+    
+    return redirect(url_for('organization.manager_org', id_org=id))
+
+@bp_org.route('/manager/new/estabelecimento', methods=['POST']) # type: ignore
+def new_estabelecimento():
+    id_org = request.form.get('id_org', 0, int)
+    nome = request.form.get('nome')
+    responsavel_id = request.form.get('responsavel', 0, int)
+    
+    if not nome:
+        flash('Erro: Nome é obrigatórios.', 'danger')
+        return redirect(url_for('organization.manager_org', id_org=id_org))
+    
+    try:
+        EstabelecimentoService.create(orgao_id=id_org, nome=nome, id_responsavel=responsavel_id)
+    except ValueError as ve:
+        flash(f'Erro: {ve}', 'danger')
+        return redirect(url_for('organization.manager_org', id_org=id_org))
+    except Exception as e:
+        flash(f'Erro: Aconteceu um erro inesperado. str{e}', 'danger')
+        return redirect(url_for('organization.manager_org', id_org=id_org))
+        
+    flash('Estabelecimento criado com sucesso!', 'success')
+    return redirect(url_for('organization.manager_org', id_org=id_org))
+
+@bp_org.route('/manager/org/<int:id_org>/')
+def manager_org(id_org):
+    usuarios = UsuarioService.list_of_users()
+    org = OrganizacaoService.get_by_id(id=id_org)
+    if not org:
+        flash('A organização solicitada não pode ser encontrada ou não existe', 'danger')
+        return redirect(url_for('organization.manager_new_org'))
+    
+    estabelecimentos = EstabelecimentoService.list_all(id_org)
+    
+    ctx = {
+        'org': org,
+        'menu_ativo': "Gestão Organizacional",
+        'title': org.nome,
+        'subtitle': 'Gerenciamento da organização',
+        'usuarios': usuarios,
+        'estabelecimentos': estabelecimentos
+    }
+    
+    return render_template('/pages/organizacional/manager_org.html', **ctx)

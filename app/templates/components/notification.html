@@ -1,17 +1,19 @@
-{% with messages = get_flashed_messages(with_categories = True) %}
-  {% if messages %}
-    <div id="messages messages-container" class="list-unstyled m-4 mb-5 fixed-top right-0">
-      {% for category, message in messages %}
-        <div class="alerts notification is-{{ category }} is-light">
-          <button type="button" class="delete" onclick="hideMessage(this)"></button>
-          <span class="mr-5">
-            {{ message }}
-          </span>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+<div id="notification-area">
+  {% with messages = get_flashed_messages(with_categories = True) %}
+    {% if messages %}
+      <div id="messages messages-container" class="list-unstyled m-4 mb-5 fixed-top right-0">
+        {% for category, message in messages %}
+          <div class="alerts notification is-{{ category }} is-light">
+            <button type="button" class="delete" onclick="hideMessage(this)"></button>
+            <span class="mr-5">
+              {{ message }}
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</div>
 
 <script>
   function hideMessage(button) {
@@ -34,4 +36,18 @@
   window.onload = function () {
     closeNotificationAfterDelay();
   };
+
+  // Função para manipular a resposta HTMX e exibir mensagens flash
+   document.body.addEventListener('htmx:afterOnLoad', (event) => {
+    if (event.detail.xhr.response) {
+        const response = JSON.parse(event.detail.xhr.response);
+        
+        if (response.flash) {
+            // Atualiza o container de flash com a nova mensagem
+            document.getElementById('messages').innerHTML = response.flash;
+            
+            closeNotificationAfterDelay()
+        }
+    }
+});
 </script>

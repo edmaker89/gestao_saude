@@ -1,0 +1,53 @@
+<div class="modal" id="editOrganizacao">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white">Editar dados da Organização</p>
+            <button class="delete" aria-label="close" onclick="closeEditOrganizacao()"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="{{url_for('organization.edit_org')}}" method="post">
+                <input type="hidden" name="id_org" id="id_org" value={{org.id}}>
+                <div class="field">
+                    <label for="">Nome: </label>
+                    <div class="control">
+                        <input type="text" name="nome" id="nome" class="input" value="{{org.nome}}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="">Sigla: </label>
+                    <div class="control">
+                        <input type="text" name="sigla" id="sigla" class="input" value="{{org.sigla}}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="">Responsável: </label>
+                    <div class="control">
+                        <select name="responsavel" id="responsavel" class="input">
+                            <option value="">Selecione o responsável pela Organização</option>
+                            {% for user in usuarios %}
+                            <option value={{user.id}} {% if user.id|int == org.id_responsavel|int %}selected{% endif %}>{{user.nome_completo}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            <div class="buttons mt-5">
+                <button class="button is-primary" type="submit">Salvar</button>
+                <a onclick="closeEditOrganizacao()" class="button is-danger">Cancelar</a>
+            </div>
+            </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEditOrganizacao() {
+    document.getElementById('editOrganizacao').classList.add('is-active');
+}
+
+function closeEditOrganizacao() {
+    document.getElementById('editOrganizacao').classList.remove('is-active');
+}
+
+</script>

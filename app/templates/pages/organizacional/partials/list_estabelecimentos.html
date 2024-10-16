@@ -1,0 +1,20 @@
+{% if estabelecimentos%}
+    {% for est in estabelecimentos%}
+        <details class="has-background-light mb-4">
+            <summary class="subtitle is-size-5 has-text-dark my-2 is-flex is-justify-content-space-between ">
+                <span class="ml-3">{{est.nome}} {% if not est.ativo %}<span class="tag is-white">inativo</span>{% endif %}</span>
+                <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+            </summary>
+            <div class="has-background-white p-4 has-text-dark">
+                <p><strong>Estabelecimento: </strong>{{est.nome}}</p>
+                <p><strong>Responsável: </strong> {% if est.id_responsavel %}{{est.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
+                <hr>
+                <div class="buttons is-flex is-justify-content-end">
+                    <a class="button is-primary">Gerenciar</a>
+                </div>
+            </div>
+        </details>
+    {% endfor %}
+    {% else%}
+        <p>Nenhum estabelecimento foi cadastrado</p>
+    {% endif%}

@@ -2,6 +2,7 @@
 {% from 'components/layout/button.html' import button %}
 <html lang="pt-BR">
   <head>
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -29,9 +30,7 @@
   <body class="is-full">
     <main class="is-full has-background-light">
       <div class="is-flex">
-        <div id="notification-area">
-          {% include "components/notification.html" %}
-        </div>
+        {% include "components/notification.html" %}
         {% include "components/layout/aside.html" %}
         <div class="is-flex is-flex-direction-column full-width">
           <header class="">

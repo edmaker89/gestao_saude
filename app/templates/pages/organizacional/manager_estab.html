@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+{% from 'components/layout/tag.html' import tag %}
+<style>  
+    details {  
+        border-radius: 5px;  
+        padding: 0.5em;  
+    }  
+
+    summary {  
+        cursor: pointer;  
+        display: flex; /* Usar flexbox para alinhar */  
+        align-items: center; /* Centraliza verticalmente */  
+    }    
+
+    .arrow {  
+        margin-right: 0.5em; /* Espaço entre a setinha e o texto */  
+        transform: rotate(0deg); /* Rotação inicial */  
+        transition: transform 0.2s; /* Animação suave */  
+    }  
+
+    details[open] .arrow {  
+        transform: rotate(90deg); /* Rotate quando aberto */  
+    }  
+</style>
+<div class="has-background-white p-4 has-rounded-sm">
+    <div class="has-background-white p-4 has-text-dark">
+        <p><strong>Organização: </strong>{{org.nome}}</p>
+        <p><strong>Estabelecimento: </strong>{{estab.nome}}</p>
+        <p><strong>Responsável: </strong> {% if estab.id_responsavel %}{{estab.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
+        <div class="buttons is-flex is-justify-content-start mt-3">
+            <a onclick="openEditEstabelecimento()" class="button is-primary">Editar Estabelecimento</a>
+        </div>
+    </div>
+    <hr>
+    <div class="bg-blue-plus has-rounded-sm p-0">
+        <details>
+            <summary class="subtitle is-size-5 has-text-white my-2 is-flex is-justify-content-space-between">
+                <span class="ml-3">Cadastrar novo departamento</span>
+                <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+            </summary>
+            <div class="has-background-white p-4 has-text-dark has-rounded-sm m-0">
+                <form
+                    action="{{ url_for('organization.new_departamento') }}"
+                    method="post"
+                >
+                        <input type="hidden" name="estabelecimento_id" id="estabelecimento_id" value={{estab.id}}>
+                        <div class="field">
+                            <label for="">Nome: </label>
+                            <div class="control">
+                                <input type="text" name="nome" id="nome" class="input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Responsável: </label>
+                            <div class="control">
+                                <select name="responsavel" id="responsavel" class="input">
+                                    <option value="">Selecione o responsável pelo departamento</option>
+                                    {% for user in usuarios %}
+                                    <option value={{user.id}}>{{user.nome_completo}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    <div class="buttons mt-5">
+                        <button class="button is-primary" type="submit">Salvar</button>
+                        <a href="" class="button is-danger">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </details>
+    </div>
+    <hr>
+    <h2 class="subtite">Departamentos: </h2>
+    <!-- fatiar esse template -->
+    <div id="departamentos-list" class="mt-4">
+        {% include "pages/organizacional/partials/list_departamentos.html" %}
+    </div>
+</div>
+{% include "components/modals/edit_estabelecimento.html" %}
+{% endblock content %}

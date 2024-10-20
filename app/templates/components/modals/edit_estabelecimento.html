@@ -1,0 +1,47 @@
+<div class="modal" id="editEstabelecimento">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head p-4 modal-head-primary">
+            <p class="modal-card-title is-size-5 has-text-white">Editar dados do Estabelecimento</p>
+            <button class="delete" aria-label="close" onclick="closeEditEstabelecimento()"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="{{url_for('organization.edit_estab')}}" method="post">
+                <input type="hidden" name="estabelecimento_id" id="estabelecimento_id" value={{estab.id}}>
+                <div class="field">
+                    <label for="">Nome: </label>
+                    <div class="control">
+                        <input type="text" name="nome" id="nome" class="input" value="{{estab.nome}}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="">Responsável: </label>
+                    <div class="control">
+                        <select name="responsavel" id="responsavel" class="input">
+                            <option value="">Selecione o responsável pelo estabelecimento</option>
+                            {% for user in usuarios %}
+                            <option value={{user.id}} {% if user.id|int == estab.id_responsavel|int %}selected{% endif %}>{{user.nome_completo}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            <div class="buttons mt-5">
+                <button class="button is-primary" type="submit">Salvar</button>
+                <a onclick="closeEditEstabelecimento()" class="button is-danger">Cancelar</a>
+            </div>
+            </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEditEstabelecimento() {
+    document.getElementById('editEstabelecimento').classList.add('is-active');
+}
+
+function closeEditEstabelecimento() {
+    document.getElementById('editEstabelecimento').classList.remove('is-active');
+}
+
+</script>

@@ -10,11 +10,11 @@
                 <p><strong>Responsável: </strong> {% if est.id_responsavel %}{{est.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
                 <hr>
                 <div class="buttons is-flex is-justify-content-end">
-                    <a class="button is-primary">Gerenciar</a>
+                    <a href="{{url_for('organization.manager_estab', id_estab=est.id)}}" class="button is-primary">Gerenciar</a>
                 </div>
             </div>
         </details>
     {% endfor %}
     {% else%}
         <p>Nenhum estabelecimento foi cadastrado</p>
-    {% endif%}
+{% endif%}

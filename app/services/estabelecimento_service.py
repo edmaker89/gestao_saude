@@ -28,7 +28,7 @@ class EstabelecimentoService:
             raise ValueError("Um estabelecimento nessa organização com esse nome já existe.")
         
         new_estabelecimento = Estabelecimento(
-            orgao_id=orgao_id,
+            orgao_id=orgao_id, # type: ignore
             nome=nome,  # type: ignore
             id_responsavel=id_responsavel # type: ignore
         )
@@ -42,13 +42,16 @@ class EstabelecimentoService:
             raise Exception(f"Erro ao criar estabelecimento: {e}")
         
     @staticmethod
-    def update(orgao_id: int, id: int, nome: str, id_responsavel: int | None = None):
-        """Atualiza uma organização"""
+    def update(id: int, nome: str, orgao_id: int | None = None, id_responsavel: int | None = None):
+        """Atualiza uma estabelecimento"""
         if len(Estabelecimento.query.filter_by(orgao_id=orgao_id, nome=nome).all()) > 1:
             raise ValueError("Um estabelecimento nessa organização com esse nome já existe.")
         
         estabelecimento: Estabelecimento = EstabelecimentoService.get_by_id(id) # type: ignore
         estabelecimento.nome = nome
+        if orgao_id:
+            estabelecimento.orgao_id = orgao_id
+        
         if id_responsavel:
             estabelecimento.id_responsavel = id_responsavel
         

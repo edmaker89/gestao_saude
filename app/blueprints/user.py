@@ -187,6 +187,8 @@ def edit_user(id_user):
     user = Usuario.get_user(id_user)
     
     if request.method == 'POST':
+        id_departamento = request.form.get('id_departamento', None, int)
+        print(id_departamento)
         form = EditUserForm(request.form)
         id = id_user
         username = form.username.data
@@ -198,14 +200,18 @@ def edit_user(id_user):
 
         if update_user:
             flash('Usuario editado com sucesso!', 'success')
+            if id_departamento:
+                return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
             return redirect(url_for('user.manager_user'))
         else:
             flash('Um erro inesperado aconteceu, tente novamente mais tarde', 'danger')
+            if id_departamento:
+                return redirect(url_for('user.edit_user', id_user=id_user, id_departamento=id_departamento))
             return redirect(url_for('user.edit_user', id_user=id_user))
     
     title='Editar Usuário'
     subtitle = ''
-    
+    id_departamento = request.args.get('id_departamento', None, int)
     form = EditUserForm()
     form.username.data = user.username #type: ignore
     form.nome_completo.data = user.nome_completo #type: ignore
@@ -214,40 +220,75 @@ def edit_user(id_user):
 
     form_depart = DepartForm()
 
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
+    return render_template('/pages/user/create_user.html',id_departamento=id_departamento, title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
 
 @bp_user.route('/lock/<id_user>')
 @login_required
 @permission_required('acesso restrito')
 def lock(id_user):
-
+    id_departamento = request.args.get('id_departamento', None, int)
     lock = Usuario.lock_user(id_user)
     if lock:
         flash(f'O usuário {lock.nome_completo} foi bloqueado', 'success')
-        return redirect(url_for('user.manager_user'))
+        
     else:
         flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
-        return redirect(url_for('user.manager_user'))
+    if id_departamento:
+        return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
+    return redirect(url_for('user.manager_user'))   
     
 @bp_user.route('/unlock/<id_user>')
 @login_required
 @permission_required('acesso restrito')
 def unlock(id_user):
-
+    id_departamento = request.args.get('id_departamento', None, int)
     lock = Usuario.unlock_user(id_user)
     if lock:
         flash(f'O usuário {lock.nome_completo} foi desbloqueado', 'success')
-        return redirect(url_for('user.manager_user'))
+    
     else:
         flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
-        return redirect(url_for('user.manager_user'))
+    if id_departamento:
+        return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
+    return redirect(url_for('user.manager_user'))
     
+@bp_user.route('/disable/<id_user>')
+@login_required
+@permission_required('acesso restrito')
+def disable(id_user):
+    id_departamento = request.args.get('id_departamento', None, int)
+    
+    try:
+        user = UsuarioService.disable_user(id_user)
+        flash(f'O usuário {user.nome_completo} foi desativado', 'success')   
+    except Exception as e:
+        flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
+    
+    if id_departamento:
+        return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
+    return redirect(url_for('user.manager_user'))
+    
+@bp_user.route('/enable/<id_user>')
+@login_required
+@permission_required('acesso restrito')
+def enable(id_user):
+    id_departamento = request.args.get('id_departamento', None, int)
+    
+    try:
+        user = UsuarioService.enable_user(id_user)
+        flash(f'O usuário {user.nome_completo} foi ativado', 'success')   
+    except Exception:
+        flash(f'Algo inesperado aconteceu, tente novamente mais tarde', 'danger')
+    
+    if id_departamento:
+        return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
+    return redirect(url_for('user.manager_user'))
 
 @bp_user.route('reset_pass', methods=['GET', 'POST'])
 @login_required
 @permission_required('acesso restrito')
 def reset_pass():
-
+    id_departamento = request.form.get('departamento_id')
     if request.method == 'POST':
         form = request.form
         nova_senha = form.get('nova_senha')
@@ -263,8 +304,9 @@ def reset_pass():
                 flash('Houve um erro inesperado, tente novamente mais tarde!', 'danger')
         else:
             flash('A nova senha e a confirmar senha não coicidem, tente novamente', 'danger')
-
-        return redirect(url_for('user.manager_user'))
+    else:
+        flash('O metodo de requisição da rota não pode ser aceito', 'info')
     
-    flash('O metodo de requisição da rota não pode ser aceito', 'info')
+    if id_departamento:
+        return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
     return redirect(url_for('user.manager_user'))

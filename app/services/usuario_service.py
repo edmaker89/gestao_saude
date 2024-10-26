@@ -95,9 +95,34 @@ class UsuarioService:
         return False
     
     @staticmethod
+    def departamento_list_of_users(id_depart):
+        pessoas = Usuario.query.filter(Usuario.departamento_id==id_depart).all()
+        if pessoas:
+            return pessoas
+        return False
+    
+    @staticmethod
     def list_of_users():
         users = Usuario.query.filter(Usuario.ativo == 1).order_by(Usuario.nome_completo).all()
         return users
     
+    @staticmethod
+    def enable_user(id_user):
+        user = Usuario.query.filter(Usuario.id == id_user).first()
+        if not user:
+            raise Exception("Usuário não existe, tente novamente.")
+        user.ativo = True
+        db.session.commit()
+        return user
+        
+    @staticmethod
+    def disable_user(id_user):
+        user = Usuario.query.filter(Usuario.id == id_user).first()
+        print(user)
+        if not user:
+            raise Exception("Usuário não existe, tente novamente.")
+        user.ativo = False
+        db.session.commit()
+        return user
         
 

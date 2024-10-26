@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import login_required
+from app.forms.role_user_form import RoleUserForm
 from app.models import estabelecimento
 from app.services.departamento_service import DepartamentoService
 from app.services.estabelecimento_service import EstabelecimentoService
@@ -176,3 +177,29 @@ def new_departamento():
         
     flash('Departamento criado com sucesso!', 'success')
     return redirect(url_for('organization.manager_estab', id_estab=estabelecimento_id))
+
+@bp_org.route('/manager/departamento/<int:id_departamento>/')
+def manager_departamento(id_departamento):
+    usuarios = UsuarioService.list_of_users()
+    departamento = DepartamentoService.get_by_id(id_departamento)
+    usuarios_departamento = UsuarioService.departamento_list_of_users(id_departamento)
+    form = RoleUserForm()
+    # estab = EstabelecimentoService.get_by_id(id=id_departamento)
+    # org = OrganizacaoService.get_by_id(estab.orgao_id) #type:ignore
+    # if not estab:
+    #     flash('O estabelecimento solicitado não pode ser encontrado ou não existe', 'danger')
+    #     return redirect(url_for('organization.manager_new_org'))
+    
+    ctx = {
+        # 'org': org,
+        # 'estab': estab,
+        'form': form,
+        'departamento': departamento,
+        'menu_ativo': "Gestão Organizacional",
+        'title': departamento.nome, #type:ignore
+        'subtitle': f'{departamento.estabelecimento.organizacao.nome} | {departamento.estabelecimento.nome}', #type:ignore
+        'usuarios': usuarios,
+        'usuarios_departamento': usuarios_departamento
+    }
+    
+    return render_template('/pages/organizacional/manager_depart.html', **ctx)

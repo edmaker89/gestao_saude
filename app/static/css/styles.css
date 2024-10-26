@@ -334,3 +334,7 @@ a.disabled {
 .has-rounded-sm {
     border-radius: 10px;
 }
+
+.pointer {
+    cursor: pointer;
+}

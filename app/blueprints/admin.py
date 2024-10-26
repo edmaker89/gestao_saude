@@ -24,17 +24,15 @@ def roles():
             try:
                 Role.update_perfil(id_role, role, descripton)
                 flash('Perfil editado com sucesso!', 'success')
-                return redirect(url_for('admin.roles'))
+
             except Exception as e:
                 flash(f'[ERRO]: Não foi possivel atualizar o perfil! {e}', 'danger')
-            return redirect(url_for('admin.roles'))
         try:
             Role.novo_perfil(role, descripton)
             flash('Perfil cadastrado com sucesso!', 'success')
-            return redirect(url_for('admin.roles'))
         except Exception as e:
             flash(f'[ERRO]: Não foi possivel cadastrar novo perfil! {e}', 'danger')
-            return redirect(url_for('admin.roles'))
+        return redirect(url_for('admin.roles'))
 
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', '', type=str)
@@ -182,11 +180,11 @@ def permission_delete(id_permission: int, id_role):
 @login_required
 @permission_required('acesso restrito')
 def role_user():
-
+    id_departamento = request.form.get('departamento_id')
+    print(id_departamento)
     form = RoleUserForm(request.form)
     role_id = form.role.data
     user_id = request.form.get('id_user')
-    print(user_id, role_id)
     try:
         user: Usuario = Usuario.get_user(user_id) #type: ignore
         print(user)
@@ -196,5 +194,7 @@ def role_user():
         print(e)
         flash(f'Não foi possivel altear o perfil, tente novamente {[e]}', 'danger')
     finally:
+        if id_departamento:
+            return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
         return redirect(url_for('user.manager_user'))
     

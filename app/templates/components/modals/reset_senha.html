@@ -12,6 +12,7 @@
                 <label for="confirmar_senha"><strong>Confirmar senha:</strong></label>
                 <input class="input" type="password" name="confirmar_senha" id="pass" required minlength="6">
                 <input type="hidden" name="user_id" id="user_id">
+                <input type="hidden" name="departamento_id" id="departamento_id">
                 {% include "components/mostrar_senha.html" %}
                 <div class="buttons is-flex is-justify-content-end mt-4">
                     <button type="submit" class="button is-primary">Salvar</button>
@@ -23,9 +24,11 @@
 </div>
 
 <script>
-function openResetSenhaModal(user_id) {
+function openResetSenhaModal(user_id, departamento_id = null) {
     document.getElementById('resetSenhaModal').classList.add('is-active');
     document.getElementById('user_id').value = user_id
+    document.getElementById('departamento_id').value = departamento_id
+
 }
 
 function closeResetSenhaModal() {

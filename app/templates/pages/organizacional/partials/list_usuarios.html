@@ -1,0 +1,15 @@
+{% if usuarios_departamento %}
+    {% for usuario in usuarios_departamento%}
+        <div class="box has-background-white mb-4">
+            <div class="subtitle is-size-5 has-text-dark my-2 is-flex is-justify-content-space-between ">
+                <span class="ml-3">{{usuario.nome_completo}} 
+                    {% if not usuario.ativo %}<span class="tag is-light">inativo</span>{% endif %}
+                    {% if usuario.bloqueado %}<span class="tag is-danger">bloqueado</span>{% endif %}
+                </span>
+                {% include "pages/organizacional/partials/menu_suspenso.html" %}
+            </div>
+        </div>
+    {% endfor %}
+{% else%}
+        <p>Nenhum colaborador foi alocado ao estabelecimento</p>
+{% endif%}

@@ -14,6 +14,7 @@
                 {{form.role.label()}}
                 {{form.role(class="input", id="role")}}
                 <input type="hidden" name="id_user" id="id_user" value={{id_user}}>
+                <input type="hidden" name="departamento_id" id="departamento_id_role_user">
                 <div class="buttons is-flex is-justify-content-end mt-4">
                 {{form.submit(class="button is-primary")}}
             </form>
@@ -24,12 +25,13 @@
 </div>
 
 <script>
-function openRoleUser(id_user, id_role) {
+function openRoleUser(id_user, id_role, departamento_id=null) {
     document.getElementById('roleUser').classList.add('is-active');
     document.getElementById('loadingIndicator').style.display = 'none';
     console.log(id_user, id_role)
     document.getElementById('id_user').value = id_user
     document.getElementById('role').value = id_role
+    document.getElementById('departamento_id_role_user').value = departamento_id
 }
 
 function closeRoleUser() {

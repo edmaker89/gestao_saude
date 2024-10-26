@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+{% from 'components/layout/tag.html' import tag %}
+<div class="has-background-white p-4 has-rounded-sm">
+    <div class="has-background-white p-4 has-text-dark">
+        <p><strong>Organização: </strong>{{departamento.estabelecimento.organizacao.nome}}</p>
+        <p><strong>Estabelecimento: </strong>{{departamento.estabelecimento.nome}}</p>
+        <p><strong>Departamento: </strong>{{departamento.nome}}</p>
+        <p><strong>Responsável: </strong> {% if departamento.id_responsavel %}{{departamento.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
+        <div class="buttons is-flex is-justify-content-start mt-3">
+            <a onclick="openEditDepartamento()" class="button is-primary">Editar departamento</a>
+        </div>
+    </div>
+    <hr>
+    <h2 class="subtite">Usuários: </h2>
+    <div id="usuarios-list" class="mt-4 has-background-light p-5 has-rounded-sm">
+        {% include "pages/organizacional/partials/list_usuarios.html" %}
+    </div>
+</div>
+{% include "components/modals/reset_senha.html" %}
+{% include "components/modals/role_user.html" %}
+{% endblock content %}

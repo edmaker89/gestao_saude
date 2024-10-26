@@ -68,7 +68,9 @@
     <tbody>
         {% for usuario in usuarios %}
             <tr>
-                <th>{{usuario.Usuario.nome_completo}}</th>
+                <th>{{usuario.Usuario.nome_completo}}{% if usuario.Usuario.ativo == 0 %}
+                    {{tag('light', 'inativo')}}
+            {% endif %}</th>
                 <td>{{usuario.Usuario.username}}{% if usuario.Usuario.bloqueado %}
                         {{tag('danger', 'bloqueado')}}
                 {% endif %}
@@ -103,6 +105,15 @@
                                 {% else %}
                                     <a href="{{url_for('user.lock', id_user=usuario.Usuario.id)}}" class="dropdown-item">
                                         <span class=""><i class="fa-solid fa-lock icon-hover has-text-danger"></i> Bloquear</span>
+                                    </a>
+                                {% endif %}
+                                {% if usuario.Usuario.ativo == 0 %}
+                                  <a href="{{url_for('user.enable', id_user=usuario.Usuario.id)}}" class="dropdown-item">
+                                    <span class="has-text-danger"><i class="fa-solid fa-unlock icon-hover"></i> Ativar</span>
+                                </a>
+                                {% else %}
+                                    <a href="{{url_for('user.disable', id_user=usuario.Usuario.id)}}" class="dropdown-item">
+                                        <span class=""><i class="fa-solid fa-lock icon-hover has-text-danger"></i> Inativar</span>
                                     </a>
                                 {% endif %}
                             </td>

@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
+from app.models import estabelecimento
 from app.services.depart_service import DepartmentService
+from app.services.departamento_service import DepartamentoService
 from app.services.usuario_service import UsuarioService
 from app.forms.depart_form import DepartForm
 
@@ -53,32 +55,23 @@ def new_depart():
     
     return render_template('/pages/depart/form.html', form=form, title=title, subtitle=subtitle)
 
-@bp_depart.route('/edit_depart/<depart_id>', methods=['GET', 'POST'])
+@bp_depart.route('/edit_depart/<depart_id>', methods=['POST'])
 @login_required
 def edit_depart(depart_id):
-    if request.method == "POST":
-        print('metodo request')
-        form = DepartForm(request.form)
-        departamento = form.departamento.data
-        verify_depart = Departamento.query.filter(Departamento.nome == departamento).first()
-        print(verify_depart)
-        if verify_depart:
-            print('verify_depart?')
-            flash('Não é possivel editar departamento, existe outro departamento com mesmo nome', 'danger')
-            return redirect(url_for('depart.edit_depart', depart_id=depart_id))
-        update_depart = Departamento.update(depart_id, departamento)
-        if update_depart:
-            flash("Departamento atualizado com sucesso!", 'success')
-            return redirect(url_for('depart.manager', departamento=departamento))
-        flash('Houve um erro inesperado, tente novamente mais tarde!', 'danger')
-        return redirect(url_for('depart.edit_depart', depart_id=depart_id))
-
-    title = 'Editar Departamento'
-    form = DepartForm()
-    departamento = Departamento.query.filter(Departamento.id == depart_id).first()
-    form.departamento.data = departamento.nome #type: ignore
-    
-    return render_template('/pages/depart/form.html', form=form, title=title, id_depart=depart_id)
+    form = DepartForm(request.form)
+    departamento = form.departamento.data
+    estabelecimento_id = request.form.get('select_estabelecimento', None, int)
+    id_responsavel = request.form.get('select_responsavel', None, int)
+    if not estabelecimento_id:
+        flash("Ocorreu um erro ao relacionar o estabelecimento", 'danger')
+        return redirect(url_for('organization.manager_departamento', id_departamento=depart_id))
+    try:
+        DepartamentoService.update(depart_id, departamento, estabelecimento_id, id_responsavel)
+        flash("Departamento atualizado com sucesso!", 'success')
+    except Exception as e:
+        flash(f'Houve um erro inesperado: {e}', 'danger')
+        
+    return redirect(url_for('organization.manager_departamento', id_departamento=depart_id))
 
 
 @bp_depart.route('/delete_depart/<depart_id>')

@@ -96,7 +96,7 @@ class UsuarioService:
     
     @staticmethod
     def departamento_list_of_users(id_depart):
-        pessoas = Usuario.query.filter(Usuario.departamento_id==id_depart).all()
+        pessoas = Usuario.query.filter(Usuario.departamento_id==id_depart).order_by(Usuario.nome_completo, Usuario.ativo).all()
         if pessoas:
             return pessoas
         return False

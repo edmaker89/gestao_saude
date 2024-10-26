@@ -6,9 +6,9 @@
         <p><strong>Organização: </strong>{{departamento.estabelecimento.organizacao.nome}}</p>
         <p><strong>Estabelecimento: </strong>{{departamento.estabelecimento.nome}}</p>
         <p><strong>Departamento: </strong>{{departamento.nome}}</p>
-        <p><strong>Responsável: </strong> {% if departamento.id_responsavel %}{{departamento.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
+        <p><strong>Responsável: </strong> {% if departamento.responsavel_id %}{{departamento.responsavel.nome_completo}}{% else %}Não definido{% endif %}</p>
         <div class="buttons is-flex is-justify-content-start mt-3">
-            <a onclick="openEditDepartamento()" class="button is-primary">Editar departamento</a>
+            <a onclick="openNewDepart('{{departamento.nome}}')" class="button is-primary">Editar departamento</a>
         </div>
     </div>
     <hr>
@@ -17,6 +17,7 @@
         {% include "pages/organizacional/partials/list_usuarios.html" %}
     </div>
 </div>
+{% include "components/modals/edit_departamento.html" %}
 {% include "components/modals/reset_senha.html" %}
 {% include "components/modals/role_user.html" %}
 {% endblock content %}

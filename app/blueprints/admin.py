@@ -5,6 +5,7 @@ from app.forms.role_form import RoleForm
 from app.forms.role_user_form import RoleUserForm
 from app.models.role_permissions import Permission, Role, RolePermissions
 from app.models.users import Usuario
+from app.utils.breadcrumbItem import BreadcrumbManager
 from app.utils.dict_layout import button_layout
 from app.utils.verify_permission import permission_required
 
@@ -43,7 +44,11 @@ def roles():
     roles = Role.list_perfis(ordem=ordem, page=page, per_page=20)
     button_new_perfil = button_layout(url="openNewRole()", classname="button is-link", label="+ novo perfil", icon='', onclick=True)
     menu_ativo = "Gestão Perfis e Permissões"
-    return render_template('/pages/roles/index.html', menu_ativo=menu_ativo,title=title, page=page, ordem=ordem, form=form, roles=roles, button_layout=button_new_perfil)
+    rotas = [('Início', {}), ('Gestão Perfis e Permissões', {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Gestão Perfis e Permissões'}
+    return render_template('/pages/roles/index.html', **ctx_breads, menu_ativo=menu_ativo,title=title, page=page, ordem=ordem, form=form, roles=roles, button_layout=button_new_perfil)
 
 @bp_admin.route('/api/perfil/<int:id_perfil>', methods=['GET'])
 @login_required
@@ -88,9 +93,13 @@ def role_permission(id_role):
     categorias = []
 
     print(permission_linked)
-
+    rotas = [('Início', {}), ('Gestão Perfis e Permissões', {}), ('Gerenciar permissões', {'id_role':id_role})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Gerenciar permissões'}
     
-    return render_template('/pages/roles/role_permission.html', 
+    return render_template('/pages/roles/role_permission.html',
+                           **ctx_breads, 
                            title=title, 
                            subtitle=subtitle, 
                            role=role, 

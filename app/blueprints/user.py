@@ -13,6 +13,7 @@ from app.forms.reset_senha_form import ResetSenhaForm
 from app.forms.role_user_form import RoleUserForm
 from app.models.departamento import Departamento
 from app.models.users import Usuario
+from app.utils.breadcrumbItem import BreadcrumbManager
 from app.utils.comunications.email import novo_cadastro
 from app.utils.dict_layout import button_layout
 from app.utils.verify_permission import permission_required
@@ -48,11 +49,15 @@ def reset_password():
     title = "Alterar senha"
     subtitle = "Para sua segurança utilize senhas fortes"
     form = ResetSenhaForm()
-
+    rotas = [('Início', {}), (title, {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':title}
     return render_template('/pages/user/password.html',
                            title=title,
                            subtitle=subtitle,
-                           form=form
+                           form=form,
+                           **ctx_breads
                            )
 
 @bp_user.route('/edit-perfil', methods=["GET", "POST"])
@@ -80,12 +85,15 @@ def edit_perfil():
     form.nome_completo.data = current_user.nome_completo
     form.departamento.data = current_user.departamento_id
     form.email.data = current_user.email
-
+    rotas = [('Início', {}), (title, {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':title}
     return render_template('/pages/user/edit_perfil.html',
                            title=title, 
                            subtitle=subtitle, 
                            form=form, 
-                           user=current_user)
+                           user=current_user, **ctx_breads)
 
 @bp_user.route('/create-user', methods=["GET", "POST"])
 @login_required
@@ -141,8 +149,11 @@ def create_user():
     subtitle = ''
     form = NewUserForm()
     form_depart = DepartForm()
-
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, form_depart=form_depart)
+    rotas = [('Início', {}), ('Gestão de usuários', {}), ('Novo usuário', {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Novo usuário'}
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, form_depart=form_depart, **ctx_breads)
 
 @bp_user.route('/manager-user', methods=["GET", "POST"])
 @login_required
@@ -163,7 +174,7 @@ def manager_user():
     form = RoleUserForm()
 
     listaUsuarios = UsuarioService.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
-    title = 'Gestão de Usuarios'
+    title = 'Gestão de usuários'
     
     ctx = {
         'form': form, 
@@ -177,6 +188,13 @@ def manager_user():
         'departamento': departamento,
         'menu_ativo': 'Gestão de usuários'
     }
+    
+    rotas = [('Início', {}), (title, {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':title}
+    
+    ctx.update(**ctx_breads)
     
     return render_template('/pages/user/manager_user.html', **ctx)
 
@@ -219,8 +237,11 @@ def edit_user(id_user):
     form.email.data = user.email #type: ignore
 
     form_depart = DepartForm()
-
-    return render_template('/pages/user/create_user.html',id_departamento=id_departamento, title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
+    rotas = [('Início', {}), ('Gestão de usuários', {}), ('Editar usuário', {'id_user': id_user})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Editar usuário'}
+    return render_template('/pages/user/create_user.html', **ctx_breads,id_departamento=id_departamento, title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
 
 @bp_user.route('/lock/<id_user>')
 @login_required

@@ -7,6 +7,7 @@ from app.services.departamento_service import DepartamentoService
 from app.services.estabelecimento_service import EstabelecimentoService
 from app.services.organizacao_service import OrganizacaoService
 from app.services.usuario_service import UsuarioService
+from app.utils.breadcrumbItem import BreadcrumbManager
 
 
 bp_org = Blueprint('organization', __name__, url_prefix='/organization' )
@@ -33,7 +34,12 @@ def manager_new_org():
         'usuarios':usuarios,
         'organizacoes': organizacoes
     }
-
+    
+    rotas = [('Início', {}), ('Gestão organizacional', {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Gestão organizacional'}
+    ctx.update(**ctx_breads)
     return render_template('/pages/organizacional/manager.html', **ctx)
 
 @bp_org.route('/manager/org/create', methods=['POST']) # type: ignore
@@ -91,7 +97,11 @@ def manager_org(id_org):
         'usuarios': usuarios,
         'estabelecimentos': estabelecimentos
     }
-    
+    rotas = [('Início', {}), ('Gestão organizacional', {}), ('Organização', {'id_org':id_org})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Organização'}
+    ctx.update(**ctx_breads)
     return render_template('/pages/organizacional/manager_org.html', **ctx)
 
 @bp_org.route('/manager/new/estabelecimento', methods=['POST']) # type: ignore
@@ -155,6 +165,12 @@ def manager_estab(id_estab):
         'departamentos': departamentos
     }
     
+    rotas = [('Início', {}), ('Gestão organizacional', {}), ('Organização', {'id_org':org.id}), ('Estabelecimento', {'id_estab':id_estab})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Estabelecimento'}
+    ctx.update(**ctx_breads)
+    
     return render_template('/pages/organizacional/manager_estab.html', **ctx)
 
 @bp_org.route('/manager/new/departamento', methods=['POST']) # type: ignore
@@ -197,5 +213,13 @@ def manager_departamento(id_departamento):
         'usuarios_departamento': usuarios_departamento,
         'estabelecimentos': estabelecimentos
     }
+    rotas = [('Início', {}), ('Gestão organizacional', {}), 
+             ('Organização', {'id_org':departamento.estabelecimento.organizacao.id}), #type:ignore
+             ('Estabelecimento', {'id_estab':departamento.estabelecimento.id})]#type:ignore
+    rotas.append(('Departamento', {'id_departamento':id_departamento}))
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':'Departamento'}
+    ctx.update(**ctx_breads)
     
     return render_template('/pages/organizacional/manager_depart.html', **ctx)

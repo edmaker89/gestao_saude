@@ -12,6 +12,19 @@ class BreadcrumbManager:
             BreadcrumbItem('index', 'Início'),   
             BreadcrumbItem('aviso_new', 'Novo Aviso'),   
             BreadcrumbItem('aviso_edit', 'Editar Aviso'),   
+            BreadcrumbItem('mail.new', 'Nova Correspondência'),   
+            BreadcrumbItem('mail.my_mails', 'Enviados'),     
+            BreadcrumbItem('user.reset_password', 'Alterar senha'),     
+            BreadcrumbItem('user.edit_perfil', 'Editar perfil'),     
+            BreadcrumbItem('user.manager_user', 'Gestão de usuários'),     
+            BreadcrumbItem('user.create_user', 'Novo usuário'),     
+            BreadcrumbItem('user.edit_user', 'Editar usuário'),     
+            BreadcrumbItem('organization.manager_new_org', 'Gestão organizacional'),     
+            BreadcrumbItem('organization.manager_org', 'Organização'),     
+            BreadcrumbItem('organization.manager_estab', 'Estabelecimento'),     
+            BreadcrumbItem('organization.manager_departamento', 'Departamento'),     
+            BreadcrumbItem('admin.roles', 'Gestão Perfis e Permissões'),     
+            BreadcrumbItem('admin.role_permission', 'Gerenciar permissões'),     
         ]  
 
     def get_route(self, label_route: str) -> Optional[BreadcrumbItem]:  

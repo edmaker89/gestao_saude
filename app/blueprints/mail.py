@@ -1,8 +1,9 @@
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, ctx, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
 from app.services.correspondencia_service import CorrespondenciaService
 from app.models.tipo_correspondencias import TipoCorrespondencias
+from app.utils.breadcrumbItem import BreadcrumbItem, BreadcrumbManager
 from app.utils.verify_permission import permission_required
 
 bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
@@ -11,7 +12,7 @@ bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
 @login_required
 def new():
     form = MailForm()
-    title = "Nova Correspondencia"
+    title = "Nova Correspondência"
     subtitle = "O numero da correspondecia será mostrado após cadastrar a correspondencia"
     menu_ativo = 'Nova'
     
@@ -39,9 +40,12 @@ def new():
     for l in listaTipo:
         choices.append((l.id, l.tipo))
     form.tipo.choices = choices
+    rotas = [('Início', {}), (title, {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':title}
     
-    
-    return render_template('/pages/mail/new.html', title=title, subtitle=subtitle, form=form, menu_ativo=menu_ativo)
+    return render_template('/pages/mail/new.html', title=title, subtitle=subtitle, form=form, menu_ativo=menu_ativo, **ctx_breads)
 
 @bp_mail.route('/create_success/<id_mail>')
 @login_required
@@ -75,6 +79,10 @@ def my_mails():
 
     title = 'Enviados'
     subtitle = "Lista de todos os números de envios gerados"
+    rotas = [('Início', {}), ('Enviados', {})]
+    bread_manager=BreadcrumbManager()
+    breads = bread_manager.gerar_breads(rotas)
+    ctx_breads = {'breads': breads, 'bread_ativo':title}
 
     return render_template('/pages/mail/my_mails.html',
                            mails=mails,
@@ -86,7 +94,8 @@ def my_mails():
                            ordem=ordem,
                            tipo=tipo,
                            tipos=tipos,
-                           menu_ativo=menu_ativo                     
+                           menu_ativo=menu_ativo,
+                           **ctx_breads,                    
                            )
 
 @bp_mail.route('/edit_assunto', methods=['POST'])
@@ -128,6 +137,7 @@ def all_mails():
     #cabecalho
     title = 'Todas as correspondências'
     subtitle = "Lista de todos os numeros de envios gerados"
+    
 
     return render_template('/pages/mail/all_mails.html',
                            mails=mails,

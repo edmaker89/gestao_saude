@@ -15,6 +15,7 @@ from app.models.token import Token
 from app.ext.database import db
 
 from app.models.users import Usuario
+from app.utils.breadcrumbItem import BreadcrumbManager
 from app.utils.comunications.email import novo_cadastro, solicitação_de_recuperacao
 from app.utils.data_menu import MENU
 
@@ -130,8 +131,12 @@ def init_app(app):
       menu_ativo = 'Início'
       avisos = Avisos.query.order_by(Avisos.create_at.desc()).all()
       avisos_html = [markdown.markdown(aviso.descricao.replace(r'\n', '<br>')) for aviso in avisos]
-
-      return render_template('/pages/index.html', title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html), menu_ativo=menu_ativo)
+      rotas = [('Início', {})]
+      breads_manager = BreadcrumbManager()
+      breads = breads_manager.gerar_breads(rotas)
+      bread_ativo = 'Início'
+      ctx_bread = {'breads':breads, 'bread_ativo':bread_ativo}
+      return render_template('/pages/index.html', **ctx_bread, title=title, subtitle=subtitle, avisos=zip(avisos, avisos_html), menu_ativo=menu_ativo)
    
    @app.route('/aviso/edit/<id_aviso>', methods=['GET', 'POST'])
    @login_required
@@ -154,8 +159,13 @@ def init_app(app):
       form = AvisosForm()
       form.descricao.data = aviso.descricao
       form.titulo.data = aviso.titulo
-
-      return render_template ('/pages/avisos/form.html', form=form, aviso=aviso, title=title, id_aviso=id_aviso)
+      
+      rotas = [('Início', {}), ('Editar Aviso', {'id_aviso': id_aviso})]
+      breads_manager = BreadcrumbManager()
+      breads = breads_manager.gerar_breads(rotas)
+      bread_ativo = 'Editar Aviso'
+      ctx_bread = {'breads':breads, 'bread_ativo':bread_ativo}
+      return render_template ('/pages/avisos/form.html', form=form, aviso=aviso, title=title, id_aviso=id_aviso, **ctx_bread)
    
    @app.route('/aviso/new/', methods=['GET', 'POST'])
    @login_required
@@ -180,7 +190,12 @@ def init_app(app):
          
       title = 'Criar aviso'
       form = AvisosForm()
-      return render_template ('/pages/avisos/form.html', form=form, title=title)
+      rotas = [('Início', {}), ('Novo Aviso', {})]
+      breads_manager = BreadcrumbManager()
+      breads = breads_manager.gerar_breads(rotas)
+      bread_ativo = 'Novo Aviso'
+      ctx_bread = {'breads':breads, 'bread_ativo':bread_ativo}
+      return render_template ('/pages/avisos/form.html', form=form, title=title, **ctx_bread)
    
    @app.route('/aviso/delete/<id_aviso>')
    @login_required

@@ -1,0 +1,15 @@
+<nav class="pl-4 py-2 breadcrumb has-background-white" aria-label="breadcrumbs">
+    {% if breads %}
+    <ul>
+        {% for bread in breads %}
+        <li {% if bread_ativo==bread.label%}class="is-active"{% endif %}>
+            {% if bread.params %}
+            <a {% if bread_ativo==bread.label %}aria-current="page" {% endif %} href="{{url_for(bread.url, **bread.params)}}"{% if bread_ativo==bread.label %}aria-current="page"{% endif %}>{{bread.label}}</a>
+            {% else %}
+            <a {% if bread_ativo==bread.label %}aria-current="page" {% endif %}href="{{url_for(bread.url)}}" {% if bread_ativo==bread.label %}aria-current="page"{% endif %}>{{bread.label}}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</nav>

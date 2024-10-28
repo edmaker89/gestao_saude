@@ -1,5 +1,7 @@
 from sqlalchemy import or_
 from app.models.departamento import Departamento
+from app.models.estabelecimento import Estabelecimento
+from app.models.organizacao import Organizacao
 from app.models.role_permissions import Role
 from app.models.users import Usuario
 from app.ext.database import db
@@ -59,7 +61,7 @@ class UsuarioService:
         return {'tentativa': tentativa_atual, 'bloqueado': bloqueado}
     
     @staticmethod
-    def get_users_with_filters(nome=None, departamento_id=None, ordem='desc', page=1, per_page=20):
+    def get_users_with_filters(nome=None, organizacao_id=None, estabelecimento_id=None, departamento_id=None, ordem='desc', page=1, per_page=20, mostrar_inativo=None):
         query = db.session.query(
             Usuario,
             Departamento,
@@ -70,18 +72,30 @@ class UsuarioService:
         ).join(
             Role,
             Usuario.role == Role.id
+        ).join(
+            Estabelecimento,
+            Departamento.estabelecimento_id == Estabelecimento.id
         )
 
         if nome:
             query = query.filter(or_(Usuario.nome_completo.like(f"%{nome}%"), Usuario.username.like(f'%{nome}%')))
+            
         if departamento_id:
             query = query.filter(Usuario.departamento_id == departamento_id)
+        elif estabelecimento_id:
+            query = query.filter(Departamento.estabelecimento_id == estabelecimento_id)
+        elif organizacao_id:
+            query = query.filter(Estabelecimento.orgao_id == organizacao_id)
 
         # Adicione a ordenação pela data ou outro campo apropriado
         if ordem == 'asc':
             query = query.order_by(Usuario.nome_completo.asc())
         else:
             query = query.order_by(Usuario.nome_completo.desc())
+            
+        # O padrão é não mostrar inativo
+        if not mostrar_inativo:
+            query = query.filter(Usuario.ativo == 1)
         
         mails = query.paginate(page=page, per_page=per_page) # type: ignore
         return mails

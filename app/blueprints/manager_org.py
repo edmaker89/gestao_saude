@@ -12,7 +12,6 @@ from app.utils.breadcrumbItem import BreadcrumbManager
 
 bp_org = Blueprint('organization', __name__, url_prefix='/organization' )
 
-
 @bp_org.route('/manager/new_org')
 @login_required
 def manager_new_org():
@@ -106,9 +105,13 @@ def manager_org(id_org):
 
 @bp_org.route('/manager/new/estabelecimento', methods=['POST']) # type: ignore
 def new_estabelecimento():
-    id_org = request.form.get('id_org', 0, int)
+    id_org = request.form.get('id_org', None, int)
+    if not id_org:
+        flash('Erro: Não foi possivel achar a organização vinculada.', 'danger')
+        return redirect(url_for('organization.manager_org', id_org=id_org))
+    
     nome = request.form.get('nome')
-    responsavel_id = request.form.get('responsavel', 0, int)
+    responsavel_id = request.form.get('responsavel', None, int)
     
     if not nome:
         flash('Erro: Nome é obrigatórios.', 'danger')
@@ -223,3 +226,15 @@ def manager_departamento(id_departamento):
     ctx.update(**ctx_breads)
     
     return render_template('/pages/organizacional/manager_depart.html', **ctx)
+
+@bp_org.route('/api/organizacao/<id_organizacao>/estabelecimentos')
+def api_estabelecimentos_por_organizacao(id_organizacao):
+    estabelecimentos = EstabelecimentoService.list_all(id_organizacao)
+    estabelecimentos = [{'id': estabelecimento.id, 'nome': estabelecimento.nome} for estabelecimento in estabelecimentos]
+    return jsonify(estabelecimentos)
+
+@bp_org.route('/api/estabelecimento/<id_estabelecimento>/departamentos')
+def api_departamentos_por_estabelecimento(id_estabelecimento):
+    departamentos = DepartamentoService.list_all_by_estab(id_estabelecimento)
+    departamentos = [{'id': departamento.id, 'nome': departamento.nome} for departamento in departamentos]
+    return departamentos

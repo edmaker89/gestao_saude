@@ -1,6 +1,10 @@
 from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from app.models import estabelecimento
+from app.models.organizacao import Organizacao
+from app.services.estabelecimento_service import EstabelecimentoService
+from app.services.organizacao_service import OrganizacaoService
 from app.services.usuario_service import UsuarioService
 from app.forms.depart_form import DepartForm
 from app.forms.edit_perfil_form import EditPerfilForm
@@ -16,7 +20,7 @@ from app.models.users import Usuario
 from app.utils.breadcrumbItem import BreadcrumbManager
 from app.utils.comunications.email import novo_cadastro
 from app.utils.dict_layout import button_layout
-from app.utils.verify_permission import permission_required
+from app.utils.verify_permission import permission_required, verify_permission
 
 bp_user = Blueprint('user', __name__, url_prefix='/user' )
 
@@ -162,8 +166,24 @@ def manager_user():
     page = request.args.get('page', 1, type=int)
     ordem = request.args.get('ordem', '', type=str)
     nome = request.args.get('nome', '', type=str)
+    mostrar_inativo = request.args.get('mostrar_inativo', None, int)
     departamento = request.args.get('departamento', '', type=int)
-
+    organizacao = request.args.get('organizacao', '', type=int)
+    estabelecimento = request.args.get('estabelecimento', '', type=int)
+    
+    organizacoes = []
+    estabelecimentos = []
+    
+    if not verify_permission('gerenciamento master'):
+        organizacao = current_user.departamento.estabelecimento.organizacao.id
+        lista_estabelecimentos = EstabelecimentoService.list_all(orgao_id=organizacao)
+        for estab in lista_estabelecimentos:
+            estabelecimentos.append((estab.id, estab.nome))
+    else:
+        lista_organizacoes = OrganizacaoService.list_all()
+        for org in lista_organizacoes:
+            organizacoes.append((org.id, org.nome))
+        
     button = button_layout(url='user.create_user', label='Novo Usuario', icon='fa-solid fa-user-plus', classname='button is-primary')
 
     listaDepartamentos = Departamento.query.all()
@@ -173,27 +193,30 @@ def manager_user():
 
     form = RoleUserForm()
 
-    listaUsuarios = UsuarioService.get_users_with_filters(page=page, ordem=ordem, nome=nome, departamento_id=departamento)
+    listaUsuarios = UsuarioService.get_users_with_filters(page=page, ordem=ordem, nome=nome, organizacao_id=organizacao, estabelecimento_id=estabelecimento, departamento_id=departamento, mostrar_inativo=mostrar_inativo)
     title = 'Gestão de usuários'
     
     ctx = {
         'form': form, 
         'title': title, 
-        'departamentos': departamentos, 
+        'departamentos': departamentos,
+        'organizacoes': organizacoes,
+        'estabelecimentos': estabelecimentos,
         'ordem':ordem, 
         'usuarios': listaUsuarios, 
         'button_layout': button, 
         'page': page, 
         'nome': nome, 
         'departamento': departamento,
-        'menu_ativo': 'Gestão de usuários'
+        'mostrar_inativo': mostrar_inativo,
+        'menu_ativo': 'Gestão de usuários',
+        'organizacao': organizacao
     }
     
     rotas = [('Início', {}), (title, {})]
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)
     ctx_breads = {'breads': breads, 'bread_ativo':title}
-    
     ctx.update(**ctx_breads)
     
     return render_template('/pages/user/manager_user.html', **ctx)

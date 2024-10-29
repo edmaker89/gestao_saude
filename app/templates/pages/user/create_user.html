@@ -92,16 +92,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const departamentoSelect = document.getElementById("departamento");
 
   // Obtém os valores dos campos hidden
-  const selectedOrganizacao = document.getElementById("id_organizacao").value;
-  const selectedEstabelecimento = document.getElementById("id_estabelecimento").value;
-  const selectedDepartamento = document.getElementById("id_departamento").value;
-
-  console.log(selectedDepartamento)
-  console.log(selectedEstabelecimento)
-  console.log(selectedOrganizacao)
-
-  // Define o valor de organização e carrega as opções correspondentes
-  if (organizacaoSelect && selectedOrganizacao) {
+  try {
+    const selectedOrganizacao = document.getElementById("id_organizacao").value;
+    const selectedEstabelecimento = document.getElementById("id_estabelecimento").value;
+    const selectedDepartamento = document.getElementById("id_departamento").value;
+    // Define o valor de organização e carrega as opções correspondentes
+    if (organizacaoSelect && selectedOrganizacao) {
       console.log('entrou no if 1')
       organizacaoSelect.value = selectedOrganizacao;
       await handleOrganizacaoChange(selectedEstabelecimento, selectedDepartamento);
@@ -111,10 +107,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         await handleEstabelecimentoChange();
         departamentoSelect.value = selectedDepartamento
       }
-
-  }else{
-      estabelecimentoSelect.value = selectedEstabelecimento;
-      departamentoSelect.value = selectedDepartamento
+    }else{
+        estabelecimentoSelect.value = selectedEstabelecimento;
+        departamentoSelect.value = selectedDepartamento
+      }
+  } catch {
+    const selectedOrganizacao = '';
+    const selectedEstabelecimento = '';
+    const selectedDepartamento = '';
   }
 
   // Adiciona event listeners para mudanças nos selects

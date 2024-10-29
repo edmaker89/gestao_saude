@@ -2,25 +2,47 @@
     <div class="modal-background"></div>
     <div class="modal-card">
         <header class="modal-card-head p-4 modal-head-primary">
-            <p class="modal-card-title is-size-5 has-text-white">Novo departamento</p>
+            <p class="modal-card-title is-size-5 has-text-white">Atualizar departamento</p>
             <button class="delete" aria-label="close" onclick="closeNewDepart()"></button>
         </header>
         <section class="modal-card-body">
-            <form action="{{url_for('depart.new_depart')}}" method="post">
+            <form action="{{url_for('depart.edit_depart', depart_id=departamento.id)}}" method="post">
+                <div class="field mb-3">
+                    <label for="select_estabelecimento">Estabelecimento: </label>
+                    <select class="input" name="select_estabelecimento" id="select_estabelecimento">
+                        {% for estabelecimento in estabelecimentos %}
+                            <option value={{estabelecimento.id}} {% if estabelecimento.id==departamento.estabelecimento.id %}selected{% endif %}>{{estabelecimento.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 {{form_depart.departamento.label()}}
                 {{form_depart.departamento(class='input')}}
+                <div class="field mt-3">
+                    <label for="select_responsavel">Responsável: </label>
+                    <select class="input" name="select_responsavel" id="select_responsavel">
+                        <option value="">Selecione um colaborador responsavel</option>
+                        {% if usuarios_departamento %}
+                            {% for usuario in usuarios_departamento %}
+                                {% if usuario.ativo %}
+                                <option value={{usuario.id}} {% if usuario.id==departamento.responsavel_id %}selected{% endif %}>{{usuario.nome_completo}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
                 <div class="buttons is-flex is-justify-content-end mt-3">
                     {{form_depart.submit(class='button is-primary')}}
             </form>
-                <button class="button is-danger" onclick="closeNewDepart()">Cancelar</button>
+                <a class="button is-danger" onclick="closeNewDepart()">Cancelar</a>
             </section>
         </div>
     </div>
 </div>
 
 <script>
-function openNewDepart() {
+function openNewDepart(departamento) {
     document.getElementById('newDepart').classList.add('is-active');
+    document.getElementById('departamento').value = departamento;
 }
 
 function closeNewDepart() {

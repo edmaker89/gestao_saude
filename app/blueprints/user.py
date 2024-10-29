@@ -108,7 +108,7 @@ def create_user():
         form = NewUserForm(request.form)
         username = form.username.data
         nome_completo = form.nome_completo.data
-        departamento_id = form.departamento.data
+        departamento_id = request.form.get('departamento')
         email = form.email.data
         senha = form.senha.data
         confirmar_senha = form.confirmar_senha.data
@@ -141,7 +141,7 @@ def create_user():
             db.session.add(new_user)
             db.session.commit()
 
-            flash(f'Usuario criado com sucesso: login {new_user.username}', 'success')
+            flash(f'Usuário criado com sucesso: login {new_user.username}', 'success')
             # implementar envio de email aqui
             novo_cadastro(nome_completo=nome_completo, username=username, senha=senha, email=email)
             return redirect(url_for('user.manager_user'))
@@ -152,12 +152,31 @@ def create_user():
     title = "Cadastrar novo usuário"
     subtitle = ''
     form = NewUserForm()
-    form_depart = DepartForm()
     rotas = [('Início', {}), ('Gestão de usuários', {}), ('Novo usuário', {})]
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)
     ctx_breads = {'breads': breads, 'bread_ativo':'Novo usuário'}
-    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, form_depart=form_depart, **ctx_breads)
+    
+    organizacoes = []
+    estabelecimentos = []
+    
+    if not verify_permission('gerenciamento master'):
+        organizacao = current_user.departamento.estabelecimento.organizacao.id
+        lista_estabelecimentos = EstabelecimentoService.list_all(orgao_id=organizacao)
+        for estab in lista_estabelecimentos:
+            estabelecimentos.append((estab.id, estab.nome))
+    else:
+        lista_organizacoes = OrganizacaoService.list_all()
+        for org in lista_organizacoes:
+            organizacoes.append((org.id, org.nome))
+            
+    listaDepartamentos = Departamento.query.all()
+    departamentos = []
+    for l in listaDepartamentos:
+        departamentos.append((l.id, l.nome))
+    
+    return render_template('/pages/user/create_user.html', title=title, subtitle=subtitle, form=form, **ctx_breads, organizacoes=organizacoes,
+                           estabelecimento=estabelecimentos)
 
 @bp_user.route('/manager-user', methods=["GET", "POST"])
 @login_required
@@ -228,8 +247,7 @@ def edit_user(id_user):
     user = Usuario.get_user(id_user)
     
     if request.method == 'POST':
-        id_departamento = request.form.get('id_departamento', None, int)
-        print(id_departamento)
+        id_depart = request.form.get('id_departamento', None, int)
         form = EditUserForm(request.form)
         id = id_user
         username = form.username.data
@@ -241,30 +259,53 @@ def edit_user(id_user):
 
         if update_user:
             flash('Usuario editado com sucesso!', 'success')
-            if id_departamento:
-                return redirect(url_for('organization.manager_departamento', id_departamento=id_departamento))
+            if id_depart:
+                return redirect(url_for('organization.manager_departamento', id_departamento=id_depart))
             return redirect(url_for('user.manager_user'))
         else:
             flash('Um erro inesperado aconteceu, tente novamente mais tarde', 'danger')
-            if id_departamento:
-                return redirect(url_for('user.edit_user', id_user=id_user, id_departamento=id_departamento))
+            if id_depart:
+                return redirect(url_for('user.edit_user', id_user=id_user, id_departamento=id_depart))
             return redirect(url_for('user.edit_user', id_user=id_user))
     
     title='Editar Usuário'
     subtitle = ''
-    id_departamento = request.args.get('id_departamento', None, int)
     form = EditUserForm()
     form.username.data = user.username #type: ignore
     form.nome_completo.data = user.nome_completo #type: ignore
-    form.departamento.data = str(user.departamento_id) #type: ignore
     form.email.data = user.email #type: ignore
+    
+    id_organizacao = user.departamento.estabelecimento.organizacao.id
+    id_estabelecimento = user.departamento.estabelecimento.id
+    id_departamento = user.departamento.id
 
-    form_depart = DepartForm()
     rotas = [('Início', {}), ('Gestão de usuários', {}), ('Editar usuário', {'id_user': id_user})]
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)
     ctx_breads = {'breads': breads, 'bread_ativo':'Editar usuário'}
-    return render_template('/pages/user/create_user.html', **ctx_breads,id_departamento=id_departamento, title=title, subtitle=subtitle, form=form, id_user=id_user, form_depart=form_depart)
+    
+    organizacoes = []
+    estabelecimentos = []
+    
+    if not verify_permission('gerenciamento master'):
+        organizacao = current_user.departamento.estabelecimento.organizacao.id
+        lista_estabelecimentos = EstabelecimentoService.list_all(orgao_id=organizacao)
+        for estab in lista_estabelecimentos:
+            estabelecimentos.append((estab.id, estab.nome))
+    else:
+        lista_organizacoes = OrganizacaoService.list_all()
+        for org in lista_organizacoes:
+            organizacoes.append((org.id, org.nome))
+            
+    listaDepartamentos = Departamento.query.all()
+    departamentos = []
+    for l in listaDepartamentos:
+        departamentos.append((l.id, l.nome))
+    
+    return render_template('/pages/user/create_user.html', 
+                           **ctx_breads,id_departamento=id_departamento, id_organizacao=id_organizacao, id_estabelecimento=id_estabelecimento,
+                           title=title, subtitle=subtitle, form=form, id_user=id_user, organizacoes=organizacoes,
+                           estabelecimento=estabelecimentos)
 
 @bp_user.route('/lock/<id_user>')
 @login_required

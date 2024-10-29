@@ -5,10 +5,12 @@
       {% if id_user %}
         <form action="{{url_for('user.edit_user', id_user=id_user)}}" method="post">
         <input type="hidden" name="id_user" value={{id_user}}>
+        <input type="hidden" name="id_organizacao" id="id_organizacao" value={{id_organizacao}}>
+        <input type="hidden" name="id_estabelecimento" id="id_estabelecimento" value={{id_estabelecimento}}>
+        <input type="hidden" name="id_departamento" id="id_departamento" value={{id_departamento}}>
       {% else %}
       <form action="{{url_for('user.create_user')}}" method="post">
       {% endif %}
-      <input type="hidden" name="id_departamento" id="id_departamento" value="{{id_departamento}}">
         <div class="">
             <div class="field">
               <label class="label">{{ form.username.label() }}</label>
@@ -18,13 +20,49 @@
               <label class="label">{{ form.nome_completo.label() }}</label>
               <div class="control">{{ form.nome_completo(class = 'input tam-field-2', placeholder = '') }}</div>
             </div>
-            <div class="field">
-              <label class="label">{{ form.departamento.label() }}</label>
-              <div class="is-flex is-align-items-center">
-                <div class="control">{{ form.departamento(class = 'input tam-field-2', placeholder = '') }}</div>
-                <a class="ml-5" href="#" onclick="openNewDepart()">+ novo departamento</a>
+            {% if 'gerenciamento master' in user_permissions %}
+              <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+                  <label class="label" for="organizacao">Organização: </label>
+                  <div class="select mt-1">
+                      <select name="organizacao" id="organizacao" class="input tam-field-2">
+                          <option value=''>Selecione uma organização</option>
+                          {% for organizacao_option in organizacoes %}
+                              <option value="{{ organizacao_option[0]}}" 
+                                  {% if organizacao_option[0] == organizacao %}selected{% endif %}>
+                                  {{ organizacao_option[1] }}
+                              </option>
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            {% endif %}
+            <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+              <label class="label" for="estabelecimento">Estabelecimento: </label>
+              <div class="select mt-1 control">
+                  <select name="estabelecimento" id="estabelecimento" class="input tam-field-2">
+                      <option value=''>Selecione um estabelecimento</option>
+                      {% if not 'gerenciamento master' in user_permissions %}
+                          {% for estabelecimento_option in estabelecimentos %}
+                          <option value="{{ estabelecimento_option[0] }}" 
+                              {% if estabelecimento_option[0] == estabelecimento %}selected{% endif %}>
+                              {{ estabelecimento_option[1] }}
+                          </option>
+                          {% endfor %}
+                      {% else %}
+                          <!-- alimentado com js -->
+                      {% endif %}
+                  </select>
               </div>
             </div>
+            <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+              <label class="label" for="departamento">Departamento: </label>
+              <div class="select mt-1 control">
+                  <select name="departamento" id="departamento" class="input tam-field-2">
+                      <option value=''>Selecione um departamento</option>
+                          <!-- alimentado com js -->
+                  </select>
+              </div>
+          </div>
             <div class="field">
               <label class="label">{{ form.email.label() }}</label>
               <div class="control">{{ form.email(class = 'input tam-field-2', placeholder = '') }}</div>
@@ -47,6 +85,120 @@
           </div>
     </form>
 </div>
-{% include "components/modals/new_department.html" %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const organizacaoSelect = document.getElementById("organizacao");
+  const estabelecimentoSelect = document.getElementById("estabelecimento");
+  const departamentoSelect = document.getElementById("departamento");
+
+  // Obtém os valores dos campos hidden
+  const selectedOrganizacao = document.getElementById("id_organizacao").value;
+  const selectedEstabelecimento = document.getElementById("id_estabelecimento").value;
+  const selectedDepartamento = document.getElementById("id_departamento").value;
+
+  console.log(selectedDepartamento)
+  console.log(selectedEstabelecimento)
+  console.log(selectedOrganizacao)
+
+  // Define o valor de organização e carrega as opções correspondentes
+  if (organizacaoSelect && selectedOrganizacao) {
+      console.log('entrou no if 1')
+      organizacaoSelect.value = selectedOrganizacao;
+      await handleOrganizacaoChange(selectedEstabelecimento, selectedDepartamento);
+      estabelecimentoSelect.value = selectedEstabelecimento;
+      if (estabelecimentoSelect) {
+        console.log('entrou no if 2')
+        await handleEstabelecimentoChange();
+        departamentoSelect.value = selectedDepartamento
+      }
+
+  }else{
+      estabelecimentoSelect.value = selectedEstabelecimento;
+      departamentoSelect.value = selectedDepartamento
+  }
+
+  // Adiciona event listeners para mudanças nos selects
+  if (organizacaoSelect) {
+      organizacaoSelect.addEventListener("change", () => handleOrganizacaoChange());
+  }
+
+  if (estabelecimentoSelect) {
+      estabelecimentoSelect.addEventListener("change", () => handleEstabelecimentoChange());
+  }
+});
+
+// Função para lidar com a seleção de uma organização
+async function handleOrganizacaoChange(selectedEstabelecimento = null, selectedDepartamento = null) {
+  const organizacaoId = document.getElementById("organizacao").value;
+  const estabelecimentoSelect = document.getElementById("estabelecimento");
+  const departamentoSelect = document.getElementById("departamento");
+
+  if (organizacaoId) {
+      try {
+          const estabelecimentos = await fetchEstabelecimentos(organizacaoId);
+          populateSelect(estabelecimentoSelect, estabelecimentos, 'Selecione um estabelecimento', selectedEstabelecimento);
+          clearSelect(departamentoSelect, 'Selecione um departamento');
+          
+          // Carrega os departamentos automaticamente se um estabelecimento foi passado
+          if (selectedEstabelecimento) {
+              await handleEstabelecimentoChange(selectedDepartamento);
+          }
+      } catch (error) {
+          console.error("Erro ao buscar estabelecimentos:", error);
+      }
+  } else {
+      clearSelect(estabelecimentoSelect, 'Selecione um estabelecimento');
+      clearSelect(departamentoSelect, 'Selecione um departamento');
+  }
+}
+
+// Função para lidar com a seleção de um estabelecimento
+async function handleEstabelecimentoChange(selectedDepartamento = null) {
+  const estabelecimentoId = document.getElementById("estabelecimento").value;
+  const departamentoSelect = document.getElementById("departamento");
+
+  if (estabelecimentoId) {
+      try {
+          const departamentos = await fetchDepartamentos(estabelecimentoId);
+          populateSelect(departamentoSelect, departamentos, 'Selecione um departamento', selectedDepartamento);
+      } catch (error) {
+          console.error("Erro ao buscar departamentos:", error);
+      }
+  } else {
+      clearSelect(departamentoSelect, 'Selecione um departamento');
+  }
+}
+
+// Função para buscar estabelecimentos pela organização
+async function fetchEstabelecimentos(organizacaoId) {
+  const response = await fetch(`/organization/api/organizacao/${organizacaoId}/estabelecimentos`);
+  return response.json();
+}
+
+// Função para buscar departamentos pelo estabelecimento
+async function fetchDepartamentos(estabelecimentoId) {
+  const response = await fetch(`/organization/api/estabelecimento/${estabelecimentoId}/departamentos`);
+  return response.json();
+}
+
+// Função para preencher o select com as opções e definir o valor selecionado
+function populateSelect(selectElement, items, placeholderText, selectedValue = null) {
+  clearSelect(selectElement, placeholderText);
+  items.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item['id'];
+      option.textContent = item['nome'];
+      if (selectedValue && item['id'] === selectedValue) {
+          option.selected = true;
+      }
+      selectElement.appendChild(option);
+  });
+}
+
+// Função para limpar o select e adicionar a opção inicial
+function clearSelect(selectElement, placeholderText) {
+  selectElement.innerHTML = `<option value=''>${placeholderText}</option>`;
+}
+</script>
 {% endblock content %}
 

@@ -8,10 +8,15 @@
         <section class="modal-card-body">
             <form action="{{url_for('organization.edit_org')}}" method="post">
                 <input type="hidden" name="id_org" id="id_org" value={{org.id}}>
+                
                 <div class="field">
                     <label for="">Nome: </label>
                     <div class="control">
-                        <input type="text" name="nome" id="nome" class="input" value="{{org.nome}}">
+                        <input type="text" name="nome" id="nome" class="input" value="{{org.nome}}"
+                        {% if not "gerenciamento master" in user_permissions %}
+                            disabled
+                        {% endif %}
+                        >
                     </div>
                 </div>
                 <div class="field">

@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, request, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
 from app.forms.depart_form import DepartForm
 from app.forms.role_user_form import RoleUserForm
 from app.models import estabelecimento
@@ -8,13 +8,19 @@ from app.services.estabelecimento_service import EstabelecimentoService
 from app.services.organizacao_service import OrganizacaoService
 from app.services.usuario_service import UsuarioService
 from app.utils.breadcrumbItem import BreadcrumbManager
+from app.utils.verify_permission import permission_required, verify_permission
 
 
 bp_org = Blueprint('organization', __name__, url_prefix='/organization' )
 
 @bp_org.route('/manager/new_org')
 @login_required
+@permission_required('acesso restrito')
 def manager_new_org():
+    
+    if not verify_permission('gerenciamento master'):
+        return redirect(url_for('organization.manager_org', id_org=current_user.departamento.estabelecimento.organizacao.id))
+    
     title = 'Gestão Organizacional'
     subtitle = "Organização / Estabelecimentos / Departamentos"
     page = request.args.get('page', 1, type=int)
@@ -43,6 +49,7 @@ def manager_new_org():
 
 @bp_org.route('/manager/org/create', methods=['POST']) # type: ignore
 @login_required
+@permission_required('acesso restrito')
 def create_new_org():
     form = request.form
     nome = form.get('nome', '', str)
@@ -61,12 +68,17 @@ def create_new_org():
 
 @bp_org.route('/manager/org/edit', methods=['POST']) # type: ignore
 @login_required
+@permission_required('acesso restrito')
 def edit_org():
     form = request.form
     id = form.get('id_org', 0, int)
     nome = form.get('nome', '', str)
     sigla = form.get('sigla', '', str)
     responsavel  = form.get('responsavel', None, int)
+    
+    if not verify_permission('gerenciamento master'):
+        org_complete = OrganizacaoService.get_by_id(id)
+        nome = org_complete.nome # type: ignore
     
     try:
         OrganizacaoService.update(id=id, nome=nome, sigla=sigla, id_responsavel=responsavel)
@@ -79,6 +91,8 @@ def edit_org():
     return redirect(url_for('organization.manager_org', id_org=id))
 
 @bp_org.route('/manager/org/<int:id_org>/')
+@login_required
+@permission_required('acesso restrito')
 def manager_org(id_org):
     usuarios = UsuarioService.list_of_users()
     org = OrganizacaoService.get_by_id(id=id_org)
@@ -104,6 +118,8 @@ def manager_org(id_org):
     return render_template('/pages/organizacional/manager_org.html', **ctx)
 
 @bp_org.route('/manager/new/estabelecimento', methods=['POST']) # type: ignore
+@login_required
+@permission_required('acesso restrito')
 def new_estabelecimento():
     id_org = request.form.get('id_org', None, int)
     if not id_org:
@@ -131,6 +147,7 @@ def new_estabelecimento():
 
 @bp_org.route('/manager/estabelecimento/edit', methods=['POST']) # type: ignore
 @login_required
+@permission_required('acesso restrito')
 def edit_estab():
     form = request.form
     estabelecimento_id = form.get('estabelecimento_id', 0, int)
@@ -148,6 +165,8 @@ def edit_estab():
     return redirect(url_for('organization.manager_estab', id_estab=estabelecimento_id))
 
 @bp_org.route('/manager/estabelecimento/<int:id_estab>/')
+@login_required
+@permission_required('acesso restrito')
 def manager_estab(id_estab):
     usuarios = UsuarioService.list_of_users()
     estab = EstabelecimentoService.get_by_id(id=id_estab)
@@ -177,6 +196,8 @@ def manager_estab(id_estab):
     return render_template('/pages/organizacional/manager_estab.html', **ctx)
 
 @bp_org.route('/manager/new/departamento', methods=['POST']) # type: ignore
+@login_required
+@permission_required('acesso restrito')
 def new_departamento():
     estabelecimento_id = request.form.get('estabelecimento_id', 0, int)
     nome = request.form.get('nome', '', str)
@@ -199,6 +220,8 @@ def new_departamento():
     return redirect(url_for('organization.manager_estab', id_estab=estabelecimento_id))
 
 @bp_org.route('/manager/departamento/<int:id_departamento>/')
+@login_required
+@permission_required('acesso restrito')
 def manager_departamento(id_departamento):
     departamento = DepartamentoService.get_by_id(id_departamento)
     usuarios_departamento = UsuarioService.departamento_list_of_users(id_departamento)
@@ -228,12 +251,16 @@ def manager_departamento(id_departamento):
     return render_template('/pages/organizacional/manager_depart.html', **ctx)
 
 @bp_org.route('/api/organizacao/<id_organizacao>/estabelecimentos')
+@login_required
+@permission_required('acesso restrito')
 def api_estabelecimentos_por_organizacao(id_organizacao):
     estabelecimentos = EstabelecimentoService.list_all(id_organizacao)
     estabelecimentos = [{'id': estabelecimento.id, 'nome': estabelecimento.nome} for estabelecimento in estabelecimentos]
     return jsonify(estabelecimentos)
 
 @bp_org.route('/api/estabelecimento/<id_estabelecimento>/departamentos')
+@login_required
+@permission_required('acesso restrito')
 def api_departamentos_por_estabelecimento(id_estabelecimento):
     departamentos = DepartamentoService.list_all_by_estab(id_estabelecimento)
     departamentos = [{'id': departamento.id, 'nome': departamento.nome} for departamento in departamentos]

@@ -210,7 +210,9 @@ def manager_user():
     for l in listaDepartamentos:
         departamentos.append((l.id, l.nome))
 
-    form = RoleUserForm()
+    form: RoleUserForm = RoleUserForm()
+    if not verify_permission('gerenciamento master'):
+        form.role.choices = [choice for choice in form.role.choices if choice[0] !=2 ]
 
     listaUsuarios = UsuarioService.get_users_with_filters(page=page, ordem=ordem, nome=nome, organizacao_id=organizacao, estabelecimento_id=estabelecimento, departamento_id=departamento, mostrar_inativo=mostrar_inativo)
     title = 'Gestão de usuários'

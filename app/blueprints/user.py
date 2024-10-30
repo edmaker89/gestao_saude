@@ -71,8 +71,9 @@ def edit_perfil():
     if request.method == 'POST':
         form = EditPerfilForm(request.form)
         nome_completo = form.nome_completo.data
-        departamento = form.departamento.data
         email = form.email.data
+        
+        departamento = current_user.departamento_id
 
         update_user = UsuarioService.update_user(current_user.id, nome_completo, departamento, email)
         if update_user:
@@ -87,7 +88,6 @@ def edit_perfil():
     form = EditPerfilForm()
 
     form.nome_completo.data = current_user.nome_completo
-    form.departamento.data = current_user.departamento_id
     form.email.data = current_user.email
     rotas = [('Início', {}), (title, {})]
     bread_manager=BreadcrumbManager()

@@ -277,10 +277,10 @@ def edit_user(id_user):
     form.nome_completo.data = user.nome_completo #type: ignore
     form.email.data = user.email #type: ignore
     
-    id_organizacao = user.departamento.estabelecimento.organizacao.id
-    id_estabelecimento = user.departamento.estabelecimento.id
-    id_departamento = user.departamento.id
-
+    id_organizacao = user.departamento.estabelecimento.organizacao.id #type:ignore
+    id_estabelecimento = user.departamento.estabelecimento.id #type:ignore
+    id_departamento = user.departamento.id #type:ignore
+    
     rotas = [('Início', {}), ('Gestão de usuários', {}), ('Editar usuário', {'id_user': id_user})]
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)

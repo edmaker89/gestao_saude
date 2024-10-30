@@ -67,8 +67,9 @@
             {% set assunto = mail.Correspondencias.assunto %}
             {% set tipo = mail.TipoCorrespondencias.tipo %}
             {% set data = mail.Correspondencias.data|format_data %}
-            {% set correspondencia_id = mail.Correspondencias.id %}
-            {{card_mail(numero, assunto, tipo, data, correspondencia_id )}}
+            {% set correspondencia = mail.Correspondencias %}
+            {% set visibilidade = mail.Correspondencias.visibilidade %}
+            {{card_mail(numero, assunto, tipo, data, correspondencia)}}
         {% endfor %}
       </div>
       <hr/>

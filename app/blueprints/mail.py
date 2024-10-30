@@ -115,11 +115,13 @@ def edit_assunto():
     if request.method == 'POST':
         form = request.form
         assunto = form.get('assunto')
+        visibilidade = form.get('visibilidade')
         mail_id = form.get('mail_id')
 
         try:
-            CorrespondenciaService.mail_edit_assunto(mail_id, assunto)
+            CorrespondenciaService.mail_edit_assunto(mail_id, assunto, visibilidade)
         except Exception as e:
+            print(e)
             flash('Um erro inesperado ocorreu, não foi possivel alterar o assunto', 'danger')
             return redirect(url_for('mail.my_mails'))
         return redirect(url_for('mail.my_mails'))

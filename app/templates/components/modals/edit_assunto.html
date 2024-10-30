@@ -8,9 +8,14 @@
         <section class="modal-card-body has-background-white p-4 has-rounded-sm">
             <form action="{{url_for('mail.edit_assunto')}}" method="post">
                 <label for="assunto"><strong>Assunto:</strong></label>
-                <input class="input" type="text" name="assunto" id="assunto">
+                <input class="input mb-3" type="text" name="assunto" id="assunto">
+                <label class="mt-3" for="visibilidade"><strong>Visibilidade: </strong></label>
+                <select name="visibilidade" id="visibilidade" class="input">
+                    <option value="publica">Pública</option>
+                    <option value="privada">Privada</option>
+                    <option value="sigilosa">Sigilosa</option>
+                </select>
                 <input type="hidden" name="mail_id" id="mail_id">
-                
             <div class="buttons mt-5 is-flex is-justify-content-end">
                 <button type="submit" class="button is-primary px-5">Salvar</button>
             </form>
@@ -21,10 +26,13 @@
 </div>
 
 <script>
-function openEditModal(correspondencia_id, assunto) {
+function openEditModal(correspondencia_id, assunto, visibilidade=null) {
     document.getElementById('editModal').classList.add('is-active');
     document.getElementById('mail_id').value = correspondencia_id
     document.getElementById('assunto').value = assunto
+    if (visibilidade) {
+        document.getElementById('visibilidade').value = visibilidade
+    }
     
 }
 

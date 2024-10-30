@@ -1,14 +1,16 @@
-{% macro card_mail(numero, assunto, tipo, data, correspondencia_id, nome_usuario, departamento, current_user) %}
-  <div class="card custom-card mb-5 mr-0">
+{% macro card_mail(numero, assunto, tipo, data, correspondencia, nome_usuario, departamento, current_user) %}
+  <div class="card custom-card mb-5 mr-0" style="position: relative;">
     <div class="card-content">
         <p class="title is-6">
             {{tipo}}: {{numero}}
-            <a href="#" class="icon has-text-link ml-2 {% if current_user != nome_usuario %}
-            disabled has-text-grey
-            {% endif %}
-            " onclick="openEditModal('{{correspondencia_id}}', '{{assunto}}')">
-              <i class="fas fa-edit"></i>
-            </a>
+            <span style="position: absolute; top: 10px; right: 10px;">
+              <a href="#" class="icon has-text-link ml-2 {% if current_user != nome_usuario %}
+              disabled has-text-grey
+              {% endif %}
+              " onclick="openEditModal('{{correspondencia.id}}', '{{assunto}}', '{{correspondencia.visibilidade}}')">
+                <i class="fas fa-edit"></i>
+              </a>
+            </span>
         </p>
         <p><strong>Assunto:</strong> {{assunto}}</p>
         <p class="mt-4"><strong>Data:</strong> {{data}}</p>
@@ -16,6 +18,19 @@
           <p><strong>Responsavel:</strong> {{nome_usuario}} </p>
           <p><strong>Departamento:</strong> {{departamento}} </p>
         {% endif %}
+        <span style="position: absolute; bottom: 10px; right: 10px;" >
+          <div class="tag is-normal
+          {% if correspondencia.visibilidade == 'publica' %}
+          is-info
+          {% elif correspondencia.visibilidade == 'sigilosa' %}
+          is-dark
+          {% else %}
+          is-link
+          {% endif %}
+          ">
+            {{correspondencia.visibilidade | upper}}
+          </div>
+        </span>
     </div>
   </div>
 {%endmacro %}

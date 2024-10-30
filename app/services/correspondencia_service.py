@@ -129,10 +129,12 @@ class CorrespondenciaService:
         return mails
     
     @staticmethod
-    def mail_edit_assunto(mail_id, mail_assunto):
+    def mail_edit_assunto(mail_id, mail_assunto, visibilidade=None):
         mail = CorrespondenciaService.get_correspondencia_by_id_unique(mail_id)
 
         mail.assunto = mail_assunto
+        if visibilidade:
+            mail.visibilidade = visibilidade
 
         db.session.commit()
 

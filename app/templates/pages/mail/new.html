@@ -10,8 +10,14 @@
     </div>
 
     <div class="field mt-5">
+        <label class="label">{{ form.visibilidade.label() }}</label>
+        <div class="control mt-0 pt-0 tam-field-1">
+            {{ form.visibilidade( class="input") }}
+        </div>
+    </div>
+    <div class="field mt-5">
         <label class="label">{{ form.tipo.label() }}</label>
-        <div class="control">
+        <div class="control ">
             {{ form.tipo( placeholder="Selecione o tipo") }}
         </div>
     </div>

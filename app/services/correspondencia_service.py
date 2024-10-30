@@ -1,26 +1,40 @@
 from app.models.correspondencias import Correspondencias
 from datetime import date
 from app.ext.database import db
+from app.models.departamento import Departamento
+from app.models.estabelecimento import Estabelecimento
+from app.models.organizacao import Organizacao
 from app.models.tipo_correspondencias import TipoCorrespondencias
 from app.models.users import Usuario
 
 class CorrespondenciaService:
     
     @staticmethod
-    def obter_novo_numero(tipo_id: int):
+    def obter_novo_numero(tipo_id: int, org_id: int):
         """sumary_line
         
         Keyword arguments:
         argument -- recebe um tipo da correspondencia em id -> tipo_id
+                 -- recebe a organização que pertence a sequencia -> org_id
         Return: retorna um novo numero de correspondencia baseado na consulta
         ao banco de dados, se ele encontrar do mesmo tipo e mesmo ano ele soma
         + 1 no numero, se não, retorna 1
         """
-        
 
         data = date.today().year
-        ultima_correspondencia = Correspondencias.query.filter(Correspondencias.tipo == tipo_id).\
-            order_by(Correspondencias.id.desc()).first()
+        # ultima_correspondencia = Correspondencias.query.filter(Correspondencias.tipo == tipo_id).\
+        #     order_by(Correspondencias.id.desc()).first()
+            
+        ultima_correspondencia = (  
+            db.session.query(Correspondencias)  
+            .join(Usuario, Correspondencias.usuario == Usuario.id)  
+            .join(Departamento, Correspondencias.departamento_id == Departamento.id)  
+            .join(Estabelecimento, Departamento.estabelecimento_id == Estabelecimento.id)  
+            .join(Organizacao, Estabelecimento.orgao_id == Organizacao.id)  
+            .filter(Organizacao.id == org_id, Correspondencias.tipo == tipo_id)  
+            .order_by(Correspondencias.id.desc())  
+            .first()
+        )
 
         if ultima_correspondencia:
             if int(ultima_correspondencia.ano) != data:
@@ -33,8 +47,8 @@ class CorrespondenciaService:
             return 1
         
     @staticmethod
-    def nova_correspondencia(tipo_id, assunto, usuario_id):
-        numero = CorrespondenciaService.obter_novo_numero(tipo_id)
+    def nova_correspondencia(tipo_id, assunto, usuario_id, departamento_id, org_id, visibilidade = None):
+        numero = CorrespondenciaService.obter_novo_numero(tipo_id, org_id)
         nova = Correspondencias()
         nova.tipo = tipo_id
         nova.assunto = assunto
@@ -43,7 +57,10 @@ class CorrespondenciaService:
         nova.numero = numero
         nova.ano = date.today().year
         nova.numero_ano = str(numero)+'/'+str(date.today().year)
-        
+        nova.departamento_id = departamento_id
+        if visibilidade:
+            nova.visibilidade = visibilidade
+                
         db.session.add(nova)
         db.session.commit()
 

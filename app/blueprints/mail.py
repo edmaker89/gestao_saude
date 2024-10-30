@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, ctx, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
+from app.models.users import Usuario
 from app.services.correspondencia_service import CorrespondenciaService
 from app.models.tipo_correspondencias import TipoCorrespondencias
 from app.utils.breadcrumbItem import BreadcrumbItem, BreadcrumbManager
@@ -20,13 +21,23 @@ def new():
     if request.method == "POST":
         tipo_id = form.tipo.data
         assunto = form.assunto.data
-        usuario_id = current_user.id
+        usuario_atual: Usuario = current_user #type:ignore
+        visibilidade = form.visibilidade.data
+        
+        print(tipo_id, assunto, usuario_atual.id, usuario_atual.departamento_id, usuario_atual.departamento.estabelecimento.organizacao.id, visibilidade)
         
         try:
+            # departamento_id, org_id, visibilidade = None
             mail = CorrespondenciaService.nova_correspondencia(
-            tipo_id, assunto, usuario_id
+            tipo_id=tipo_id, 
+            assunto=assunto, 
+            usuario_id=usuario_atual.id, 
+            departamento_id=usuario_atual.departamento_id, 
+            org_id=usuario_atual.departamento.estabelecimento.organizacao.id,
+            visibilidade=visibilidade
             )
         except Exception as e:
+            print(e)
             flash('[ERRO]: Algo inesperado aconteceu, tente novamente', 'danger')
             return redirect(url_for('mail.new'))
         

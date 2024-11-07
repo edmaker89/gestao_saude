@@ -141,25 +141,57 @@ class CorrespondenciaService:
         return mail
 
     @staticmethod
-    def get_correspondencias_by_user_with_filters(user_id=None, numero=None, data=None, assunto=None, page=1, per_page=10, tipo=None, ordem='desc'):
+    def get_correspondencias_by_user_with_filters(
+        user_id=None, 
+        departamento_id=None, 
+        estabelecimento_id=None, 
+        organizacao_id=None, 
+        numero=None, 
+        data_inicial=None, 
+        data_final=None, 
+        assunto=None, 
+        page=1, 
+        per_page=10, 
+        tipo=None, 
+        ordem='desc'):
+        
         query = db.session.query(
             Usuario,
             Correspondencias,
             TipoCorrespondencias,
+            Departamento
         ).join(
             Correspondencias,
             Usuario.id == Correspondencias.usuario
         ).join(
             TipoCorrespondencias,
             Correspondencias.tipo == TipoCorrespondencias.id
+        ).join(
+            Departamento,
+            Correspondencias.departamento_id == Departamento.id
+        ).join(
+            Estabelecimento,
+            Departamento.id == Estabelecimento.id
+        ).join(
+            Organizacao,
+            Estabelecimento.id == Organizacao.id
         )
 
         if user_id:
             query = query.filter(Correspondencias.usuario == user_id)
+        elif departamento_id:
+            query = query.filter(Correspondencias.departamento_id == departamento_id)
+        elif estabelecimento_id:
+            query = query.filter(Estabelecimento.id == estabelecimento_id)
+        elif organizacao_id:
+            query = query.filter(Organizacao.id == organizacao_id)
+
         if numero:
             query = query.filter(Correspondencias.numero_ano.like(f"%{numero}%"))
-        if data:
-            query = query.filter(Correspondencias.data == data)
+        if data_inicial:
+            query = query.filter(Correspondencias.data >= data_inicial)
+        if data_final:
+            query = query.filter(Correspondencias.data <= data_final)
         if assunto:
             query = query.filter(Correspondencias.assunto.like(f"%{assunto}%"))
         if tipo:

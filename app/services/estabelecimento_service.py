@@ -89,3 +89,10 @@ class EstabelecimentoService:
                 raise Exception(f"Erro ao ativar Estabelecimento: {e}")
         else:
             raise ValueError(f"Estabelecimento com ID {id} não encontrada.")
+        
+    @staticmethod
+    def e_responsavel(user_id, estabelecimento_id):
+        estabelecimento = Estabelecimento.query.filter(Estabelecimento.id == estabelecimento_id, Estabelecimento.id_responsavel == user_id).first()
+        if estabelecimento:
+            return True
+        return False

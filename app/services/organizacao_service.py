@@ -1,3 +1,4 @@
+from typing import List
 from app.ext.database import db
 from app.models.organizacao import Organizacao
 
@@ -98,3 +99,10 @@ class OrganizacaoService:
                 raise Exception(f"Erro ao ativar organização: {e}")
         else:
             raise ValueError(f"Organização com ID {id} não encontrada.")
+
+    @staticmethod
+    def e_responsavel(user_id, organizacao_id):
+        org = Organizacao.query.filter(Organizacao.id == organizacao_id ,Organizacao.id_responsavel == user_id).first()
+        if org:
+            return True
+        return False

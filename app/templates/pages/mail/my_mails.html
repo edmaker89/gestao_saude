@@ -4,22 +4,24 @@
     <div class="">
         <div class="has-background-white p-4 has-rounded-sm">
             <form action="{{ url_for('mail.my_mails') }}" method="get">
+                <input type="hidden" name="id_organizacao" id="id_organizacao" value={{id_organizacao}}>
+                <input type="hidden" name="id_estabelecimento" id="id_estabelecimento" value={{id_estabelecimento}}>
+                <input type="hidden" name="id_departamento" id="id_departamento" value={{id_departamento}}>
+                <input type="hidden" name="id_colaborador" id="id_colaborador" value={{id_colaborador}}>
                 <p><strong>Pesquisar Correspondências: </strong></p>
-                <div class="field mt-4">
-                    <div class="control">
-                        <label for="Assunto">Assunto: </label>
-                        <input class="input" type="text" name="assunto" placeholder="Assunto" value={{assunto}}>
-                    </div>
-                </div>
-                <div class="is-flex columns mb-0">
+                <div class="is-flex columns mb-0 mt-3">
                     <div class="is-flex column">
-                        <div class="tam-field-1-5 mr-5">
-                            <label for="numero">Número: </label>
-                            <input class="input" type="text" name="numero" placeholder="Número" value={{numero}}>
+                        <div class="tam-field-1-75 mr-5">
+                            <label for="data_inicial">Data Inicial: </label>
+                            <input class="input" type="date" name="data_inicial" value={{data_inicial}}>
                         </div>
                         <div class="tam-field-1-75 mr-5">
-                            <label for="data">Data: </label>
-                            <input class="input" type="date" name="data" placeholder="Data" value={{data}}>
+                            <label for="data_final">Data Final: </label>
+                            <input class="input" type="date" name="data_final" value={{data_final}}>
+                        </div>
+                        <div class="tam-field-1-75 mr-5" style="width: 6rem;">
+                            <label for="numero">Número: </label>
+                            <input class="input" type="text" name="numero" placeholder="000/0000" value={{numero}}>
                         </div>
                         <div class="is-flex is-flex-direction-column">
                             <label for="tipo">Tipo: </label>
@@ -32,6 +34,63 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="mt-0 mb-3">
+                    <div class="control">
+                        <label for="Assunto">Assunto: </label>
+                        <input class="input" type="text" name="assunto" placeholder="Assunto" value={{assunto}}>
+                    </div>
+                </div>
+                <div class="is-flex columns mb-0">
+                    <div class="is-flex column">
+                        {% if 'organizacao' == e_responsavel %}
+                        <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+                          <label for="estabelecimento">Estabelecimento: </label>
+                          <div class="select mt-1 control">
+                              <select name="estabelecimento" id="estabelecimento" class="input tam-field-2">
+                                  <option value=''>Selecione um estabelecimento</option>
+                                      {% for estabelecimento_option in estabelecimentos %}
+                                      <option value="{{ estabelecimento_option[0] }}" 
+                                          {% if estabelecimento_option[0] == estabelecimento %}selected{% endif %}>
+                                          {{ estabelecimento_option[1] }}
+                                      </option>
+                                      {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% if 'estabelecimento' == e_responsavel or 'organizacao' == e_responsavel %}
+                        <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+                          <label for="departamento">Departamento: </label>
+                          <div class="select mt-1 control">
+                              <select name="departamento" id="departamento" class="input tam-field-2">
+                                  <option value=''>Selecione um departamento</option>
+                                      <!-- alimentado com js -->
+                              </select>
+                          </div>
+                      </div>
+                      {% endif %}
+                      {% if e_responsavel %}
+                        <div class="field is-flex is-flex-direction-column mr-3 tam-field-2">
+                          <label for="colaboradores">Colaborador: </label>
+                          <div class="select mt-1 control">
+                              <select name="colaborador" id="colaborador" class="input tam-field-2">
+                                  <option value=''>Selecione um colaborador</option>
+                                  {% if 'departamento' == e_responsavel %}
+                                    {% for colaborador_option in colaboradores %}
+                                        <option value="{{ colaborador_option[0] }}" 
+                                            {% if colaborador_option[0] == id_colaborador %}selected{% endif %}>
+                                                {{ colaborador_option[1] }}
+                                        </option>
+                                    {% endfor %}
+                                  {% else %}
+                                  <!-- alimentado com js -->
+                                  {% endif %}
+                              </select>
+                          </div>
+                        </div>
+                      {% endif %}
                     </div>
                     <div class="is-flex is-justify-content-flex-end column">
                         <div class="buttons control is-flex is-justify-content-flex-end mt-5">
@@ -62,15 +121,21 @@
         </div>
       </div>
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between p-5 has-background-white mt-0 has-rounded-sm">
-        {% for mail in mails %}
+        {% if mails.items %}
+            {% for mail in mails %}
             {% set numero = mail.Correspondencias.numero_ano %}
             {% set assunto = mail.Correspondencias.assunto %}
             {% set tipo = mail.TipoCorrespondencias.tipo %}
             {% set data = mail.Correspondencias.data|format_data %}
             {% set correspondencia = mail.Correspondencias %}
             {% set visibilidade = mail.Correspondencias.visibilidade %}
-            {{card_mail(numero, assunto, tipo, data, correspondencia)}}
-        {% endfor %}
+            {% set nome_usuario = mail.Usuario.nome_completo %}
+            {% set departamento = mail.Departamento %}
+            {{card_mail(numero, assunto, tipo, data, correspondencia, nome_usuario, departamento, current_user)}}
+            {% endfor %}
+        {% else %}
+            <div class="notification has-text-centered" style="display: block; width: 100%;"><em>Nenhuma correspondência foi encontrada.</em></div>
+        {% endif %}
       </div>
       <hr/>
       <div class="pagination is-centered" role="navigation" aria-label="pagination">
@@ -96,4 +161,6 @@
     </div>
     </div>
     {% include "components/modals/edit_assunto.html" %}
+
+    <script src="{{url_for('static', filename='js/reative_organization.js')}}"></script>
 {% endblock %}

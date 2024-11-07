@@ -1,3 +1,4 @@
+from typing import List
 from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.depart_form import DepartForm
@@ -265,3 +266,14 @@ def api_departamentos_por_estabelecimento(id_estabelecimento):
     departamentos = DepartamentoService.list_all_by_estab(id_estabelecimento)
     departamentos = [{'id': departamento.id, 'nome': departamento.nome} for departamento in departamentos]
     return departamentos
+
+#/organization/api/departamento/${departamentoId}/colaboradores`
+@bp_org.route('/api/departamento/<id_departamento>/colaboradores')
+@login_required
+@permission_required('acesso restrito')
+def api_colaboradores_por_departamento(id_departamento):
+    usuarios = UsuarioService.usuarios_por_departamento(id_departamento)
+    if usuarios != False:
+        users = [{'id': user.id, 'nome': user.nome_completo} for user in usuarios]
+        return users
+    return []

@@ -39,7 +39,7 @@
                 <div class="mt-0 mb-3">
                     <div class="control">
                         <label for="Assunto">Assunto: </label>
-                        <input class="input" type="text" name="assunto" placeholder="Assunto" value={{assunto}}>
+                        <input class="input" type="text" name="assunto" placeholder="Assunto" value="{{assunto}}">
                     </div>
                 </div>
                 <div class="is-flex columns mb-0">
@@ -65,8 +65,17 @@
                           <label for="departamento">Departamento: </label>
                           <div class="select mt-1 control">
                               <select name="departamento" id="departamento" class="input tam-field-2">
-                                  <option value=''>Selecione um departamento</option>
-                                      <!-- alimentado com js -->
+                                <option value=''>Selecione um departamento</option>
+                                {% if 'estabelecimento' == e_responsavel %}
+                                    {% for departamento_option in departamentos %}
+                                        <option value="{{ departamento_option[0] }}" 
+                                            {% if departamento_option[0] == id_departamento %}selected{% endif %}>
+                                            {{ departamento_option[1] }}
+                                        </option>  
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- alimentado com js -->
+                                {% endif %}
                               </select>
                           </div>
                       </div>
@@ -91,6 +100,23 @@
                           </div>
                         </div>
                       {% endif %}
+                      <div class="field is-flex is-flex-direction-column ml-3 mr-3 tam-field-2">
+                        <label class="" for="visibilidade">Visibilidade: </label>
+                        <div class="checkboxes mt-5">
+                            <label class="checkbox">
+                              <input type="checkbox" name="publica" {% if publica %}checked{% endif %} />
+                              Pública
+                            </label>
+                            <label class="checkbox">
+                              <input type="checkbox" name="privada" {% if privada %}checked{% endif %}/>
+                              Privada
+                            </label>
+                            <label class="checkbox">
+                              <input type="checkbox" name="sigilosa"{% if sigilosa %}checked{% endif %}/>
+                              Sigilosa
+                            </label>
+                          </div>
+                      </div>
                     </div>
                     <div class="is-flex is-justify-content-flex-end column">
                         <div class="buttons control is-flex is-justify-content-flex-end mt-5">
@@ -120,7 +146,7 @@
             </div>
         </div>
       </div>
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between p-5 has-background-white mt-0 has-rounded-sm">
+      <div class="is-flex is-flex-wrap-wrap p-5 has-background-white mt-0 has-rounded-sm gap">
         {% if mails.items %}
             {% for mail in mails %}
             {% set numero = mail.Correspondencias.numero_ano %}
@@ -162,5 +188,184 @@
     </div>
     {% include "components/modals/edit_assunto.html" %}
 
-    <script src="{{url_for('static', filename='js/reative_organization.js')}}"></script>
+    <script>
+        
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log('carregou a bagaça')
+    const organizacaoSelect = document.getElementById("organizacao");
+    const estabelecimentoSelect = document.getElementById("estabelecimento");
+    const departamentoSelect = document.getElementById("departamento");
+    const colaboradorSelect = document.getElementById("colaborador")
+  
+    // Obtém os valores dos campos hidden
+    
+    try {
+      const selectedOrganizacao = document.getElementById("id_organizacao").value;
+      const selectedEstabelecimento = document.getElementById("id_estabelecimento").value;
+      const selectedDepartamento = document.getElementById("id_departamento").value;
+      const selectedColaborador = document.getElementById("id_colaborador").value
+      console.log(selectedColaborador)
+      // Define o valor de organização e carrega as opções correspondentes
+      if (organizacaoSelect && selectedOrganizacao) {
+        console.log('entrou no if 1')
+        organizacaoSelect.value = selectedOrganizacao;
+        await handleOrganizacaoChange(selectedEstabelecimento, selectedDepartamento);
+        estabelecimentoSelect.value = selectedEstabelecimento;
+        if (estabelecimentoSelect) {
+          console.log('entrou no if 2')
+          await handleEstabelecimentoChange();
+          departamentoSelect.value = selectedDepartamento
+          if (departamentoSelect) {
+            await handleDepartamentoChange()
+            console.log(selectedColaborador)
+            colaboradorSelect.value = selectedColaborador
+          }
+        }
+      }else if (estabelecimentoSelect && selectedEstabelecimento){
+          estabelecimentoSelect.value = selectedEstabelecimento;
+          await handleEstabelecimentoChange();
+          departamentoSelect.value = selectedDepartamento
+          if (departamentoSelect) {
+            await handleDepartamentoChange();
+            colaboradorSelect.value = selectedColaborador
+          }
+        }else if (departamentoSelect && selectedDepartamento) {
+            console.log('bateu no departamento')
+          departamentoSelect.value = selectedDepartamento
+          await handleDepartamentoChange();
+          console.log(selectedColaborador)
+            colaboradorSelect.value = selectedColaborador
+        }
+    } catch {
+      const selectedOrganizacao = '';
+      const selectedEstabelecimento = '';
+      const selectedDepartamento = '';
+      const selectedColaborador = ''
+    }
+  
+    // Adiciona event listeners para mudanças nos selects
+    if (organizacaoSelect) {
+        organizacaoSelect.addEventListener("change", () => handleOrganizacaoChange());
+    }
+  
+    if (estabelecimentoSelect) {
+        estabelecimentoSelect.addEventListener("change", () => handleEstabelecimentoChange());
+    }
+    if (departamentoSelect) {
+        departamentoSelect.addEventListener("change", () => handleDepartamentoChange());
+    }
+  });
+  
+  // Função para lidar com a seleção de uma organização
+  async function handleOrganizacaoChange(selectedEstabelecimento = null, selectedDepartamento = null) {
+    const organizacaoId = document.getElementById("organizacao").value;
+    const estabelecimentoSelect = document.getElementById("estabelecimento");
+    const departamentoSelect = document.getElementById("departamento");
+  
+    if (organizacaoId) {
+        try {
+            const estabelecimentos = await fetchEstabelecimentos(organizacaoId);
+            populateSelect(estabelecimentoSelect, estabelecimentos, 'Selecione um estabelecimento', selectedEstabelecimento);
+            clearSelect(departamentoSelect, 'Selecione um departamento');
+            
+            // Carrega os departamentos automaticamente se um estabelecimento foi passado
+            if (selectedEstabelecimento) {
+                await handleEstabelecimentoChange(selectedDepartamento);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar estabelecimentos:", error);
+        }
+    } else {
+        clearSelect(estabelecimentoSelect, 'Selecione um estabelecimento');
+        clearSelect(departamentoSelect, 'Selecione um departamento');
+    }
+  }
+  
+  // Função para lidar com a seleção de um estabelecimento
+  async function handleEstabelecimentoChange(selectedDepartamento = null) {
+    const estabelecimentoId = document.getElementById("estabelecimento").value;
+    const departamentoSelect = document.getElementById("departamento");
+  
+    if (estabelecimentoId) {
+        try {
+            const departamentos = await fetchDepartamentos(estabelecimentoId);
+            populateSelect(departamentoSelect, departamentos, 'Selecione um departamento', selectedDepartamento);
+        } catch (error) {
+            console.error("Erro ao buscar departamentos:", error);
+        }
+    } else {
+        clearSelect(departamentoSelect, 'Selecione um departamento');
+    }
+  }
+  
+  // Função para lidar com a seleção de um Departamentp
+  async function handleDepartamentoChange(selectedColaborador = null) {
+    const departamentoId = document.getElementById("departamento").value;
+    const colaboradorSelect = document.getElementById("colaborador");
+  
+    if (departamentoId) {
+        try {
+            const colaboradores = await fetchColaboradores(departamentoId);
+            populateSelect(colaboradorSelect, colaboradores, 'Selecione um colaborador', selectedColaborador);
+        } catch (error) {
+            console.error("Erro ao buscar colaboradores:", error);
+        }
+    } else {
+        clearSelect(colaboradorSelect, 'Selecione um colaborador');
+    }
+  }
+  
+  
+  // Função para buscar estabelecimentos pela organização
+  async function fetchEstabelecimentos(organizacaoId) {
+    const response = await fetch(`/organization/api/organizacao/${organizacaoId}/estabelecimentos`);
+    return response.json();
+  }
+  
+  // Função para buscar departamentos pelo estabelecimento
+  async function fetchDepartamentos(estabelecimentoId) {
+    const response = await fetch(`/organization/api/estabelecimento/${estabelecimentoId}/departamentos`);
+    return response.json();
+  }
+  
+  // Função para buscar colaboradores pelo departamento
+  async function fetchColaboradores(departamentoId) {
+    console.log('fetch colaborador')
+    const response = await fetch(`/organization/api/departamento/${departamentoId}/colaboradores`);
+    return response.json();
+  }
+  
+  // Função para preencher o select com as opções e definir o valor selecionado
+  function populateSelect(selectElement, items, placeholderText, selectedValue = null) {
+    clearSelect(selectElement, placeholderText);
+    items.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item['id'];
+        option.textContent = item['nome'];
+        if (selectedValue && item['id'] === selectedValue) {
+            option.selected = true;
+        }
+        selectElement.appendChild(option);
+    });
+  }
+  
+  function populateSelectColaborador(selectElement, items, placeholderText, selectedValue = null) {
+    clearSelect(selectElement, placeholderText);
+    items.forEach(item => {
+        console.log(item)
+        const option = document.createElement("option");
+        option.value = item['id'];
+        option.textContent = item['nome_completo'];
+        if (selectedValue && item['id'] === selectedValue) {
+            option.selected = true;
+        }
+        selectElement.appendChild(option);
+    });
+  }
+  
+  // Função para limpar o select e adicionar a opção inicial
+  function clearSelect(selectElement, placeholderText) {
+    selectElement.innerHTML = `<option value=''>${placeholderText}</option>`;
+  }
+    </script>
 {% endblock %}

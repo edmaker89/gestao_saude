@@ -107,6 +107,7 @@ async function handleDepartamentoChange(selectedColaborador = null) {
   const colaboradorSelect = document.getElementById("colaborador");
 
   if (departamentoId) {
+    console.log('chegou no departamento')
       try {
           const colaboradores = await fetchColaboradores(departamentoId);
           populateSelectColaborador(colaboradorSelect, colaboradores, 'Selecione um colaborador', selectedColaborador);
@@ -133,6 +134,7 @@ async function fetchDepartamentos(estabelecimentoId) {
 
 // Função para buscar colaboradores pelo departamento
 async function fetchColaboradores(departamentoId) {
+  console.log('fetch colaborador')
   const response = await fetch(`/organization/api/departamento/${departamentoId}/colaboradores`);
   return response.json();
 }

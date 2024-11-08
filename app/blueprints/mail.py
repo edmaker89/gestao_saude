@@ -1,3 +1,4 @@
+from turtle import pu
 from flask import Blueprint, abort, ctx, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
@@ -77,17 +78,25 @@ def create_success(id_mail):
 def my_mails():
     page = request.args.get('page', 1, type=int)
     per_page = 20
-    user_id = request.args.get('user', None, type=int)
     departamento_id = request.args.get('departamento', None, type=int)
     estabelecimento_id = request.args.get('estabelecimento', None, type=int)
     user_id = request.args.get('colaborador', None, type=int)
+    print(user_id)
     data_inicial = request.args.get('data_inicial', '', type=str)
     data_final = request.args.get('data_final', '', type=str)
     assunto = request.args.get('assunto', '', type=str)
     numero = request.args.get('numero', '', type=str)
     ordem = request.args.get('ordem', '', type=str)
     tipo = request.args.get('tipo', '', type=int)
+    publica = request.args.get('publica', '', type=str)
+    privada = request.args.get('privada', '', type=str)
+    sigilosa = request.args.get('sigilosa', '', type=str)
     menu_ativo = 'Enviados'
+    
+    if not publica and not privada and not sigilosa:
+        publica='on'
+        privada='on'
+        sigilosa='on'
 
     listaTipo = TipoCorrespondencias.query.all()
     tipos = []
@@ -106,20 +115,6 @@ def my_mails():
     colaboradores = []
     organizacao_id = current_user.departamento.estabelecimento.organizacao.id
     
-    params = {
-        'data_inicial':data_inicial,
-        'data_final':data_final,
-        'user':user_id,
-        'id_departamento':departamento_id,
-        'id_estabelecimento':estabelecimento_id,
-        'id_organizacao':organizacao_id,
-        'id_colaborador':user_id,
-        'assunto':assunto,
-        'numero':numero,
-        'ordem':ordem,
-        'tipo':tipo,
-        }
-    
     e_responsavel = None
      
     if OrganizacaoService.e_responsavel(current_user.id, organizacao_id):
@@ -129,6 +124,7 @@ def my_mails():
             estabelecimentos.append((estab.id, estab.nome))
     elif EstabelecimentoService.e_responsavel(current_user.id, current_user.departamento.estabelecimento.id):
         e_responsavel = 'estabelecimento'
+        estabelecimento_id = current_user.departamento.estabelecimento.id
         lista_departamentos = DepartamentoService.list_all_by_estab(current_user.departamento.estabelecimento.id)
         for departamento in lista_departamentos:
             departamentos.append((departamento.id, departamento.nome))
@@ -137,14 +133,34 @@ def my_mails():
         lista_colaboradores = UsuarioService.usuarios_por_departamento(current_user.departamento_id)
         for colaborador in lista_colaboradores:
             colaboradores.append((colaborador.id, colaborador.nome_completo))
-        #implementar visualizar todas as correspondencias
+        departamento_id=current_user.departamento_id
     else:
         e_responsavel = None
+        user_id = current_user.id
     
     mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
        user_id=user_id, page=page, per_page=per_page, assunto=assunto, data_inicial=data_inicial, data_final=data_final, numero=numero, 
-       tipo=tipo, ordem=ordem, departamento_id=departamento_id, estabelecimento_id=estabelecimento_id, organizacao_id=organizacao_id)
+       tipo=tipo, ordem=ordem, departamento_id=departamento_id, estabelecimento_id=estabelecimento_id, organizacao_id=organizacao_id,
+       publica=publica, privada=privada, sigilosa=sigilosa
+       )
     
+    params = {
+            'data_inicial':data_inicial,
+            'data_final':data_final,
+            'user':user_id,
+            'id_departamento':departamento_id,
+            'id_estabelecimento':estabelecimento_id,
+            'id_organizacao':organizacao_id,
+            'id_colaborador':user_id,
+            'assunto':assunto,
+            'numero':numero,
+            'ordem':ordem,
+            'tipo':tipo,
+            'publica':publica,
+            'privada':privada,
+            'sigilosa':sigilosa
+            }
+    # print(mails.items)
 
     return render_template('/pages/mail/my_mails.html',
                            e_responsavel=e_responsavel,
@@ -153,7 +169,7 @@ def my_mails():
                            subtitle=subtitle,
                            tipos=tipos,
                            menu_ativo=menu_ativo,
-                           estabelecimentos= estabelecimentos,
+                           estabelecimentos=estabelecimentos,
                            departamentos=departamentos,
                            colaboradores=colaboradores,
                            **params,

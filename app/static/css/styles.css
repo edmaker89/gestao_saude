@@ -338,3 +338,7 @@ a.disabled {
 .pointer {
     cursor: pointer;
 }
+
+.gap {
+    gap: 1rem;
+}

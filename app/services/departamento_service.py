@@ -52,8 +52,9 @@ class DepartamentoService:
         if estabelecimento_id:
             estabelecimento.estabelecimento_id = estabelecimento_id
             
-        if id_responsavel:
-            estabelecimento.responsavel_id = id_responsavel
+        # if id_responsavel:
+        #     estabelecimento.responsavel_id = id_responsavel
+        estabelecimento.responsavel_id = id_responsavel
         
         try:
             db.session.commit()

@@ -202,7 +202,7 @@ def manager_estab(id_estab):
 def new_departamento():
     estabelecimento_id = request.form.get('estabelecimento_id', 0, int)
     nome = request.form.get('nome', '', str)
-    responsavel_id = request.form.get('responsavel', 0, int)
+    responsavel_id = request.form.get('responsavel', None, int)
     
     if not nome:
         flash('Erro: Nome é obrigatórios.', 'danger')

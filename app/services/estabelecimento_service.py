@@ -52,8 +52,8 @@ class EstabelecimentoService:
         if orgao_id:
             estabelecimento.orgao_id = orgao_id
         
-        if id_responsavel:
-            estabelecimento.id_responsavel = id_responsavel
+        
+        estabelecimento.id_responsavel = id_responsavel
         
         try:
             db.session.commit()

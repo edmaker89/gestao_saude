@@ -1,11 +1,17 @@
+from turtle import pu
 from flask import Blueprint, abort, ctx, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
+from app.models import estabelecimento, organizacao
 from app.models.users import Usuario
 from app.services.correspondencia_service import CorrespondenciaService
 from app.models.tipo_correspondencias import TipoCorrespondencias
+from app.services.departamento_service import DepartamentoService
+from app.services.estabelecimento_service import EstabelecimentoService
+from app.services.organizacao_service import OrganizacaoService
+from app.services.usuario_service import UsuarioService
 from app.utils.breadcrumbItem import BreadcrumbItem, BreadcrumbManager
-from app.utils.verify_permission import permission_required
+from app.utils.verify_permission import permission_required, verify_permission
 
 bp_mail = Blueprint("mail", __name__, url_prefix="/mail")
 
@@ -72,21 +78,30 @@ def create_success(id_mail):
 def my_mails():
     page = request.args.get('page', 1, type=int)
     per_page = 20
-    user_id = current_user.id
-    data = request.args.get('data', '', type=str)
+    departamento_id = request.args.get('departamento', None, type=int)
+    estabelecimento_id = request.args.get('estabelecimento', None, type=int)
+    user_id = request.args.get('colaborador', None, type=int)
+    print(user_id)
+    data_inicial = request.args.get('data_inicial', '', type=str)
+    data_final = request.args.get('data_final', '', type=str)
     assunto = request.args.get('assunto', '', type=str)
     numero = request.args.get('numero', '', type=str)
     ordem = request.args.get('ordem', '', type=str)
     tipo = request.args.get('tipo', '', type=int)
+    publica = request.args.get('publica', '', type=str)
+    privada = request.args.get('privada', '', type=str)
+    sigilosa = request.args.get('sigilosa', '', type=str)
     menu_ativo = 'Enviados'
+    
+    if not publica and not privada and not sigilosa:
+        publica='on'
+        privada='on'
+        sigilosa='on'
 
     listaTipo = TipoCorrespondencias.query.all()
     tipos = []
     for l in listaTipo:
         tipos.append((l.id, l.tipo))
-
-    mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
-        user_id=user_id, page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
     title = 'Enviados'
     subtitle = "Lista de todos os números de envios gerados"
@@ -94,18 +109,70 @@ def my_mails():
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)
     ctx_breads = {'breads': breads, 'bread_ativo':title}
+    
+    estabelecimentos = []
+    departamentos = []
+    colaboradores = []
+    organizacao_id = current_user.departamento.estabelecimento.organizacao.id
+    
+    e_responsavel = None
+     
+    if OrganizacaoService.e_responsavel(current_user.id, organizacao_id):
+        e_responsavel = 'organizacao'
+        lista_estabelecimentos = EstabelecimentoService.list_all(orgao_id=organizacao_id)
+        for estab in lista_estabelecimentos:
+            estabelecimentos.append((estab.id, estab.nome))
+    elif EstabelecimentoService.e_responsavel(current_user.id, current_user.departamento.estabelecimento.id):
+        e_responsavel = 'estabelecimento'
+        estabelecimento_id = current_user.departamento.estabelecimento.id
+        lista_departamentos = DepartamentoService.list_all_by_estab(current_user.departamento.estabelecimento.id)
+        for departamento in lista_departamentos:
+            departamentos.append((departamento.id, departamento.nome))
+    elif DepartamentoService.e_responsavel(current_user.id, current_user.departamento_id):
+        e_responsavel = 'departamento'
+        lista_colaboradores = UsuarioService.usuarios_por_departamento(current_user.departamento_id)
+        for colaborador in lista_colaboradores:
+            colaboradores.append((colaborador.id, colaborador.nome_completo))
+        departamento_id=current_user.departamento_id
+    else:
+        e_responsavel = None
+        user_id = current_user.id
+    
+    mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
+       user_id=user_id, page=page, per_page=per_page, assunto=assunto, data_inicial=data_inicial, data_final=data_final, numero=numero, 
+       tipo=tipo, ordem=ordem, departamento_id=departamento_id, estabelecimento_id=estabelecimento_id, organizacao_id=organizacao_id,
+       publica=publica, privada=privada, sigilosa=sigilosa
+       )
+    
+    params = {
+            'data_inicial':data_inicial,
+            'data_final':data_final,
+            'user':user_id,
+            'id_departamento':departamento_id,
+            'id_estabelecimento':estabelecimento_id,
+            'id_organizacao':organizacao_id,
+            'id_colaborador':user_id,
+            'assunto':assunto,
+            'numero':numero,
+            'ordem':ordem,
+            'tipo':tipo,
+            'publica':publica,
+            'privada':privada,
+            'sigilosa':sigilosa
+            }
+    # print(mails.items)
 
     return render_template('/pages/mail/my_mails.html',
+                           e_responsavel=e_responsavel,
                            mails=mails,
                            title=title,
                            subtitle=subtitle,
-                           data=data,
-                           assunto=assunto,
-                           numero=numero,
-                           ordem=ordem,
-                           tipo=tipo,
                            tipos=tipos,
                            menu_ativo=menu_ativo,
+                           estabelecimentos=estabelecimentos,
+                           departamentos=departamentos,
+                           colaboradores=colaboradores,
+                           **params,
                            **ctx_breads,                    
                            )
 
@@ -127,39 +194,39 @@ def edit_assunto():
         return redirect(url_for('mail.my_mails'))
     return abort(404)
 
-@bp_mail.route('/all_mails')
-@login_required
-@permission_required('todas correspondencias')
-def all_mails():
-    page = request.args.get('page', 1, type=int)
-    per_page = 20
-    data = request.args.get('data', '', type=str)
-    assunto = request.args.get('assunto', '', type=str)
-    numero = request.args.get('numero', '', type=str)
-    ordem = request.args.get('ordem', '', type=str)
-    tipo = request.args.get('tipo', '', type=int)
+# @bp_mail.route('/all_mails')
+# @login_required
+# @permission_required('todas correspondencias')
+# def all_mails():
+#     page = request.args.get('page', 1, type=int)
+#     per_page = 20
+#     data = request.args.get('data', '', type=str)
+#     assunto = request.args.get('assunto', '', type=str)
+#     numero = request.args.get('numero', '', type=str)
+#     ordem = request.args.get('ordem', '', type=str)
+#     tipo = request.args.get('tipo', '', type=int)
 
-    listaTipo = TipoCorrespondencias.query.all()
-    tipos = []
-    for l in listaTipo:
-        tipos.append((l.id, l.tipo))
+#     listaTipo = TipoCorrespondencias.query.all()
+#     tipos = []
+#     for l in listaTipo:
+#         tipos.append((l.id, l.tipo))
 
-    mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
-        page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
+#     mails = CorrespondenciaService.get_correspondencias_by_user_with_filters(
+#         page=page, per_page=per_page, assunto=assunto, data=data, numero=numero, tipo=tipo, ordem=ordem)
 
-    #cabecalho
-    title = 'Todas as correspondências'
-    subtitle = "Lista de todos os numeros de envios gerados"
+#     #cabecalho
+#     title = 'Todas as correspondências'
+#     subtitle = "Lista de todos os numeros de envios gerados"
     
 
-    return render_template('/pages/mail/all_mails.html',
-                           mails=mails,
-                           title=title,
-                           subtitle=subtitle,
-                           data=data,
-                           assunto=assunto,
-                           numero=numero,
-                           ordem=ordem,
-                           tipo=tipo,
-                           tipos=tipos                     
-                           )
+#     return render_template('/pages/mail/all_mails.html',
+#                            mails=mails,
+#                            title=title,
+#                            subtitle=subtitle,
+#                            data=data,
+#                            assunto=assunto,
+#                            numero=numero,
+#                            ordem=ordem,
+#                            tipo=tipo,
+#                            tipos=tipos                     
+#                            )

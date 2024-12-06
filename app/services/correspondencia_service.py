@@ -1,3 +1,4 @@
+from operator import or_
 from app.models.correspondencias import Correspondencias
 from datetime import date
 from app.ext.database import db
@@ -141,35 +142,91 @@ class CorrespondenciaService:
         return mail
 
     @staticmethod
-    def get_correspondencias_by_user_with_filters(user_id=None, numero=None, data=None, assunto=None, page=1, per_page=10, tipo=None, ordem='desc'):
+    def get_correspondencias_by_user_with_filters(
+        user_id=None, 
+        departamento_id=None, 
+        estabelecimento_id=None, 
+        organizacao_id=None, 
+        numero=None, 
+        data_inicial=None, 
+        data_final=None, 
+        assunto=None, 
+        page=1, 
+        per_page=10, 
+        tipo=None, 
+        ordem='desc',
+        publica=None,
+        privada=None,
+        sigilosa=None,
+        ):
+        
         query = db.session.query(
             Usuario,
             Correspondencias,
             TipoCorrespondencias,
+            Departamento
         ).join(
             Correspondencias,
             Usuario.id == Correspondencias.usuario
         ).join(
             TipoCorrespondencias,
             Correspondencias.tipo == TipoCorrespondencias.id
+        ).join(
+            Departamento,
+            Correspondencias.departamento_id == Departamento.id
+        ).join(
+            Estabelecimento,
+            Departamento.estabelecimento_id == Estabelecimento.id
+        ).join(
+            Organizacao,
+            Estabelecimento.orgao_id == Organizacao.id
         )
 
         if user_id:
+            print('bricou no usuario')
             query = query.filter(Correspondencias.usuario == user_id)
+        elif departamento_id:
+            print('bricou no departamento', departamento_id)
+            query = query.filter(Correspondencias.departamento_id == departamento_id)
+        elif estabelecimento_id:
+            query = query.filter(Estabelecimento.id == estabelecimento_id)
+            print('bricou no estabelecimento', estabelecimento_id)
+        elif organizacao_id:
+            query = query.filter(Organizacao.id == organizacao_id)
+            
         if numero:
             query = query.filter(Correspondencias.numero_ano.like(f"%{numero}%"))
-        if data:
-            query = query.filter(Correspondencias.data == data)
+        if data_inicial:
+            query = query.filter(Correspondencias.data >= data_inicial)
+        if data_final:
+            query = query.filter(Correspondencias.data <= data_final)
         if assunto:
             query = query.filter(Correspondencias.assunto.like(f"%{assunto}%"))
         if tipo:
             query = query.filter(Correspondencias.tipo == tipo)
+        
+        # Query de visbilidade
+        todas_visibilidades = (publica and privada and sigilosa) or (not publica and not privada and not sigilosa)
+        if not todas_visibilidades:
+            filtros = []
+            if publica:  
+                filtros.append(Correspondencias.visibilidade == 'publica')  
+            if privada:  
+                filtros.append(Correspondencias.visibilidade == 'privada')  
+            if sigilosa:  
+                filtros.append(Correspondencias.visibilidade == 'sigilosa')
+            if len(filtros) > 1:
+                query = query.filter(or_(*filtros))
+            else:
+                query = query.filter(*filtros)
+            
 
         # Adicione a ordenação pela data ou outro campo apropriado
         if ordem == 'asc':
             query = query.order_by(Correspondencias.id.asc())
         else:
             query = query.order_by(Correspondencias.id.desc())
+            
         
 
         mails = query.paginate(page=page, per_page=per_page) # type: ignore

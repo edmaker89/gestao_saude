@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy import or_
 from app.models.departamento import Departamento
 from app.models.estabelecimento import Estabelecimento
@@ -109,11 +110,16 @@ class UsuarioService:
         return False
     
     @staticmethod
-    def departamento_list_of_users(id_depart):
-        pessoas = Usuario.query.filter(Usuario.departamento_id==id_depart).order_by(Usuario.nome_completo, Usuario.ativo).all()
+    def departamento_list_of_users(id_depart) -> List[Usuario] | bool:
+        pessoas: List[Usuario] = Usuario.query.filter(Usuario.departamento_id==id_depart).order_by(Usuario.nome_completo, Usuario.ativo).all()
         if pessoas:
             return pessoas
         return False
+    
+    @staticmethod
+    def usuarios_por_departamento(id_depart) -> List[Usuario]:
+        pessoas: List[Usuario] = Usuario.query.filter(Usuario.departamento_id==id_depart, Usuario.ativo == True).order_by(Usuario.nome_completo).all()
+        return pessoas
     
     @staticmethod
     def list_of_users():

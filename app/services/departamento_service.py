@@ -52,8 +52,9 @@ class DepartamentoService:
         if estabelecimento_id:
             estabelecimento.estabelecimento_id = estabelecimento_id
             
-        if id_responsavel:
-            estabelecimento.responsavel_id = id_responsavel
+        # if id_responsavel:
+        #     estabelecimento.responsavel_id = id_responsavel
+        estabelecimento.responsavel_id = id_responsavel
         
         try:
             db.session.commit()
@@ -89,3 +90,10 @@ class DepartamentoService:
                 raise Exception(f"Erro ao ativar departamento: {e}")
         else:
             raise ValueError(f"Departamento com ID {id} não encontrada.")
+        
+    @staticmethod
+    def e_responsavel(user_id, departamento_id):
+        departamento = Departamento.query.filter(Departamento.id == departamento_id, Departamento.responsavel_id == user_id).first()
+        if departamento:
+            return True
+        return False

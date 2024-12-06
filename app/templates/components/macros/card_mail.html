@@ -4,7 +4,7 @@
         <p class="title is-6">
             {{tipo}}: {{numero}}
             <span style="position: absolute; top: 10px; right: 10px;">
-              <a href="#" class="icon has-text-link ml-2 {% if current_user != nome_usuario %}
+              <a href="#" class="icon has-text-link ml-2 {% if current_user.id != correspondencia.usuario %}
               disabled has-text-grey
               {% endif %}
               " onclick="openEditModal('{{correspondencia.id}}', '{{assunto}}', '{{correspondencia.visibilidade}}')">
@@ -12,11 +12,12 @@
               </a>
             </span>
         </p>
+        <p class="mb-2"><strong>Data:</strong> {{data}}</p>
         <p><strong>Assunto:</strong> {{assunto}}</p>
-        <p class="mt-4"><strong>Data:</strong> {{data}}</p>
         {% if nome_usuario %}
-          <p><strong>Responsavel:</strong> {{nome_usuario}} </p>
-          <p><strong>Departamento:</strong> {{departamento}} </p>
+          <p class="mt-3"><strong>Responsavel:</strong> {{nome_usuario}}</p>
+          <p class="mt-3"><strong>Estabelecimento:</strong> {{departamento.estabelecimento.nome}} </p>
+          <p class="mb-5"><strong>Departamento:</strong> {{departamento.nome}} </p>
         {% endif %}
         <span style="position: absolute; bottom: 10px; right: 10px;" >
           <div class="tag is-normal

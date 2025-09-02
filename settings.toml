@@ -5,5 +5,3 @@ EXTENSIONS=[
   "app.ext.auth",
   "app.blueprints.views",
 ]
-
-SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:kain4348@135.148.62.245:9001/conecta_mais"

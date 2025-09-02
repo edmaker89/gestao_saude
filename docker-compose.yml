@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10
+    container_name: gestao_saude_db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: "]5Y7iiGxjF35" # TROQUE por uma senha forte
+      MARIADB_DATABASE: gestao_saude_db
+      MARIADB_USER: gestao_saude_user
+      MARIADB_PASSWORD: "3v8iX7si6U4x" # TROQUE por uma senha forte
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      # Descomente a linha abaixo se precisar acessar o banco de dados de fora do Docker
+      # - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build: .
+    container_name: gestao_saude_app
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "mysql+pymysql://gestao_saude_user:3v8iX7si6U4x@db:3306/gestao_saude_db"
+
+volumes:
+  mariadb_data:

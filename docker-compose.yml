@@ -20,7 +20,7 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      db:
+      - db
     environment:
       DATABASE_URL: "mysql+pymysql://gestao_saude_user:3v8iX7si6U4x@db:3306/gestao_saude_db"
 

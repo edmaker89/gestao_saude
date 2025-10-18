@@ -24,5 +24,17 @@ services:
     environment:
       DATABASE_URL: "mysql+pymysql://gestao_saude_user:3v8iX7si6U4x@db:3306/gestao_saude_db"
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
 volumes:
   mariadb_data:
+  portainer_data:

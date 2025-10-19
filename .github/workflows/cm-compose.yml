@@ -3,6 +3,10 @@ name: CM COMPOSE
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,9 +21,9 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
     - run: |
-        docker build -t ghcr.io/edmaker/conecta_mais/cm-compose:latest -f Dockerfile .
-        docker tag ghcr.io/edmaker/conecta_mais/cm-compose:latest ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}
+        docker build -t ghcr.io/edmaker/conecta_mais:latest -f Dockerfile .
+        docker tag ghcr.io/edmaker/conecta_mais:latest ghcr.io/edmaker/conecta_mais:${{ github.sha }}
 
     - run: |
-        docker push ghcr.io/edmaker/conecta_mais/cm-compose:latest
-        docker push ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}
+        docker push ghcr.io/edmaker/conecta_mais:latest
+        docker push ghcr.io/edmaker/conecta_mais:${{ github.sha }}

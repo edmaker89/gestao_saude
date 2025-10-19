@@ -1,0 +1,25 @@
+name: Docker Image CI - 
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ghcr.io
+        usernmame: ${{ secrets.GH_PACKAGES_USER }}
+        password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+    - run: |
+        docker build -t ghcr.io/edmaker/conecta_mais/cm-compose:latest -f Dockerfile .
+        docker tag ghcr.io/edmaker/conecta_mais/cm-compose:latest ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}
+
+    - run: |
+        docker push ghcr.io/edmaker/conecta_mais/cm-compose:latest
+        docker push ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}

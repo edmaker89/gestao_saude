@@ -21,12 +21,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Debug login
+        run: |
+          echo "Actor: ${{ github.actor }}"
+          echo "Repo: ${{ github.repository }}"
+          docker info
+          
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/edmaker/conecta_mais/cm-compose:latest -f Dockerfile .
-          docker tag ghcr.io/edmaker/conecta_mais/cm-compose:latest ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}
+          docker build -t ghcr.io/edmaker89/conecta_mais:latest -f Dockerfile .
+          docker tag ghcr.io/edmaker89/conecta_mais:latest ghcr.io/edmaker89/conecta_mais:${{ github.sha }}
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/edmaker/conecta_mais/cm-compose:latest
-          docker push ghcr.io/edmaker/conecta_mais/cm-compose:${{ github.sha }}
+          docker push ghcr.io/edmaker89/conecta_mais:latest
+          docker push ghcr.io/edmaker89/conecta_mais:${{ github.sha }}

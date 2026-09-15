@@ -75,6 +75,11 @@ Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
      flask run
 2. Acesso o aplicativo pelo navegador [http://localhost:5000](http://localhost:5000)
 
+## Deploy no Windows Server
+
+Para rodar a aplicação como serviço no Windows (Waitress + NSSM) atrás de um nginx
+como proxy reverso, veja [deploy/windows/README.md](deploy/windows/README.md).
+
 ## Como Contribuir
 
 Agradecemos por considerar contribuir para o projeto. Siga estas etapas para participar:

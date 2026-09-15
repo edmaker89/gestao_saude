@@ -1,5 +1,8 @@
 from app.ext.database import db
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Token(db.Model):
@@ -24,9 +27,7 @@ class Token(db.Model):
         Verifica se um token é válido, ou seja, se existe na base de dados
         e se ainda não expirou.
         """
-        print(token)
-        print(datetime.utcnow())
+        logger.debug("Validando token %s em %s", token, datetime.utcnow())
         token_validado = cls.query.filter(cls.token == token).first()
-        print(token_validado.user_id)
-        print(token_validado)
+        logger.debug("Token validado: %s", token_validado)
         return token_validado

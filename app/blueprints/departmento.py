@@ -31,20 +31,14 @@ def manager():
 @login_required
 def new_depart():
     if request.method == "POST":
-        print('metodo request')
         form = DepartForm(request.form)
         departamento = form.departamento.data
         verify_depart = Departamento.query.filter(Departamento.nome == departamento).first()
-        print(verify_depart)
         if verify_depart:
-            print('verify_depart?')
             flash('Não é possivel criar um novo departamento, pois o mesmo ja existe', 'danger')
             return redirect(url_for('depart.new_depart'))
-        print('novo_departamento', departamento)
         novo_departamento = Departamento.new_depart(departamento=departamento)
-        print('return novo_departamento', novo_departamento)
         if novo_departamento:
-            print('departamento criado')
             flash("Departamento criado com sucesso!", 'success')
             return redirect(url_for('depart.manager', departamento=departamento))
         flash('Houve um erro inesperado, tente novamente mais tarde!', 'danger')

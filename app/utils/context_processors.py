@@ -8,7 +8,6 @@ def permission_processor():
         role_id = current_user.role
         role_permissions = RolePermissions.query.filter_by(role_id=role_id).all()
         permissions = {rp.permission.nome for rp in role_permissions}
-        print(permissions)
 
     return {'user_permissions': permissions}
 

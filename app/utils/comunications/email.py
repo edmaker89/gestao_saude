@@ -4,11 +4,14 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 import secrets
+import logging
 
 from flask import url_for
 
 from app.models.token import Token
 from app.models.users import Usuario
+
+logger = logging.getLogger(__name__)
 
 def gerar_token():
     # Gere um token único usando a biblioteca secrets
@@ -78,7 +81,7 @@ def novo_cadastro(nome_completo, username, senha, email):
         enviar_email(destinatario, assunto, corpo_email)
         return {'enviado': True, 'msg': "Enviado com sucesso"}
     except Exception as e:
-        print(e)
+        logger.exception("Não foi possivel enviar o email: %s", e)
         return {'enviado': False, 'error': 'Não foi possivel enviar o email'}
     
 def solicitação_de_recuperacao(nome_completo, username, email, user_id):
@@ -115,7 +118,7 @@ def solicitação_de_recuperacao(nome_completo, username, email, user_id):
 
         return {'enviado': True, 'msg': "E-mail enviado com sucesso"}
     except Exception as e:
-        print(e)
+        logger.exception("Não foi possível enviar o e-mail: %s", e)
         return {'enviado': False, 'error': 'Não foi possível enviar o e-mail'}
 
 

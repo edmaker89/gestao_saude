@@ -138,7 +138,6 @@ class UsuarioService:
     @staticmethod
     def disable_user(id_user):
         user = Usuario.query.filter(Usuario.id == id_user).first()
-        print(user)
         if not user:
             raise Exception("Usuário não existe, tente novamente.")
         user.ativo = False

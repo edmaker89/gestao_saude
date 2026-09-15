@@ -1,5 +1,8 @@
 from datetime import datetime
 from app.ext.database import db
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Departamento(db.Model):
     __tablename__ = 'departamento'
@@ -27,7 +30,7 @@ class Departamento(db.Model):
 
             return novo_departamento
         except Exception as e:
-            print(e)
+            logger.exception("Erro ao criar departamento: %s", e)
             return False
     
     @classmethod

@@ -1,5 +1,4 @@
 [default]
-SECRET_KEY="endLines-switchs-SMS-2023"
 EXTENSIONS=[
   "app.ext.database",
   "app.ext.auth",

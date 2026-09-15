@@ -39,8 +39,8 @@ Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
 
 ## Pré-requisitos
 
-- Python (versão 3.12)
-- Flask (versão 3.0.0)
+- Python (versão 3.14)
+- Flask (versão 3.1.3)
 - Gunicorn (versão 21.2.0)
 - Docker
 - Outras dependências... vide arquivo requirements.txt

@@ -1,5 +1,5 @@
 # Use a imagem base do Python
-FROM python:3.12
+FROM python:3.14
 
 # Define o diretório de trabalho como /app para melhor organização
 WORKDIR /app

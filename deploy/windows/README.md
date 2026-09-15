@@ -14,7 +14,7 @@ LAN/Internet -> nginx (serviço Windows, :80/:443, TLS)
 ## Pré-requisitos
 
 - Windows Server (2016+).
-- [Python 3.12](https://www.python.org/downloads/).
+- [Python 3.14](https://www.python.org/downloads/).
 - [MariaDB](https://mariadb.org/download/) instalado como serviço local.
 - [NSSM](https://nssm.cc/download) (extrair para `C:\nssm`).
 - [nginx para Windows](https://nginx.org/en/download.html) (extrair para `C:\nginx`).

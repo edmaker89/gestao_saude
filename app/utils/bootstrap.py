@@ -99,7 +99,7 @@ def _seed():
         username=SEED_ADMIN_USERNAME,
         email=SEED_ADMIN_EMAIL,
         senha=generate_password_hash(SEED_ADMIN_PASSWORD),
-        role=str(role.id),
+        role=role.id,
         tentativas_login=0,
         bloqueado=False,
         ativo=True,

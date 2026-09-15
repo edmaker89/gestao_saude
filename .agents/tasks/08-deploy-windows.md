@@ -5,7 +5,7 @@ Versionar tudo o que é necessário para rodar a app como serviço no Windows Se
 
 ## Arquivos a criar em `deploy/windows/`
 1. `README.md` — runbook completo:
-   - Instalar Python 3.12 + venv + `pip install -r requirements.txt`.
+   - Instalar Python 3.14 + venv + `pip install -r requirements.txt`.
    - Instalar MariaDB como serviço local; criar banco/usuário.
    - Rodar `set-env.ps1` com os valores reais.
    - Instalar serviços via NSSM.

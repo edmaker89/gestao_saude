@@ -55,6 +55,8 @@ def create_app():
     app = minimal_app()
     configuration.load_extensions(app)
 
+    from app.utils.bootstrap import bootstrap
+    bootstrap(app)
 
     return app
 

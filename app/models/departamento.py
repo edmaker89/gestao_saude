@@ -11,7 +11,7 @@ class Departamento(db.Model):
     nome = db.Column(db.String(255), nullable=False)
     ativo = db.Column(db.Boolean, nullable=False, default=True)
     estabelecimento_id = db.Column(db.Integer, db.ForeignKey('estabelecimento.id'), nullable=False)
-    responsavel_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    responsavel_id = db.Column(db.Integer, db.ForeignKey('users.id', use_alter=True), nullable=True)
     data_criacao = db.Column(db.DateTime, default=datetime.now)
     data_atualizacao = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 

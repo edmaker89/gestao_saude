@@ -27,10 +27,6 @@ TIPOS_CORRESPONDENCIA = [
     ("Portaria", "Ato normativo"),
 ]
 
-# Módulos de models que NÃO são importados aqui por estarem quebrados (WIP):
-# - app.models.contrato.contrato           -> NameError (ForeignKey não importado)
-# - app.models.contrato.solicitacao_contrato -> NameError + __tablename__ duplicado
-# - app.models.edital.edital               -> TypeError (kwarg 'foreignKey' inválido)
 MODEL_MODULES = [
     "app.models.users",
     "app.models.role_permissions",
@@ -43,9 +39,11 @@ MODEL_MODULES = [
     "app.models.token",
     "app.models.item",
     "app.models.contrato.base_contrato",
+    "app.models.contrato.contrato",
     "app.models.contrato.contrato_item",
     "app.models.contrato.fornecedor",
     "app.models.contrato.lotacao_contrato",
+    "app.models.contrato.solicitacao_contrato",
     "app.models.contrato.tipo_contrato",
     "app.models.dotacao.aplicacao_programada",
     "app.models.dotacao.conta",
@@ -54,6 +52,7 @@ MODEL_MODULES = [
     "app.models.dotacao.ficha_fonte",
     "app.models.dotacao.fonte",
     "app.models.dotacao.rubrica_orcamentaria",
+    "app.models.edital.edital",
 ]
 
 
@@ -166,8 +165,11 @@ def bootstrap(app):
                 logger.info("Banco já possui dados; bootstrap ignorado.")
                 return
 
-            _seed()
-            logger.info("Dados mínimos criados com sucesso.")
+            try:
+                _seed()
+                logger.info("Dados mínimos criados com sucesso.")
+            except Exception as exc:
+                db.session.rollback()
+                logger.warning("Falha ao criar dados mínimos: %s", exc)
     except Exception as exc:
-        db.session.rollback()
         logger.warning("Falha no bootstrap de dados mínimos: %s", exc)

@@ -9,7 +9,7 @@ class Organizacao(db.Model):
     sigla = db.Column(db.String(50))
     data_criacao = db.Column(db.DateTime, default=datetime.now)
     data_atualizacao = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    id_responsavel = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    id_responsavel = db.Column(db.Integer, db.ForeignKey('users.id', use_alter=True), nullable=True)
     ativo = db.Column(db.Boolean, default=True)
 
     responsavel = db.relationship('Usuario', backref='organizacoes_responsaveis', foreign_keys=[id_responsavel])

@@ -5,7 +5,7 @@ class Edital(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
-    tipo_id = db.Column(db.Integer, foreignKey='tipo_contrato.id', nullable=False)
+    tipo_id = db.Column(db.Integer, db.ForeignKey('tipo_contrato.id'), nullable=False)
     ano = db.Column(db.Integer, nullable=False)
     data_abertura = db.Column(db.DateTime, nullable=False)
     data_encerramento = db.Column(db.DateTime, nullable=False)

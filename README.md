@@ -61,12 +61,17 @@ Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
 
 ## Configuração
 
-1. Crie um arquivo .env na raiz do projeto e configure as variáveis de ambiente:
+1. Crie um arquivo `.env` na raiz do projeto a partir do `.env.example` e configure
+   as variáveis de ambiente:
     ```bash
-    FLASK_APP=nome_do_app.py
-    FLASK_ENV=development
-    SECRET_KEY=sua_chave_secreta
-    DATABASE_URL=URL_do_banco_de_dados
+    cp .env.example .env
+    ```
+2. Variáveis obrigatórias: `DATABASE_URL` e `SECRET_KEY`. As demais têm padrões
+   definidos em `.env.example`.
+
+   > **`SESSION_COOKIE_SECURE`** (padrão `true`) exige HTTPS. Se a aplicação for
+   > acessada diretamente por HTTP, sem um proxy com TLS na frente (ex.: Docker/Linux
+   > sem nginx), defina `SESSION_COOKIE_SECURE=false`.
 
 ## Uso
 

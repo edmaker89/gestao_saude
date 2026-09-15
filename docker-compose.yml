@@ -22,6 +22,7 @@ services:
     environment:
       DATABASE_URL: "mysql+pymysql://${MARIADB_USER:-gestao_saude_user}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE:-gestao_saude_db}"
       SECRET_KEY: ${SECRET_KEY}
+      # Padrão true: exige HTTPS. Para acesso direto por HTTP (sem proxy TLS), use false.
       SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
       SEED_ON_EMPTY: ${SEED_ON_EMPTY:-true}
       EMAIL_USER: ${EMAIL_USER:-}

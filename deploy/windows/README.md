@@ -95,7 +95,7 @@ O bootstrap cria um usuário administrador fictício quando o banco está vazio:
 |---|---|---|---|
 | `DATABASE_URL` | sim | — | URL do MySQL/MariaDB |
 | `SECRET_KEY` | sim | — | Chave secreta do Flask |
-| `SESSION_COOKIE_SECURE` | não | `true` | Cookie seguro (desligar só p/ teste HTTP) |
+| `SESSION_COOKIE_SECURE` | não | `true` | Cookie de sessão apenas via HTTPS. Desligue (`false`) somente se a app for acessada por HTTP sem o nginx/TLS na frente |
 | `EMAIL_USER`/`EMAIL_PASSWORD`/`EMAIL_SMTP_SERVER`/`EMAIL_SMTP_PORT` | não | — | Configuração SMTP |
 | `APP_HOST`/`APP_PORT`/`APP_THREADS` | não | `127.0.0.1`/`5000`/`8` | Configuração do Waitress |
 | `SEED_ON_EMPTY` | não | `true` | Habilita bootstrap de dados mínimos |

@@ -66,9 +66,58 @@ Para remover: `.\deploy\windows\uninstall-app-service.ps1`.
 
 ### 5. nginx (proxy reverso + TLS)
 
-1. Copie `deploy\windows\nginx.conf` para `C:\nginx\conf\nginx.conf`.
-2. Coloque o certificado e a chave em `C:\nginx\ssl\cert.pem` e
-   `C:\nginx\ssl\privkey.pem` (obtidos no servidor, nunca no repositório).
+#### 5.1 Obter o certificado TLS
+
+O nginx espera os arquivos em `C:\nginx\ssl\cert.pem` e `C:\nginx\ssl\privkey.pem`.
+Gere com uma das opções abaixo, substituindo `aplicacao.example.com` pelo domínio real.
+
+**Opção 1 — win-acme (Let's Encrypt), recomendada para domínio público**
+
+1. Baixe o win-acme em https://github.com/win-acme/win-acme/releases e extraia
+   (ex.: `C:\win-acme`).
+2. Rode o assistente em um PowerShell **Administrador**:
+   ```powershell
+   cd C:\win-acme
+   .\wacs.exe
+   ```
+3. No assistente:
+   - `N` (criar novo certificado);
+   - `M` (instalar manualmente) e indique `aplicacao.example.com`;
+   - validação `http-01` (porta 80 acessível publicamente) ou `dns-01`
+     (via subdomínio DuckDNS, se não tiver porta 80);
+   - como destino da instalação, aponte para `C:\nginx\ssl\`.
+4. A renovação fica agendada automaticamente (Agendador de Tarefas do Windows).
+
+> Exige um domínio registrado (ou um subdomínio grátis, ex.: `*.duckdns.org`).
+
+**Opção 2 — OpenSSL autoassinado, para teste/uso interno**
+
+O OpenSSL já vem com o Git for Windows (`C:\Program Files\Git\usr\bin\openssl.exe`).
+
+```powershell
+New-Item -ItemType Directory -Force C:\nginx\ssl
+& "C:\Program Files\Git\usr\bin\openssl.exe" req -x509 -nodes -newkey rsa:2048 `
+  -days 365 `
+  -keyout C:\nginx\ssl\privkey.pem `
+  -out    C:\nginx\ssl\cert.pem `
+  -subj "/CN=aplicacao.example.com"
+```
+
+> `-nodes` gera a chave **sem senha** (obrigatório: o nginx como serviço não consegue
+> pedir passphrase). Esse certificado não é confiável — os navegadores exibem aviso.
+
+Após gerar, restrinja o acesso à chave privada:
+
+```powershell
+icacls C:\nginx\ssl\privkey.pem /inheritance:r /grant:r "SYSTEM:(R)" "Administrators:(F)"
+```
+
+#### 5.2 Instalar o nginx
+
+1. Copie `deploy\windows\nginx.conf` para `C:\nginx\conf\nginx.conf` e ajuste o
+   `server_name` para `aplicacao.example.com`.
+2. Confirme que os arquivos do certificado estão em `C:\nginx\ssl\cert.pem` e
+   `C:\nginx\ssl\privkey.pem` (nunca no repositório).
 3. Instale como serviço:
    ```powershell
    .\deploy\windows\install-nginx-service.ps1

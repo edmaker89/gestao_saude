@@ -1,5 +1,4 @@
-from turtle import pu
-from flask import Blueprint, abort, ctx, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.forms.mail_form import MailForm
 from app.models import estabelecimento, organizacao
@@ -30,8 +29,6 @@ def new():
         usuario_atual: Usuario = current_user #type:ignore
         visibilidade = form.visibilidade.data
         
-        print(tipo_id, assunto, usuario_atual.id, usuario_atual.departamento_id, usuario_atual.departamento.estabelecimento.organizacao.id, visibilidade)
-        
         try:
             # departamento_id, org_id, visibilidade = None
             mail = CorrespondenciaService.nova_correspondencia(
@@ -43,7 +40,7 @@ def new():
             visibilidade=visibilidade
             )
         except Exception as e:
-            print(e)
+            current_app.logger.exception("Erro ao criar correspondência: %s", e)
             flash('[ERRO]: Algo inesperado aconteceu, tente novamente', 'danger')
             return redirect(url_for('mail.new'))
         
@@ -81,7 +78,6 @@ def my_mails():
     departamento_id = request.args.get('departamento', None, type=int)
     estabelecimento_id = request.args.get('estabelecimento', None, type=int)
     user_id = request.args.get('colaborador', None, type=int)
-    print(user_id)
     data_inicial = request.args.get('data_inicial', '', type=str)
     data_final = request.args.get('data_final', '', type=str)
     assunto = request.args.get('assunto', '', type=str)
@@ -160,8 +156,6 @@ def my_mails():
             'privada':privada,
             'sigilosa':sigilosa
             }
-    # print(mails.items)
-
     return render_template('/pages/mail/my_mails.html',
                            e_responsavel=e_responsavel,
                            mails=mails,
@@ -188,7 +182,7 @@ def edit_assunto():
         try:
             CorrespondenciaService.mail_edit_assunto(mail_id, assunto, visibilidade)
         except Exception as e:
-            print(e)
+            current_app.logger.exception("Erro ao alterar assunto: %s", e)
             flash('Um erro inesperado ocorreu, não foi possivel alterar o assunto', 'danger')
             return redirect(url_for('mail.my_mails'))
         return redirect(url_for('mail.my_mails'))

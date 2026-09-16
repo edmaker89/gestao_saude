@@ -34,13 +34,13 @@ Se você deseja contribuir para o aprimoramento deste projeto, siga as instruç�
 
 ## Licença
 
-Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
+Este projeto é licenciado sob a [example.com](LICENSE).
 
 
 ## Pré-requisitos
 
-- Python (versão 3.12)
-- Flask (versão 3.0.0)
+- Python (versão 3.14)
+- Flask (versão 3.1.3)
 - Gunicorn (versão 21.2.0)
 - Docker
 - Outras dependências... vide arquivo requirements.txt
@@ -61,12 +61,17 @@ Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
 
 ## Configuração
 
-1. Crie um arquivo .env na raiz do projeto e configure as variáveis de ambiente:
+1. Crie um arquivo `.env` na raiz do projeto a partir do `.env.example` e configure
+   as variáveis de ambiente:
     ```bash
-    FLASK_APP=nome_do_app.py
-    FLASK_ENV=development
-    SECRET_KEY=sua_chave_secreta
-    DATABASE_URL=URL_do_banco_de_dados
+    cp .env.example .env
+    ```
+2. Variáveis obrigatórias: `DATABASE_URL` e `SECRET_KEY`. As demais têm padrões
+   definidos em `.env.example`.
+
+   > **`SESSION_COOKIE_SECURE`** (padrão `true`) exige HTTPS. Se a aplicação for
+   > acessada diretamente por HTTP, sem um proxy com TLS na frente (ex.: Docker/Linux
+   > sem nginx), defina `SESSION_COOKIE_SECURE=false`.
 
 ## Uso
 
@@ -74,6 +79,11 @@ Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
      ```bash
      flask run
 2. Acesso o aplicativo pelo navegador [http://localhost:5000](http://localhost:5000)
+
+## Deploy no Windows Server
+
+Para rodar a aplicação como serviço no Windows (Waitress + NSSM) atrás de um nginx
+como proxy reverso, veja [deploy/windows/README.md](deploy/windows/README.md).
 
 ## Como Contribuir
 

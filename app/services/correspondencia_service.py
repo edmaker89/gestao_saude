@@ -183,14 +183,11 @@ class CorrespondenciaService:
         )
 
         if user_id:
-            print('bricou no usuario')
             query = query.filter(Correspondencias.usuario == user_id)
         elif departamento_id:
-            print('bricou no departamento', departamento_id)
             query = query.filter(Correspondencias.departamento_id == departamento_id)
         elif estabelecimento_id:
             query = query.filter(Estabelecimento.id == estabelecimento_id)
-            print('bricou no estabelecimento', estabelecimento_id)
         elif organizacao_id:
             query = query.filter(Organizacao.id == organizacao_id)
             

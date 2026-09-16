@@ -20,7 +20,6 @@ def roles():
         role = form.role.data
         descripton = form.description.data
         id_role = request.form.get('id_role')
-        print('id_role', id_role)
         if id_role and id_role != 'undefined':
             try:
                 Role.update_perfil(id_role, role, descripton)
@@ -86,14 +85,11 @@ def role_permission(id_role):
 
     role_permissions = RolePermissions.query.filter_by(role_id=id_role).all()
     permission_ids = [rp.permission_id for rp in role_permissions]
-    print(role)
-    print(role_permissions)
     all_permissions = Permission.query.all()
     unlinked_permissions = [p for p in all_permissions if p.id not in permission_ids]
     permission_linked = [p for p in all_permissions if p.id in permission_ids]
     categorias = []
 
-    print(permission_linked)
     rotas = [('Início', {}), ('Gestão Perfis e Permissões', {}), ('Gerenciar permissões', {'id_role':id_role})]
     bread_manager=BreadcrumbManager()
     breads = bread_manager.gerar_breads(rotas)
@@ -199,7 +195,6 @@ def role_user():
         user.choice_role(role_id)
         flash('O perfil do usuario foi alterado', 'success')
     except Exception as e:
-        print(e)
         flash(f'Não foi possivel altear o perfil, tente novamente {[e]}', 'danger')
     finally:
         if id_departamento:

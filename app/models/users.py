@@ -18,7 +18,7 @@ class Usuario(db.Model, UserMixin):
     senha = db.Column(db.String(300), nullable=False)
     tentativas_login = db.Column(db.Integer, nullable=True, default=0)
     bloqueado = db.Column(db.Boolean, nullable=True, default=False)
-    role = db.Column(db.String(255), db.ForeignKey('role.id'), nullable=True, default='1')
+    role = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=True, default=1)
     criado_em = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
     email = db.Column(db.String(255), unique=True, nullable=True)
     ativo = db.Column(db.Boolean, nullable=False, default=True)
@@ -97,7 +97,7 @@ class Usuario(db.Model, UserMixin):
             return False
     
     def choice_role(self, role_id):
-        self.role = role_id
+        self.role = int(role_id)
         db.session.commit()
 
     def resetar_tentativas(self):

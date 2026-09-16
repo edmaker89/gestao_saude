@@ -1,6 +1,9 @@
 from flask import json
 from markupsafe import Markup 
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 def format_cpf(cpf):
     if len(cpf) == 11:
@@ -44,5 +47,5 @@ def tojson(obj):
         telefones = json.loads(obj)
         return Markup(telefones)
     except Exception as e:
-        print(e)
+        logger.exception("Erro ao serializar objeto para JSON: %s", e)
         return obj

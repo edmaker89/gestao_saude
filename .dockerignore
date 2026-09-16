@@ -1,0 +1,8 @@
+.env
+*.pem
+.git
+__pycache__
+**/__pycache__
+.venv
+venv
+.agents

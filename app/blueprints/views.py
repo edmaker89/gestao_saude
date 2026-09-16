@@ -48,7 +48,6 @@ def init_app(app):
       user = Usuario.query.filter(Usuario.email == email).first()
       if user:
          solicitacao = solicitação_de_recuperacao(nome_completo=user.nome_completo, username=user.username, email=user.email, user_id=user.id)
-         print(solicitacao)
          flash('Em breve chegará um link de para recuperação de senha no email informado', 'success')
          return redirect(url_for('auth.login'))
       else:
@@ -67,23 +66,11 @@ def init_app(app):
          confirmar_senha = form.get('confirmar_senha')
 
          if senha == confirmar_senha:
-            print(
-               {
-                  'username': username,
-                  'token': token,
-                  'senha': senha,
-                  'confirmar_senha': confirmar_senha,
-                  }
-               )
             if token != '':
-               print('O token não é nulo')
                token_validado = Token.token_valido(token)
-               print(token_validado.user_id)
                if token_validado:
                   user = Usuario.query.filter(Usuario.id==token_validado.user_id).first()
-                  print(user)
                   if user and user.username == username:
-                     print(user, user.username, username)
                      try:
                         UsuarioService.change_password(user.id, senha)
                         flash('Senha redefinida com sucesso!', 'success')
@@ -91,12 +78,9 @@ def init_app(app):
                      except Exception as e:
                         flash('Algo inesperado aconteceu, tente novamente', 'danger')
                         return redirect(url_for('auth.login'))
-                  print('if user, and user.name username')
                   return redirect(abort(404))
-               print('problema no token')
                return redirect(abort(404))
             else:
-               print('primeiro if')
                return redirect(abort(404))
          else:
             flash('A senha e confirmar senha precisam ser iguais', 'danger')
@@ -105,21 +89,14 @@ def init_app(app):
       username = username
       token = request.args.get('token', '', type=str)
       if token != '':
-         print('O token não é nulo')
          token_validado = Token.token_valido(token)
-         print(token_validado.user_id)
          if token_validado:
             user = Usuario.query.filter(Usuario.id==token_validado.user_id).first()
-            print(user)
             if user and user.username == username:
-               print(user, user.username, username)
                return render_template('/pages/recuperacao_senha.html', token=token, username=username)
-            print('if user, and user.name username')
             return redirect(abort(404))
-         print('problema no token')
          return redirect(abort(404))
       else:
-         print('primeiro if')
          return redirect(abort(404))
 
 

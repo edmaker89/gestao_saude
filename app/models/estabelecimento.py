@@ -9,7 +9,7 @@ class Estabelecimento(db.Model):
     orgao_id = db.Column(db.Integer, db.ForeignKey('organizacao.id'), nullable=False)
     data_criacao = db.Column(db.DateTime, default=datetime.now)
     data_atualizacao = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    id_responsavel = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    id_responsavel = db.Column(db.Integer, db.ForeignKey('users.id', use_alter=True), nullable=True)
     ativo = db.Column(db.Boolean, default=True)
 
     responsavel = db.relationship('Usuario', backref='estabelecimentos_responsaveis', foreign_keys=[id_responsavel])

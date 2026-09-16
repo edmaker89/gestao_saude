@@ -34,7 +34,7 @@ Se você deseja contribuir para o aprimoramento deste projeto, siga as instruç�
 
 ## Licença
 
-Este projeto é licenciado sob a [edmaker.dev.br](LICENSE).
+Este projeto é licenciado sob a [example.com](LICENSE).
 
 
 ## Pré-requisitos

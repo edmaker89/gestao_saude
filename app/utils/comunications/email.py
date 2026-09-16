@@ -68,7 +68,7 @@ def novo_cadastro(nome_completo, username, senha, email):
     Para fazer isso, faça login em sua conta e vá para as configurações de perfil.
 
     Para acessar a nossa aplicação acesso o endereço:
-    https://itaberai.sishp.edmaker.dev.br
+    https://example.com
 
     Se precisar de ajuda ou tiver alguma dúvida, não hesite em entrar em contato conosco.
 

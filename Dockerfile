@@ -1,19 +1,26 @@
-# Use a imagem base do Python
-FROM python:3.14
+FROM python:3.14-slim
 
-# Define o diretório de trabalho como /app para melhor organização
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
 WORKDIR /app
 
-# Copia e instala as dependências primeiro para aproveitar o cache do Docker.
-# O arquivo .env não deve ser copiado para a imagem por segurança.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o restante do código da aplicação para o diretório de trabalho
 COPY . .
 
-# Exponha a porta em que a sua aplicação vai rodar
+RUN addgroup --system --gid 10001 appuser \
+    && adduser --system --uid 10001 --ingroup appuser appuser \
+    && chown -R appuser:appuser /app
+
+USER appuser
+
 EXPOSE 5000
 
-# Configuração do Gunicorn
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/', timeout=4)"]
+
 CMD ["gunicorn", "app.app:create_app()", "--bind", "0.0.0.0:5000"]
